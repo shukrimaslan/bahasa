@@ -6,972 +6,1079 @@
 <title>BMvocab — Learn Bahasa Malaysia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!--
+  ╔══════════════════════════════════════════════════════╗
+  ║  WORD DATA  — loaded from external file              ║
+  ║  Place bm-words.js in the SAME folder as this file.  ║
+  ║  To add words: edit bm-words.js only, no app change. ║
+  ╚══════════════════════════════════════════════════════╝
+-->
+<script src="bm-words.js"></script>
+
 <style>
+/* ─── Reset & Root ──────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --pri:#FF6B35;--pri-light:#FFF0EB;--pri-dark:#E85520;
-  --sec:#6C63FF;--sec-light:#F0EEFF;
-  --green:#22C55E;--red:#EF4444;--yellow:#FBBF24;
-  --bg:#FAFAF8;--surface:#FFFFFF;--border:#E8E5DF;
-  --text:#1A1A2E;--muted:#6B7280;
-  --radius:16px;--shadow:0 2px 12px rgba(0,0,0,.08);
+  --pri:#FF6B35; --pri-l:#FFF0EB;
+  --sec:#6C63FF; --sec-l:#F0EEFF;
+  --grn:#22C55E; --red:#EF4444; --ylw:#FBBF24; --org:#F97316;
+  --bg:#FAFAF8;  --sur:#FFFFFF;  --bdr:#E8E5DF;
+  --txt:#1A1A2E; --mut:#6B7280;
+  --rr:16px; --sh:0 2px 12px rgba(0,0,0,.08);
 }
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
+     -webkit-tap-highlight-color:transparent;user-select:none}
 #app{min-height:100vh;max-width:480px;margin:0 auto;position:relative}
-
-/* ── Screens ── */
 .screen{display:none;min-height:100vh;padding-bottom:80px}
 .screen.active{display:block}
 
-/* ── Onboarding ── */
-#screen-onboard{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;min-height:100vh}
+/* ─── Onboarding ─────────────────────────────────────── */
+#ob{display:flex;flex-direction:column;align-items:center;
+    justify-content:center;padding:2rem;text-align:center;min-height:100vh}
 .ob-logo{font-size:4.5rem;margin-bottom:1rem;animation:bounce 2s infinite}
-.ob-title{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;line-height:1.2;margin-bottom:.5rem}
+.ob-title{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;
+          line-height:1.2;margin-bottom:.5rem}
 .ob-title span{color:var(--pri)}
-.ob-sub{color:var(--muted);font-size:.95rem;margin-bottom:2rem;line-height:1.6}
-.ob-input{width:100%;padding:14px 18px;border-radius:12px;border:2px solid var(--border);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;background:var(--surface);color:var(--text);outline:none;margin-bottom:1.5rem;transition:border-color .2s}
-.ob-input:focus{border-color:var(--pri)}
-.level-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:1.5rem}
-.level-card{padding:1.4rem 1rem;border-radius:var(--radius);border:2.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .2s;user-select:none}
-.level-card:hover{transform:translateY(-2px)}
-.level-card.sel-pri{border-color:var(--pri);background:var(--pri-light)}
-.level-card.sel-sec{border-color:var(--sec);background:var(--sec-light)}
-.lc-icon{font-size:2.5rem;margin-bottom:.5rem}
-.lc-title{font-weight:800;font-size:.95rem}
-.lc-desc{font-size:.78rem;color:var(--muted);margin-top:4px;line-height:1.4}
+.ob-sub{color:var(--mut);font-size:.92rem;margin-bottom:2rem;line-height:1.65}
+.ob-inp{width:100%;padding:14px 18px;border-radius:12px;border:2px solid var(--bdr);
+        font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;
+        background:var(--sur);color:var(--txt);outline:none;
+        margin-bottom:1.5rem;transition:border-color .2s}
+.ob-inp:focus{border-color:var(--pri)}
+.lv-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;
+           width:100%;margin-bottom:1.5rem}
+.lv-card{padding:1.4rem 1rem;border-radius:var(--rr);border:2.5px solid var(--bdr);
+         background:var(--sur);cursor:pointer;transition:all .2s}
+.lv-card:hover{transform:translateY(-2px)}
+.lv-card.sel-p{border-color:var(--pri);background:var(--pri-l)}
+.lv-card.sel-s{border-color:var(--sec);background:var(--sec-l)}
+.lc-ico{font-size:2.5rem;margin-bottom:.5rem}
+.lc-ttl{font-weight:800;font-size:.95rem}
+.lc-dsc{font-size:.78rem;color:var(--mut);margin-top:4px;line-height:1.4}
 
-/* ── Buttons ── */
-.btn{width:100%;padding:16px;border-radius:12px;border:none;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;cursor:pointer;transition:all .15s}
+/* ─── Buttons ────────────────────────────────────────── */
+.btn{width:100%;padding:16px;border-radius:12px;border:none;
+     font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;
+     cursor:pointer;transition:all .15s}
 .btn:active{transform:scale(.97)}
 .btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
-.btn-pri{background:var(--pri);color:#fff}
-.btn-sec{background:var(--sec);color:#fff}
-.btn-green{background:var(--green);color:#fff}
-.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.btn-p{background:var(--pri);color:#fff}
+.btn-s{background:var(--sec);color:#fff}
+.btn-g{background:var(--grn);color:#fff}
+.btn-o{background:transparent;border:1.5px solid var(--bdr);color:var(--mut)}
+.btn-sm{padding:10px 18px;font-size:.85rem;width:auto;border-radius:10px}
 
-/* ── Header ── */
-.header{position:sticky;top:0;z-index:50;background:var(--bg);padding:1rem 1.25rem .75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.brand{font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800}
+/* ─── Header ─────────────────────────────────────────── */
+.hdr{position:sticky;top:0;z-index:50;background:var(--bg);
+     padding:.85rem 1.25rem .6rem;display:flex;align-items:center;
+     justify-content:space-between;border-bottom:1px solid var(--bdr)}
+.brand{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800}
 .brand span{color:var(--pri)}
-.header-right{display:flex;gap:8px;align-items:center}
-.pill{display:flex;align-items:center;gap:4px;border-radius:999px;padding:4px 10px;font-weight:800;font-size:.82rem}
-.pill-flame{background:#FFF7ED;border:1.5px solid #FED7AA;color:#EA580C}
-.pill-star{background:var(--sec-light);border:1.5px solid #C4B5FD;color:var(--sec)}
+.hdr-r{display:flex;gap:6px;align-items:center}
+.pill{display:flex;align-items:center;gap:4px;border-radius:999px;
+      padding:4px 10px;font-weight:800;font-size:.78rem;
+      cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.pill:hover{opacity:.8}
+.p-flame{background:#FFF7ED;border:1.5px solid #FED7AA;color:#EA580C}
+.p-xp   {background:var(--sec-l);border:1.5px solid #C4B5FD;color:var(--sec)}
+.p-lang {background:var(--sur);border:1.5px solid var(--bdr);color:var(--txt)}
+.p-set  {background:var(--sur);border:1.5px solid var(--bdr);color:var(--mut)}
 
-/* ── Bottom Nav ── */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:50}
-.nav-btn{flex:1;padding:11px 0 13px;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:700;color:var(--muted);transition:color .15s}
-.nav-btn.active-pri{color:var(--pri)}
-.nav-btn.active-sec{color:var(--sec)}
-.nav-icon{font-size:1.3rem;line-height:1}
+/* ─── Bottom Nav ─────────────────────────────────────── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+      width:100%;max-width:480px;background:var(--sur);
+      border-top:1px solid var(--bdr);display:flex;z-index:50}
+.nb{flex:1;padding:11px 0 13px;display:flex;flex-direction:column;
+    align-items:center;gap:3px;border:none;background:none;cursor:pointer;
+    font-family:'Nunito',sans-serif;font-size:.67rem;font-weight:700;
+    color:var(--mut);transition:color .15s}
+.nb.act-p{color:var(--pri)} .nb.act-s{color:var(--sec)}
+.ni{font-size:1.3rem;line-height:1}
 
-/* ── Home ── */
-.home-pad{padding:1.25rem}
-.greeting{font-size:1.45rem;font-weight:900;margin-bottom:.2rem}
-.greeting-sub{color:var(--muted);font-size:.88rem;margin-bottom:1.2rem}
-.level-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:700;margin-bottom:1.2rem}
-.badge-pri{background:var(--pri-light);color:var(--pri)}
-.badge-sec{background:var(--sec-light);color:var(--sec)}
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 10px;text-align:center}
-.stat-num{font-size:1.9rem;font-weight:900;line-height:1}
-.stat-lbl{font-size:.68rem;color:var(--muted);font-weight:700;margin-top:3px}
-.sec-title{font-weight:800;font-size:.95rem;margin-bottom:.7rem}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
-.mode-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.2rem 1rem;cursor:pointer;transition:all .18s;user-select:none}
-.mode-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.mode-card.locked{opacity:.5;cursor:default}
-.mode-card.locked:hover{transform:none;box-shadow:none}
-.mc-icon{font-size:1.9rem;margin-bottom:.5rem}
-.mc-title{font-weight:800;font-size:.9rem}
-.mc-desc{font-size:.73rem;color:var(--muted);margin-top:3px}
+/* ─── Home ───────────────────────────────────────────── */
+.pad{padding:1.25rem}
+.grt{font-size:1.45rem;font-weight:900;margin-bottom:.2rem}
+.grt-sub{color:var(--mut);font-size:.84rem;margin-bottom:1.2rem}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.sc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rr);
+    padding:14px 10px;text-align:center}
+.sn{font-size:1.9rem;font-weight:900;line-height:1}
+.sl{font-size:.66rem;color:var(--mut);font-weight:700;margin-top:3px}
+.stitle{font-weight:800;font-size:.94rem;margin-bottom:.7rem}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.mc{background:var(--sur);border:1.5px solid var(--bdr);border-radius:var(--rr);
+    padding:1.2rem 1rem;cursor:pointer;transition:all .18s;position:relative}
+.mc:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.mc.lk{opacity:.5;cursor:default} .mc.lk:hover{transform:none;box-shadow:none}
+.mci{font-size:1.9rem;margin-bottom:.5rem}
+.mct{font-weight:800;font-size:.9rem}
+.mcd{font-size:.72rem;color:var(--mut);margin-top:3px}
+.mbadge{position:absolute;top:8px;right:8px;background:var(--red);color:#fff;
+        font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:999px}
 
-/* ── Category Chips ── */
-.cat-scroll{padding:0 1.25rem .75rem;overflow-x:auto;display:flex;gap:8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.cat-scroll::-webkit-scrollbar{display:none}
-.cat-chip{white-space:nowrap;padding:7px 13px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--text);transition:all .15s;flex-shrink:0}
-.cat-chip.act-pri{background:var(--pri);border-color:var(--pri);color:#fff}
-.cat-chip.act-sec{background:var(--sec);border-color:var(--sec);color:#fff}
+/* ─── Category chips ─────────────────────────────────── */
+.cscroll{padding:0 1.25rem .75rem;overflow-x:auto;display:flex;gap:8px;
+         scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cscroll::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:7px 13px;border-radius:999px;
+      border:1.5px solid var(--bdr);background:var(--sur);cursor:pointer;
+      font-family:'Nunito',sans-serif;font-size:.79rem;font-weight:700;
+      color:var(--txt);transition:all .15s;flex-shrink:0}
+.chip.ap{background:var(--pri);border-color:var(--pri);color:#fff}
+.chip.as{background:var(--sec);border-color:var(--sec);color:#fff}
 
-/* ── Word List ── */
-.word-list{padding:.75rem 1.25rem;display:flex;flex-direction:column;gap:8px}
-.word-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:all .15s}
-.word-row:hover{box-shadow:var(--shadow);transform:translateX(2px)}
-.we{font-size:1.75rem;flex-shrink:0}
-.wbm{font-weight:800;font-size:.95rem}
-.wen{font-size:.83rem;color:var(--muted);font-weight:600}
-.word-right{margin-left:auto;display:flex;align-items:center;gap:6px}
-.diff-dot{width:7px;height:7px;border-radius:50%}
-.mastered-star{font-size:.9rem}
+/* ─── Word list ──────────────────────────────────────── */
+.wlist{padding:.75rem 1.25rem;display:flex;flex-direction:column;gap:8px}
+.wrow{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;
+      padding:13px 15px;display:flex;align-items:center;gap:13px;transition:all .15s}
+.wrow:hover{box-shadow:var(--sh);transform:translateX(2px)}
+.wem{font-size:1.75rem;flex-shrink:0}
+.wbm{font-weight:800;font-size:.94rem}
+.wen{font-size:.82rem;color:var(--mut);font-weight:600}
+.wbase{font-size:.71rem;color:var(--sec);font-weight:700;margin-top:2px}
+.wright{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dd{width:7px;height:7px;border-radius:50%}
 
-/* ── Mode Screens ── */
-.mode-screen{padding:1.25rem;animation:slideUp .3s ease forwards}
+/* ─── Settings sheet ─────────────────────────────────── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
+    display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--sur);border-radius:20px 20px 0 0;
+       padding:1.5rem 1.25rem 2rem;width:100%;max-width:480px;
+       animation:slideUp .25s ease}
+.sh-handle{width:40px;height:4px;background:var(--bdr);border-radius:2px;
+           margin:0 auto 1.25rem}
+.sh-title{font-weight:900;font-size:1.1rem;margin-bottom:1.25rem}
+.srow{display:flex;align-items:center;justify-content:space-between;
+      padding:13px 0;border-bottom:1px solid var(--bdr)}
+.srow:last-of-type{border-bottom:none}
+.slbl{font-weight:700;font-size:.9rem}
+.ssub{font-size:.77rem;color:var(--mut);margin-top:2px}
+.trow{display:flex;gap:8px}
+.tb{padding:7px 15px;border-radius:999px;border:1.5px solid var(--bdr);
+    background:transparent;font-family:'Nunito',sans-serif;
+    font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
+.tb.on-p{background:var(--pri);border-color:var(--pri);color:#fff}
+.tb.on-s{background:var(--sec);border-color:var(--sec);color:#fff}
+.tb.on-g{background:var(--grn);border-color:var(--grn);color:#fff}
+.tb.on-r{background:var(--red);border-color:var(--red);color:#fff}
+
+/* ─── Mode screen shell ──────────────────────────────── */
+.ms{padding:1.25rem;animation:slideUp .3s ease forwards}
 .mhdr{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem}
-.back-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;flex-shrink:0;font-family:inherit}
-.mhdr-title{font-weight:800;font-size:1.05rem}
-.mhdr-sub{font-size:.75rem;color:var(--muted);font-weight:600}
-.prog-bar{height:6px;background:var(--border);border-radius:999px;margin-bottom:1.25rem;overflow:hidden}
-.prog-fill{height:100%;border-radius:999px;transition:width .4s}
-.fill-pri{background:var(--pri)}
-.fill-sec{background:var(--sec)}
+.bb{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;
+    width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:1.1rem;flex-shrink:0;font-family:inherit}
+.mht{font-weight:800;font-size:1.05rem}
+.mhs{font-size:.74rem;color:var(--mut);font-weight:600}
+.pbar{height:6px;background:var(--bdr);border-radius:999px;
+      margin-bottom:1.25rem;overflow:hidden}
+.pfill{height:100%;border-radius:999px;transition:width .4s}
+.fp{background:var(--pri)} .fs{background:var(--sec)}
 
-/* ── Flashcard ── */
-.fc-wrap{perspective:1000px;height:280px;margin-bottom:1.5rem;cursor:pointer}
-.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-.fc.flipped{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.face-front{background:var(--surface);border:2px solid var(--border)}
-.face-back{background:var(--pri-light);border:2px solid var(--pri);transform:rotateY(180deg)}
-.face-back.sec{background:var(--sec-light);border-color:var(--sec)}
-.fc-emoji{font-size:3.4rem;margin-bottom:.9rem}
-.fc-word{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;text-align:center}
-.fc-sub{font-size:.82rem;color:var(--muted);margin-top:.5rem;font-weight:600}
-.fc-hint{font-size:.78rem;color:var(--muted);margin-top:.9rem}
-.fc-ex{font-size:.79rem;color:var(--muted);text-align:center;margin-top:.7rem;line-height:1.55;font-style:italic;padding:0 .5rem}
-.fc-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;animation:pop .3s ease forwards}
-.fc-btn{padding:14px;border-radius:12px;border:2px solid;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;transition:all .15s}
-.fc-btn:active{transform:scale(.96)}
-.fc-nope{border-color:var(--red);color:var(--red);background:#FEF2F2}
-.fc-got{border-color:var(--green);color:var(--green);background:#F0FDF4}
-.fc-skip{width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:transparent;font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:700;color:var(--muted);cursor:pointer}
+/* ─── Flashcard ──────────────────────────────────────── */
+.fcw{perspective:1000px;height:270px;margin-bottom:1.4rem;cursor:pointer}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.fl{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:20px;display:flex;
+      flex-direction:column;align-items:center;justify-content:center;
+      padding:1.6rem;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.ff{background:var(--sur);border:2px solid var(--bdr)}
+.fb{background:var(--pri-l);border:2px solid var(--pri);transform:rotateY(180deg)}
+.fb.sec{background:var(--sec-l);border-color:var(--sec)}
+.fce{font-size:3.2rem;margin-bottom:.8rem}
+.fcw2{font-family:'Baloo 2',cursive;font-size:1.95rem;font-weight:800;
+      text-align:center;line-height:1.2}
+.fcs{font-size:.8rem;color:var(--mut);margin-top:.45rem;font-weight:600}
+.fch{font-size:.76rem;color:var(--mut);margin-top:.8rem}
+.fc-base{font-size:.76rem;color:var(--sec);font-weight:700;margin-top:.5rem;
+         text-align:center;background:var(--sec-l);padding:3px 11px;
+         border-radius:999px;display:inline-block}
+.fcex{font-size:.76rem;color:var(--mut);text-align:center;margin-top:.55rem;
+      line-height:1.55;font-style:italic;padding:0 .4rem}
+.fca{display:grid;grid-template-columns:1fr 1fr;gap:10px;
+     margin-bottom:1rem;animation:pop .3s ease forwards}
+.fcb{padding:14px;border-radius:12px;border:2px solid;font-family:'Nunito',sans-serif;
+     font-size:.87rem;font-weight:800;cursor:pointer;transition:all .15s}
+.fcb:active{transform:scale(.96)}
+.fc-n{border-color:var(--red);color:var(--red);background:#FEF2F2}
+.fc-y{border-color:var(--grn);color:var(--grn);background:#F0FDF4}
+.fskip{width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--bdr);
+       background:transparent;font-family:'Nunito',sans-serif;
+       font-size:.82rem;font-weight:700;color:var(--mut);cursor:pointer}
 
-/* ── Quiz ── */
-.quiz-qcard{background:var(--surface);border:2px solid var(--border);border-radius:20px;padding:1.75rem 1.5rem;text-align:center;margin-bottom:1.2rem;animation:pop .3s ease forwards}
-.qz-prompt{font-size:.83rem;color:var(--muted);font-weight:600;margin-bottom:.7rem}
-.qz-emoji{font-size:2.5rem;margin-bottom:.4rem}
-.qz-word{font-family:'Baloo 2',cursive;font-size:2.1rem;font-weight:800}
-.quiz-opts{display:flex;flex-direction:column;gap:9px}
-.qopt{padding:15px 18px;border-radius:13px;border:2px solid var(--border);background:var(--surface);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:left}
-.qopt:disabled{cursor:default}
-.qopt.correct{border-color:var(--green);background:#F0FDF4;color:#166534}
-.qopt.wrong{border-color:var(--red);background:#FEF2F2;color:#991B1B}
-.qopt.reveal{border-color:var(--green);background:#F0FDF4;color:#166534}
+/* ─── Recap quiz banner ──────────────────────────────── */
+.recap-banner{background:linear-gradient(135deg,var(--org),#f59e0b);color:#fff;
+              border-radius:12px;padding:10px 16px;margin-bottom:1rem;
+              display:flex;align-items:center;gap:8px;
+              font-weight:800;font-size:.87rem}
+.rcard{background:var(--sur);border:2px solid var(--bdr);border-radius:16px;
+       padding:1.5rem;text-align:center;margin-bottom:1.1rem;
+       animation:pop .3s ease forwards}
+.rprompt{font-size:.8rem;color:var(--mut);margin-bottom:.5rem;font-weight:600}
+.rword{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800}
+.ropts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.9rem}
+.ropt{padding:12px;border-radius:12px;border:2px solid var(--bdr);
+      background:var(--sur);font-family:'Nunito',sans-serif;
+      font-size:.87rem;font-weight:700;cursor:pointer;transition:all .15s}
+.ropt:disabled{cursor:default}
+.ropt.ok{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.ropt.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
+.ropt.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.rresult{text-align:center;padding:2rem 1.25rem;animation:pop .3s forwards}
+.rre{font-size:4rem;margin-bottom:.75rem}
+.rrt{font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;margin-bottom:.25rem}
+.rrs{color:var(--mut);font-size:.88rem;margin-bottom:1.2rem}
 
-/* ── Score ── */
-.score-screen{text-align:center;padding:3rem 1.5rem;animation:slideUp .3s ease forwards}
-.sc-emoji{font-size:5rem;margin-bottom:1rem}
-.sc-title{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;margin-bottom:.5rem}
-.sc-sub{color:var(--muted);margin-bottom:1.5rem}
-.sc-big{font-size:3.5rem;font-weight:900;margin-bottom:.5rem}
-.sc-detail{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+/* ─── Quiz ───────────────────────────────────────────── */
+.qcard{background:var(--sur);border:2px solid var(--bdr);border-radius:20px;
+       padding:1.75rem 1.5rem;text-align:center;margin-bottom:1.1rem;
+       animation:pop .3s ease forwards}
+.qprompt{font-size:.82rem;color:var(--mut);font-weight:600;margin-bottom:.65rem}
+.qemoji{font-size:2.5rem;margin-bottom:.35rem}
+.qword{font-family:'Baloo 2',cursive;font-size:2.1rem;font-weight:800}
+.hard-tag{display:inline-block;background:var(--red);color:#fff;
+          font-size:.7rem;font-weight:800;padding:2px 9px;
+          border-radius:999px;margin-top:.4rem}
+.qopts{display:flex;flex-direction:column;gap:9px}
+.qo{padding:15px 18px;border-radius:13px;border:2px solid var(--bdr);
+    background:var(--sur);font-family:'Nunito',sans-serif;
+    font-size:.94rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:left}
+.qo:disabled{cursor:default}
+.qo.ok{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.qo.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
+.qo.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
 
-/* ── Progress Tab ── */
-.prog-tab{padding:1.25rem}
-.prog-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
-.ps-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem}
-.ps-num{font-size:2rem;font-weight:900}
-.ps-lbl{font-size:.73rem;color:var(--muted);font-weight:600;margin-top:2px}
-.cat-prog-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 15px;margin-bottom:8px}
-.cpr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.cpr-name{font-weight:700;font-size:.88rem}
-.cpr-count{font-size:.78rem;color:var(--muted)}
-.cpr-bar{height:5px;background:var(--border);border-radius:999px;overflow:hidden}
-.cpr-fill{height:100%;border-radius:999px}
-.firebase-note{margin-top:1.5rem;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:.8rem;color:var(--muted);line-height:1.65}
+/* ─── Score screen ───────────────────────────────────── */
+.scscrn{text-align:center;padding:3rem 1.5rem;animation:slideUp .3s ease forwards}
+.sce{font-size:5rem;margin-bottom:1rem}
+.sct{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;margin-bottom:.5rem}
+.scsu{color:var(--mut);margin-bottom:1.5rem}
+.scbig{font-size:3.5rem;font-weight:900;margin-bottom:.5rem}
+.scd{color:var(--mut);font-size:.9rem;margin-bottom:2rem}
+.scbtns{display:flex;flex-direction:column;gap:10px}
 
-/* ── Confetti ── */
-.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
-.cp{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall linear forwards}
+/* ─── Progress tab ───────────────────────────────────── */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.psc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rr);padding:1rem}
+.psn{font-size:2rem;font-weight:900}
+.psl{font-size:.71rem;color:var(--mut);font-weight:600;margin-top:2px}
+.cprow{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;
+       padding:11px 15px;margin-bottom:8px}
+.cptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.cpn{font-weight:700;font-size:.87rem}
+.cpc{font-size:.77rem;color:var(--mut)}
+.cpbar{height:5px;background:var(--bdr);border-radius:999px;overflow:hidden}
+.cpfill{height:100%;border-radius:999px}
 
-/* ── Animations ── */
+/* ─── Confetti ───────────────────────────────────────── */
+.cfw{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.cp{position:absolute;width:10px;height:10px;border-radius:2px;
+    animation:fall linear forwards}
+
+/* ─── Animations ─────────────────────────────────────── */
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 @keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-.slide-up{animation:slideUp .3s ease forwards}
-.pop-in{animation:pop .3s ease forwards}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+                100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.anim-up{animation:slideUp .3s ease forwards}
+.anim-pop{animation:pop .3s ease forwards}
+.anim-shake{animation:shake .35s ease}
 </style>
 </head>
 <body>
 <div id="app">
-  <!-- Onboarding -->
-  <div id="screen-onboard" class="active">
-    <div class="ob-logo">🇲🇾</div>
-    <h1 class="ob-title">Learn <span>Bahasa</span><br>Malaysia!</h1>
-    <p class="ob-sub">Master BM vocabulary the fun way.<br>Perfect for English-speaking students.</p>
-    <input class="ob-input" id="ob-name" placeholder="What's your name?" maxlength="30">
-    <div class="level-cards">
-      <div class="level-card" id="lc-pri" onclick="selectLevel('primary')">
-        <div class="lc-icon">🏫</div>
-        <div class="lc-title">Primary</div>
-        <div class="lc-desc">Year 1–6<br>Everyday words</div>
-      </div>
-      <div class="level-card" id="lc-sec" onclick="selectLevel('secondary')">
-        <div class="lc-icon">📘</div>
-        <div class="lc-title">Secondary</div>
-        <div class="lc-desc">Form 1–5<br>Advanced vocab</div>
-      </div>
+
+<!-- ══════════════ ONBOARDING ══════════════ -->
+<div id="ob">
+  <div class="ob-logo">🇲🇾</div>
+  <h1 class="ob-title">Learn <span>Bahasa</span><br>Malaysia!</h1>
+  <p class="ob-sub">Master BM vocabulary the fun way.<br>Seronok dan mudah untuk semua!</p>
+  <input class="ob-inp" id="ob-name" placeholder="Your name / Nama kamu?" maxlength="30">
+  <div class="lv-cards">
+    <div class="lv-card" id="lc-p" onclick="obSelectLevel('primary')">
+      <div class="lc-ico">🏫</div>
+      <div class="lc-ttl">Primary / Rendah</div>
+      <div class="lc-dsc">Year 1–6 · Everyday words</div>
     </div>
-    <button class="btn btn-pri" id="ob-btn" disabled onclick="completeOnboard()">Jom belajar! (Let's learn!) →</button>
+    <div class="lv-card" id="lc-s" onclick="obSelectLevel('secondary')">
+      <div class="lc-ico">📘</div>
+      <div class="lc-ttl">Secondary / Menengah</div>
+      <div class="lc-dsc">Form 1–5 · Advanced vocab</div>
+    </div>
   </div>
-
-  <!-- Main App -->
-  <div id="screen-main" class="screen">
-    <div class="header">
-      <div class="brand" id="brand-txt">BM<span>vocab</span></div>
-      <div class="header-right">
-        <div class="pill pill-flame">🔥 <span id="streak-num">0</span></div>
-        <div class="pill pill-star">⭐ <span id="xp-num">0</span></div>
-      </div>
-    </div>
-
-    <!-- Home Tab -->
-    <div id="tab-home" class="home-pad slide-up">
-      <div class="greeting" id="greeting">Selamat datang! 👋</div>
-      <div class="greeting-sub">What will you learn today?</div>
-      <div class="level-badge" id="level-badge-el"></div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="s-mastered">0</div><div class="stat-lbl">MASTERED</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-seen">0</div><div class="stat-lbl">SEEN</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-new">0</div><div class="stat-lbl">NEW</div></div>
-      </div>
-      <div class="sec-title">Choose a category</div>
-      <div class="cat-scroll" id="home-cats"></div>
-      <div class="sec-title">Pick a game mode</div>
-      <div class="mode-grid">
-        <div class="mode-card" onclick="startMode('flashcard')">
-          <div class="mc-icon">🃏</div>
-          <div class="mc-title">Flashcards</div>
-          <div class="mc-desc">Flip & learn BM ↔ English</div>
-        </div>
-        <div class="mode-card" onclick="startMode('quiz')">
-          <div class="mc-icon">❓</div>
-          <div class="mc-title">Quiz me!</div>
-          <div class="mc-desc">4 choices, pick the right one</div>
-        </div>
-        <div class="mode-card locked">
-          <div class="mc-icon">⏱️</div>
-          <div class="mc-title">Speed round</div>
-          <div class="mc-desc">Coming in Phase 3</div>
-        </div>
-        <div class="mode-card locked">
-          <div class="mc-icon">🔗</div>
-          <div class="mc-title">Match & pair</div>
-          <div class="mc-desc">Coming in Phase 3</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Words Tab -->
-    <div id="tab-words" class="screen">
-      <div style="height:12px"></div>
-      <div class="cat-scroll" id="words-cats"></div>
-      <div class="word-list" id="word-list"></div>
-    </div>
-
-    <!-- Progress Tab -->
-    <div id="tab-progress" class="screen">
-      <div class="prog-tab">
-        <div class="greeting">My progress 📊</div>
-        <div class="greeting-sub" style="margin-bottom:1.5rem">Keep it up! Every word counts.</div>
-        <div class="prog-stat-grid">
-          <div class="ps-card"><div class="ps-num" id="ps-mastered">0</div><div class="ps-lbl">Words mastered</div></div>
-          <div class="ps-card"><div class="ps-num" id="ps-seen">0</div><div class="ps-lbl">Words seen</div></div>
-          <div class="ps-card"><div class="ps-num" id="ps-new">0</div><div class="ps-lbl">Still to learn</div></div>
-          <div class="ps-card"><div class="ps-num" id="ps-acc">0%</div><div class="ps-lbl">Accuracy</div></div>
-        </div>
-        <div class="sec-title">Progress by category</div>
-        <div id="cat-prog-list"></div>
-        <div class="firebase-note">
-          💡 <strong>Firebase note:</strong> Progress is saved locally. In Phase 2, sign in with Google to sync across devices, track streaks properly, and unlock leaderboards!
-        </div>
-      </div>
-    </div>
-
-    <!-- Mode Screens -->
-    <div id="screen-flashcard" class="screen"></div>
-    <div id="screen-quiz" class="screen"></div>
-
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav">
-      <button class="nav-btn" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">🏠</span>Home</button>
-      <button class="nav-btn" id="nav-words" onclick="switchTab('words')"><span class="nav-icon">📖</span>Words</button>
-      <button class="nav-btn" id="nav-progress" onclick="switchTab('progress')"><span class="nav-icon">📊</span>Progress</button>
-    </nav>
-  </div>
-
-  <div class="confetti-wrap" id="confetti"></div>
+  <button class="btn btn-p" id="ob-btn" disabled onclick="obComplete()">
+    Jom belajar! &nbsp;Let's go! →
+  </button>
 </div>
 
+<!-- ══════════════ MAIN APP ══════════════ -->
+<div id="main" class="screen">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="brand">BM<span>vocab</span></div>
+    <div class="hdr-r">
+      <div class="pill p-flame">🔥<span id="h-streak">0</span></div>
+      <div class="pill p-xp">⭐<span id="h-xp">0</span></div>
+      <div class="pill p-lang" id="h-lang" onclick="toggleLang()" title="Switch language">🌐 EN</div>
+      <div class="pill p-set"  id="h-set"  onclick="openSettings()">⚙️</div>
+    </div>
+  </div>
+
+  <!-- Home tab -->
+  <div id="tab-home" class="pad anim-up">
+    <div class="grt"  id="t-greet">Selamat datang! 👋</div>
+    <div class="grt-sub" id="t-greet2">What will you learn today?</div>
+    <div class="stats">
+      <div class="sc"><div class="sn" id="s-mas">0</div><div class="sl" id="sl-mas">MASTERED</div></div>
+      <div class="sc"><div class="sn" id="s-seen">0</div><div class="sl" id="sl-seen">SEEN</div></div>
+      <div class="sc"><div class="sn" id="s-new">0</div><div class="sl" id="sl-new">NEW</div></div>
+    </div>
+    <div class="stitle" id="t-cat">Choose a category</div>
+    <div class="cscroll" id="home-cats"></div>
+    <div class="stitle" id="t-mode" style="margin-top:.75rem">Pick a game mode</div>
+    <div class="mgrid">
+      <div class="mc" onclick="startFlashcard()">
+        <div class="mci">🃏</div>
+        <div class="mct" id="t-fc">Flashcards</div>
+        <div class="mcd" id="t-fc2">Flip & learn BM ↔ English</div>
+      </div>
+      <div class="mc" onclick="startQuiz()">
+        <div class="mci">❓</div>
+        <div class="mct" id="t-qz">Quiz me!</div>
+        <div class="mcd" id="t-qz2">4 choices — pick the right one</div>
+        <div class="mbadge" id="hard-badge" style="display:none">HARD 🔥</div>
+      </div>
+      <div class="mc lk">
+        <div class="mci">⏱️</div>
+        <div class="mct" id="t-sp">Speed round</div>
+        <div class="mcd" id="t-sp2">Coming in Phase 3</div>
+      </div>
+      <div class="mc lk">
+        <div class="mci">🔗</div>
+        <div class="mct" id="t-mp">Match & pair</div>
+        <div class="mcd" id="t-mp2">Coming in Phase 3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Words tab -->
+  <div id="tab-words" class="screen">
+    <div style="height:12px"></div>
+    <div class="cscroll" id="words-cats"></div>
+    <div class="wlist"  id="word-list"></div>
+  </div>
+
+  <!-- Progress tab -->
+  <div id="tab-progress" class="screen pad">
+    <div class="grt"     id="t-prog">My Progress 📊</div>
+    <div class="grt-sub" id="t-prog2" style="margin-bottom:1.4rem">Keep it up! Every word counts.</div>
+    <div class="pgrid">
+      <div class="psc"><div class="psn" id="p-mas">0</div><div class="psl" id="pl-mas">Words mastered</div></div>
+      <div class="psc"><div class="psn" id="p-seen">0</div><div class="psl" id="pl-seen">Words seen</div></div>
+      <div class="psc"><div class="psn" id="p-new">0</div><div class="psl" id="pl-new">Still to learn</div></div>
+      <div class="psc"><div class="psn" id="p-acc">0%</div><div class="psl" id="pl-acc">Accuracy</div></div>
+    </div>
+    <div class="stitle" id="t-prog3">Progress by category</div>
+    <div id="cat-prog"></div>
+  </div>
+
+  <!-- Game screens -->
+  <div id="scr-fc" class="screen"></div>
+  <div id="scr-qz" class="screen"></div>
+
+  <!-- Bottom nav -->
+  <nav class="bnav">
+    <button class="nb" id="nb-home"  onclick="goTab('home')"><span class="ni">🏠</span><span class="nl" data-en="Home"     data-bm="Utama">Home</span></button>
+    <button class="nb" id="nb-words" onclick="goTab('words')"><span class="ni">📖</span><span class="nl" data-en="Words"    data-bm="Perkataan">Words</span></button>
+    <button class="nb" id="nb-prog"  onclick="goTab('progress')"><span class="ni">📊</span><span class="nl" data-en="Progress" data-bm="Kemajuan">Progress</span></button>
+  </nav>
+</div>
+
+<!-- ══════════════ SETTINGS SHEET ══════════════ -->
+<div id="ov" class="ov" style="display:none" onclick="ovClick(event)">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-title" id="t-set">Settings ⚙️</div>
+
+    <!-- UI Language -->
+    <div class="srow">
+      <div>
+        <div class="slbl" id="t-slang">UI Language</div>
+        <div class="ssub" id="t-slang2">Switch between English and Bahasa Malaysia</div>
+      </div>
+      <div class="trow">
+        <button class="tb on-g" id="tb-en" onclick="setLang('en')">EN</button>
+        <button class="tb"      id="tb-bm" onclick="setLang('bm')">BM</button>
+      </div>
+    </div>
+
+    <!-- School level -->
+    <div class="srow">
+      <div>
+        <div class="slbl" id="t-slv">School Level</div>
+        <div class="ssub" id="t-slv2">Switch between Primary and Secondary</div>
+      </div>
+      <div class="trow">
+        <button class="tb on-p" id="tb-pri" onclick="setLevel('primary')">Primary</button>
+        <button class="tb"      id="tb-sec" onclick="setLevel('secondary')">Secondary</button>
+      </div>
+    </div>
+
+    <!-- Hard mode -->
+    <div class="srow">
+      <div>
+        <div class="slbl" id="t-shard">Hard Mode Quiz</div>
+        <div class="ssub" id="t-shard2">Quiz without emoji hints — text only</div>
+      </div>
+      <div class="trow">
+        <button class="tb on-g" id="tb-easy" onclick="setHard(false)">Normal</button>
+        <button class="tb"      id="tb-hard" onclick="setHard(true)">Hard 🔥</button>
+      </div>
+    </div>
+
+    <!-- Reset -->
+    <div style="margin-top:1.25rem">
+      <button class="btn btn-o btn-sm" id="t-reset" onclick="resetProg()">
+        🗑️ Reset all progress
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Confetti layer -->
+<div class="cfw" id="cfw"></div>
+
+</div><!-- #app -->
+
 <script>
-// ══════════════════════════════════════════════
-// WORD BANK — 200 words (100 primary + 100 secondary)
-// Phase 2: replace with Firestore query
-// TODO: firebase.firestore().collection('words').where('level','==',level).get()
-// ══════════════════════════════════════════════
-const WORDS = [
-  {id:"pri-001",bm:"kucing",en:"cat",category:"haiwan",level:"primary",difficulty:1,emoji:"🐱",exBM:"Saya ada seekor kucing.",exEN:"I have a cat."},
-  {id:"pri-002",bm:"anjing",en:"dog",category:"haiwan",level:"primary",difficulty:1,emoji:"🐶",exBM:"Anjing itu berlari laju.",exEN:"The dog runs fast."},
-  {id:"pri-003",bm:"ikan",en:"fish",category:"haiwan",level:"primary",difficulty:1,emoji:"🐟",exBM:"Ikan itu berenang.",exEN:"The fish swims."},
-  {id:"pri-004",bm:"burung",en:"bird",category:"haiwan",level:"primary",difficulty:1,emoji:"🐦",exBM:"Burung itu bernyanyi.",exEN:"The bird sings."},
-  {id:"pri-005",bm:"harimau",en:"tiger",category:"haiwan",level:"primary",difficulty:2,emoji:"🐯",exBM:"Harimau tinggal di hutan.",exEN:"Tigers live in the forest."},
-  {id:"pri-006",bm:"gajah",en:"elephant",category:"haiwan",level:"primary",difficulty:2,emoji:"🐘",exBM:"Gajah adalah haiwan besar.",exEN:"Elephants are big animals."},
-  {id:"pri-007",bm:"monyet",en:"monkey",category:"haiwan",level:"primary",difficulty:1,emoji:"🐒",exBM:"Monyet suka makan pisang.",exEN:"Monkeys like to eat bananas."},
-  {id:"pri-008",bm:"arnab",en:"rabbit",category:"haiwan",level:"primary",difficulty:2,emoji:"🐰",exBM:"Arnab makan lobak.",exEN:"The rabbit eats carrots."},
-  {id:"pri-009",bm:"kuda",en:"horse",category:"haiwan",level:"primary",difficulty:1,emoji:"🐴",exBM:"Kuda berlari sangat laju.",exEN:"Horses run very fast."},
-  {id:"pri-010",bm:"lembu",en:"cow",category:"haiwan",level:"primary",difficulty:1,emoji:"🐄",exBM:"Lembu memberi susu.",exEN:"Cows give milk."},
-  {id:"pri-011",bm:"ayam",en:"chicken",category:"haiwan",level:"primary",difficulty:1,emoji:"🐓",exBM:"Ayam berkokok setiap pagi.",exEN:"The chicken crows every morning."},
-  {id:"pri-012",bm:"itik",en:"duck",category:"haiwan",level:"primary",difficulty:1,emoji:"🦆",exBM:"Itik berenang di kolam.",exEN:"Ducks swim in the pond."},
-  {id:"pri-013",bm:"nasi",en:"rice",category:"makanan",level:"primary",difficulty:1,emoji:"🍚",exBM:"Saya makan nasi setiap hari.",exEN:"I eat rice every day."},
-  {id:"pri-014",bm:"roti",en:"bread",category:"makanan",level:"primary",difficulty:1,emoji:"🍞",exBM:"Saya makan roti untuk sarapan.",exEN:"I eat bread for breakfast."},
-  {id:"pri-015",bm:"air",en:"water",category:"makanan",level:"primary",difficulty:1,emoji:"💧",exBM:"Minum air banyak-banyak.",exEN:"Drink lots of water."},
-  {id:"pri-016",bm:"susu",en:"milk",category:"makanan",level:"primary",difficulty:1,emoji:"🥛",exBM:"Saya minum susu setiap pagi.",exEN:"I drink milk every morning."},
-  {id:"pri-017",bm:"telur",en:"egg",category:"makanan",level:"primary",difficulty:1,emoji:"🥚",exBM:"Ibu masak telur goreng.",exEN:"Mum cooks fried eggs."},
-  {id:"pri-018",bm:"buah",en:"fruit",category:"makanan",level:"primary",difficulty:1,emoji:"🍎",exBM:"Makan buah setiap hari.",exEN:"Eat fruit every day."},
-  {id:"pri-019",bm:"pisang",en:"banana",category:"makanan",level:"primary",difficulty:1,emoji:"🍌",exBM:"Pisang itu manis.",exEN:"The banana is sweet."},
-  {id:"pri-020",bm:"epal",en:"apple",category:"makanan",level:"primary",difficulty:1,emoji:"🍎",exBM:"Saya suka makan epal.",exEN:"I like to eat apples."},
-  {id:"pri-021",bm:"sayur",en:"vegetable",category:"makanan",level:"primary",difficulty:2,emoji:"🥦",exBM:"Makan sayur untuk sihat.",exEN:"Eat vegetables to stay healthy."},
-  {id:"pri-022",bm:"mee",en:"noodles",category:"makanan",level:"primary",difficulty:1,emoji:"🍜",exBM:"Mee goreng sedap sekali.",exEN:"Fried noodles are very delicious."},
-  {id:"pri-023",bm:"ais krim",en:"ice cream",category:"makanan",level:"primary",difficulty:2,emoji:"🍦",exBM:"Ais krim itu sejuk.",exEN:"Ice cream is cold."},
-  {id:"pri-024",bm:"kek",en:"cake",category:"makanan",level:"primary",difficulty:1,emoji:"🎂",exBM:"Kek itu sedap.",exEN:"The cake is delicious."},
-  {id:"pri-025",bm:"ibu",en:"mother",category:"keluarga",level:"primary",difficulty:1,emoji:"👩",exBM:"Ibu masak makanan.",exEN:"Mother cooks food."},
-  {id:"pri-026",bm:"bapa",en:"father",category:"keluarga",level:"primary",difficulty:1,emoji:"👨",exBM:"Bapa pergi bekerja.",exEN:"Father goes to work."},
-  {id:"pri-027",bm:"abang",en:"elder brother",category:"keluarga",level:"primary",difficulty:2,emoji:"👦",exBM:"Abang saya pandai.",exEN:"My elder brother is clever."},
-  {id:"pri-028",bm:"kakak",en:"elder sister",category:"keluarga",level:"primary",difficulty:2,emoji:"👧",exBM:"Kakak tolong saya belajar.",exEN:"Elder sister helps me study."},
-  {id:"pri-029",bm:"adik",en:"younger sibling",category:"keluarga",level:"primary",difficulty:2,emoji:"👶",exBM:"Adik saya comel.",exEN:"My younger sibling is cute."},
-  {id:"pri-030",bm:"datuk",en:"grandfather",category:"keluarga",level:"primary",difficulty:2,emoji:"👴",exBM:"Datuk tinggal di kampung.",exEN:"Grandfather lives in the village."},
-  {id:"pri-031",bm:"nenek",en:"grandmother",category:"keluarga",level:"primary",difficulty:2,emoji:"👵",exBM:"Nenek masak sedap.",exEN:"Grandmother cooks deliciously."},
-  {id:"pri-032",bm:"pakcik",en:"uncle",category:"keluarga",level:"primary",difficulty:2,emoji:"🧔",exBM:"Pakcik bagi hadiah.",exEN:"Uncle gives gifts."},
-  {id:"pri-033",bm:"makcik",en:"aunt",category:"keluarga",level:"primary",difficulty:2,emoji:"👩",exBM:"Makcik baik hati.",exEN:"Aunt is kind-hearted."},
-  {id:"pri-034",bm:"merah",en:"red",category:"warna",level:"primary",difficulty:1,emoji:"🔴",exBM:"Baju saya berwarna merah.",exEN:"My shirt is red."},
-  {id:"pri-035",bm:"biru",en:"blue",category:"warna",level:"primary",difficulty:1,emoji:"🔵",exBM:"Langit berwarna biru.",exEN:"The sky is blue."},
-  {id:"pri-036",bm:"hijau",en:"green",category:"warna",level:"primary",difficulty:1,emoji:"💚",exBM:"Rumput berwarna hijau.",exEN:"Grass is green."},
-  {id:"pri-037",bm:"kuning",en:"yellow",category:"warna",level:"primary",difficulty:1,emoji:"💛",exBM:"Pisang berwarna kuning.",exEN:"Bananas are yellow."},
-  {id:"pri-038",bm:"putih",en:"white",category:"warna",level:"primary",difficulty:1,emoji:"⚪",exBM:"Awan berwarna putih.",exEN:"Clouds are white."},
-  {id:"pri-039",bm:"hitam",en:"black",category:"warna",level:"primary",difficulty:1,emoji:"⚫",exBM:"Langit malam berwarna hitam.",exEN:"The night sky is black."},
-  {id:"pri-040",bm:"jingga",en:"orange",category:"warna",level:"primary",difficulty:2,emoji:"🟠",exBM:"Oren berwarna jingga.",exEN:"Oranges are orange."},
-  {id:"pri-041",bm:"ungu",en:"purple",category:"warna",level:"primary",difficulty:2,emoji:"💜",exBM:"Bunga itu berwarna ungu.",exEN:"The flower is purple."},
-  {id:"pri-042",bm:"merah jambu",en:"pink",category:"warna",level:"primary",difficulty:2,emoji:"🌸",exBM:"Baju dia berwarna merah jambu.",exEN:"Her shirt is pink."},
-  {id:"pri-043",bm:"coklat",en:"brown",category:"warna",level:"primary",difficulty:1,emoji:"🟤",exBM:"Coklat berwarna coklat.",exEN:"Chocolate is brown."},
-  {id:"pri-044",bm:"buku",en:"book",category:"sekolah",level:"primary",difficulty:1,emoji:"📚",exBM:"Saya baca buku.",exEN:"I read a book."},
-  {id:"pri-045",bm:"pensil",en:"pencil",category:"sekolah",level:"primary",difficulty:1,emoji:"✏️",exBM:"Saya tulis dengan pensil.",exEN:"I write with a pencil."},
-  {id:"pri-046",bm:"pen",en:"pen",category:"sekolah",level:"primary",difficulty:1,emoji:"🖊️",exBM:"Guru menulis dengan pen.",exEN:"The teacher writes with a pen."},
-  {id:"pri-047",bm:"kertas",en:"paper",category:"sekolah",level:"primary",difficulty:1,emoji:"📄",exBM:"Saya lukis di atas kertas.",exEN:"I draw on paper."},
-  {id:"pri-048",bm:"pembaris",en:"ruler",category:"sekolah",level:"primary",difficulty:2,emoji:"📏",exBM:"Pembaris untuk mengukur.",exEN:"A ruler is for measuring."},
-  {id:"pri-049",bm:"beg",en:"bag",category:"sekolah",level:"primary",difficulty:1,emoji:"🎒",exBM:"Beg saya berat.",exEN:"My bag is heavy."},
-  {id:"pri-050",bm:"meja",en:"table",category:"sekolah",level:"primary",difficulty:1,emoji:"🪑",exBM:"Buku di atas meja.",exEN:"The book is on the table."},
-  {id:"pri-051",bm:"kerusi",en:"chair",category:"sekolah",level:"primary",difficulty:1,emoji:"🪑",exBM:"Saya duduk di kerusi.",exEN:"I sit on a chair."},
-  {id:"pri-052",bm:"guru",en:"teacher",category:"sekolah",level:"primary",difficulty:1,emoji:"👩‍🏫",exBM:"Guru mengajar kami.",exEN:"The teacher teaches us."},
-  {id:"pri-053",bm:"murid",en:"student",category:"sekolah",level:"primary",difficulty:1,emoji:"🧑‍🎓",exBM:"Murid belajar rajin.",exEN:"The student studies hard."},
-  {id:"pri-054",bm:"kelas",en:"class",category:"sekolah",level:"primary",difficulty:1,emoji:"🏫",exBM:"Kelas saya seronok.",exEN:"My class is fun."},
-  {id:"pri-055",bm:"papan hitam",en:"blackboard",category:"sekolah",level:"primary",difficulty:2,emoji:"🖊️",exBM:"Guru menulis di papan hitam.",exEN:"The teacher writes on the blackboard."},
-  {id:"pri-056",bm:"rumah",en:"house",category:"rumah",level:"primary",difficulty:1,emoji:"🏠",exBM:"Rumah saya besar.",exEN:"My house is big."},
-  {id:"pri-057",bm:"bilik",en:"room",category:"rumah",level:"primary",difficulty:1,emoji:"🚪",exBM:"Bilik saya kemas.",exEN:"My room is tidy."},
-  {id:"pri-058",bm:"dapur",en:"kitchen",category:"rumah",level:"primary",difficulty:2,emoji:"🍳",exBM:"Ibu memasak di dapur.",exEN:"Mother cooks in the kitchen."},
-  {id:"pri-059",bm:"pintu",en:"door",category:"rumah",level:"primary",difficulty:1,emoji:"🚪",exBM:"Tutup pintu itu.",exEN:"Close that door."},
-  {id:"pri-060",bm:"tingkap",en:"window",category:"rumah",level:"primary",difficulty:2,emoji:"🪟",exBM:"Buka tingkap bilik.",exEN:"Open the bedroom window."},
-  {id:"pri-061",bm:"katil",en:"bed",category:"rumah",level:"primary",difficulty:1,emoji:"🛏️",exBM:"Saya tidur di katil.",exEN:"I sleep in bed."},
-  {id:"pri-062",bm:"tandas",en:"toilet",category:"rumah",level:"primary",difficulty:1,emoji:"🚽",exBM:"Tandas ada di dalam rumah.",exEN:"The toilet is inside the house."},
-  {id:"pri-063",bm:"peti sejuk",en:"fridge",category:"rumah",level:"primary",difficulty:2,emoji:"🧊",exBM:"Air sejuk dalam peti sejuk.",exEN:"Cold water is in the fridge."},
-  {id:"pri-064",bm:"televisyen",en:"television",category:"rumah",level:"primary",difficulty:2,emoji:"📺",exBM:"Saya tengok televisyen malam.",exEN:"I watch television at night."},
-  {id:"pri-065",bm:"satu",en:"one",category:"nombor",level:"primary",difficulty:1,emoji:"1️⃣",exBM:"Saya ada satu buku.",exEN:"I have one book."},
-  {id:"pri-066",bm:"dua",en:"two",category:"nombor",level:"primary",difficulty:1,emoji:"2️⃣",exBM:"Ada dua ekor kucing.",exEN:"There are two cats."},
-  {id:"pri-067",bm:"tiga",en:"three",category:"nombor",level:"primary",difficulty:1,emoji:"3️⃣",exBM:"Tiga orang murid.",exEN:"Three students."},
-  {id:"pri-068",bm:"pagi",en:"morning",category:"nombor",level:"primary",difficulty:1,emoji:"🌅",exBM:"Selamat pagi!",exEN:"Good morning!"},
-  {id:"pri-069",bm:"petang",en:"afternoon",category:"nombor",level:"primary",difficulty:1,emoji:"🌤️",exBM:"Selamat petang!",exEN:"Good afternoon!"},
-  {id:"pri-070",bm:"malam",en:"night",category:"nombor",level:"primary",difficulty:1,emoji:"🌙",exBM:"Selamat malam!",exEN:"Good night!"},
-  {id:"pri-071",bm:"hari ini",en:"today",category:"nombor",level:"primary",difficulty:2,emoji:"📅",exBM:"Hari ini hari Isnin.",exEN:"Today is Monday."},
-  {id:"pri-072",bm:"semalam",en:"yesterday",category:"nombor",level:"primary",difficulty:2,emoji:"⏮️",exBM:"Semalam saya pergi sekolah.",exEN:"Yesterday I went to school."},
-  {id:"pri-073",bm:"pokok",en:"tree",category:"alam",level:"primary",difficulty:1,emoji:"🌳",exBM:"Pokok itu tinggi.",exEN:"The tree is tall."},
-  {id:"pri-074",bm:"bunga",en:"flower",category:"alam",level:"primary",difficulty:1,emoji:"🌸",exBM:"Bunga itu cantik.",exEN:"The flower is beautiful."},
-  {id:"pri-075",bm:"langit",en:"sky",category:"alam",level:"primary",difficulty:1,emoji:"☁️",exBM:"Langit berwarna biru.",exEN:"The sky is blue."},
-  {id:"pri-076",bm:"matahari",en:"sun",category:"alam",level:"primary",difficulty:1,emoji:"☀️",exBM:"Matahari bersinar terik.",exEN:"The sun shines brightly."},
-  {id:"pri-077",bm:"hujan",en:"rain",category:"alam",level:"primary",difficulty:1,emoji:"🌧️",exBM:"Hujan turun dengan lebat.",exEN:"The rain falls heavily."},
-  {id:"pri-078",bm:"laut",en:"sea",category:"alam",level:"primary",difficulty:1,emoji:"🌊",exBM:"Laut berwarna biru.",exEN:"The sea is blue."},
-  {id:"pri-079",bm:"gunung",en:"mountain",category:"alam",level:"primary",difficulty:2,emoji:"⛰️",exBM:"Gunung itu tinggi.",exEN:"The mountain is tall."},
-  {id:"pri-080",bm:"sungai",en:"river",category:"alam",level:"primary",difficulty:2,emoji:"🏞️",exBM:"Sungai itu dalam.",exEN:"The river is deep."},
-  {id:"pri-081",bm:"makan",en:"eat",category:"perbuatan",level:"primary",difficulty:1,emoji:"🍽️",exBM:"Mari kita makan.",exEN:"Let us eat."},
-  {id:"pri-082",bm:"minum",en:"drink",category:"perbuatan",level:"primary",difficulty:1,emoji:"🥤",exBM:"Minum air sebelum tidur.",exEN:"Drink water before sleeping."},
-  {id:"pri-083",bm:"tidur",en:"sleep",category:"perbuatan",level:"primary",difficulty:1,emoji:"😴",exBM:"Tidur awal setiap malam.",exEN:"Sleep early every night."},
-  {id:"pri-084",bm:"berlari",en:"run",category:"perbuatan",level:"primary",difficulty:1,emoji:"🏃",exBM:"Kami berlari di padang.",exEN:"We run on the field."},
-  {id:"pri-085",bm:"berjalan",en:"walk",category:"perbuatan",level:"primary",difficulty:1,emoji:"🚶",exBM:"Kami berjalan ke sekolah.",exEN:"We walk to school."},
-  {id:"pri-086",bm:"membaca",en:"read",category:"perbuatan",level:"primary",difficulty:1,emoji:"📖",exBM:"Saya suka membaca buku.",exEN:"I like to read books."},
-  {id:"pri-087",bm:"menulis",en:"write",category:"perbuatan",level:"primary",difficulty:1,emoji:"✍️",exBM:"Guru minta kami menulis.",exEN:"The teacher asks us to write."},
-  {id:"pri-088",bm:"bermain",en:"play",category:"perbuatan",level:"primary",difficulty:1,emoji:"⚽",exBM:"Kami bermain bola.",exEN:"We play football."},
-  {id:"pri-089",bm:"besar",en:"big",category:"sifat",level:"primary",difficulty:1,emoji:"🐘",exBM:"Gajah itu besar.",exEN:"The elephant is big."},
-  {id:"pri-090",bm:"kecil",en:"small",category:"sifat",level:"primary",difficulty:1,emoji:"🐜",exBM:"Semut itu kecil.",exEN:"The ant is small."},
-  {id:"pri-091",bm:"panjang",en:"long",category:"sifat",level:"primary",difficulty:1,emoji:"📏",exBM:"Ular itu panjang.",exEN:"The snake is long."},
-  {id:"pri-092",bm:"pendek",en:"short",category:"sifat",level:"primary",difficulty:1,emoji:"📏",exBM:"Rambut dia pendek.",exEN:"Her hair is short."},
-  {id:"pri-093",bm:"cantik",en:"beautiful",category:"sifat",level:"primary",difficulty:1,emoji:"💐",exBM:"Bunga itu cantik.",exEN:"The flower is beautiful."},
-  {id:"pri-094",bm:"pandai",en:"clever",category:"sifat",level:"primary",difficulty:1,emoji:"🧠",exBM:"Dia murid yang pandai.",exEN:"She is a clever student."},
-  {id:"pri-095",bm:"baik",en:"good / kind",category:"sifat",level:"primary",difficulty:1,emoji:"😊",exBM:"Dia seorang yang baik.",exEN:"She is a good person."},
-  {id:"pri-096",bm:"malas",en:"lazy",category:"sifat",level:"primary",difficulty:1,emoji:"😪",exBM:"Jangan jadi murid malas.",exEN:"Do not be a lazy student."},
-  {id:"pri-097",bm:"rajin",en:"hardworking",category:"sifat",level:"primary",difficulty:2,emoji:"💪",exBM:"Murid rajin dapat markah baik.",exEN:"Hardworking students get good marks."},
-  {id:"pri-098",bm:"lapar",en:"hungry",category:"sifat",level:"primary",difficulty:1,emoji:"🍽️",exBM:"Saya lapar sekarang.",exEN:"I am hungry now."},
-  {id:"pri-099",bm:"dahaga",en:"thirsty",category:"sifat",level:"primary",difficulty:2,emoji:"💧",exBM:"Saya dahaga, nak minum air.",exEN:"I am thirsty, I want water."},
-  {id:"pri-100",bm:"gembira",en:"happy",category:"sifat",level:"primary",difficulty:1,emoji:"😄",exBM:"Saya gembira hari ini.",exEN:"I am happy today."},
-  // ── SECONDARY (100 words) ──
-  {id:"sec-001",bm:"pengetahuan",en:"knowledge",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🧠",exBM:"Pengetahuan itu amat berharga.",exEN:"Knowledge is very precious."},
-  {id:"sec-002",bm:"persekitaran",en:"environment",category:"kata_nama",level:"secondary",difficulty:3,emoji:"🌿",exBM:"Jaga persekitaran kita.",exEN:"Take care of our environment."},
-  {id:"sec-003",bm:"kemajuan",en:"progress / development",category:"kata_nama",level:"secondary",difficulty:2,emoji:"📈",exBM:"Malaysia terus mencapai kemajuan.",exEN:"Malaysia continues to achieve progress."},
-  {id:"sec-004",bm:"masyarakat",en:"society / community",category:"kata_nama",level:"secondary",difficulty:2,emoji:"👥",exBM:"Kita hidup dalam masyarakat.",exEN:"We live in a society."},
-  {id:"sec-005",bm:"kerajaan",en:"government",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🏛️",exBM:"Kerajaan membina sekolah baharu.",exEN:"The government builds new schools."},
-  {id:"sec-006",bm:"pendidikan",en:"education",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🎓",exBM:"Pendidikan penting untuk masa depan.",exEN:"Education is important for the future."},
-  {id:"sec-007",bm:"peluang",en:"opportunity",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🚪",exBM:"Ambil setiap peluang yang ada.",exEN:"Take every opportunity available."},
-  {id:"sec-008",bm:"cabaran",en:"challenge",category:"kata_nama",level:"secondary",difficulty:2,emoji:"⚡",exBM:"Hadapi cabaran dengan berani.",exEN:"Face challenges bravely."},
-  {id:"sec-009",bm:"kejayaan",en:"success",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🏆",exBM:"Kejayaan datang dari usaha.",exEN:"Success comes from effort."},
-  {id:"sec-010",bm:"kegagalan",en:"failure",category:"kata_nama",level:"secondary",difficulty:2,emoji:"😔",exBM:"Kegagalan adalah guru terbaik.",exEN:"Failure is the best teacher."},
-  {id:"sec-011",bm:"perjuangan",en:"struggle / fight",category:"kata_nama",level:"secondary",difficulty:3,emoji:"💪",exBM:"Perjuangan mereka tidak sia-sia.",exEN:"Their struggle was not in vain."},
-  {id:"sec-012",bm:"tanggungjawab",en:"responsibility",category:"kata_nama",level:"secondary",difficulty:3,emoji:"🎯",exBM:"Ini tanggungjawab kita bersama.",exEN:"This is our shared responsibility."},
-  {id:"sec-013",bm:"ekosistem",en:"ecosystem",category:"sains",level:"secondary",difficulty:3,emoji:"🌱",exBM:"Hutan adalah ekosistem penting.",exEN:"Forests are important ecosystems."},
-  {id:"sec-014",bm:"pencemaran",en:"pollution",category:"sains",level:"secondary",difficulty:2,emoji:"🏭",exBM:"Pencemaran udara bahaya.",exEN:"Air pollution is dangerous."},
-  {id:"sec-015",bm:"tenaga",en:"energy",category:"sains",level:"secondary",difficulty:2,emoji:"⚡",exBM:"Tenaga suria adalah bersih.",exEN:"Solar energy is clean."},
-  {id:"sec-016",bm:"graviti",en:"gravity",category:"sains",level:"secondary",difficulty:2,emoji:"🍎",exBM:"Graviti menarik benda ke bawah.",exEN:"Gravity pulls things downward."},
-  {id:"sec-017",bm:"molekul",en:"molecule",category:"sains",level:"secondary",difficulty:3,emoji:"⚗️",exBM:"Air terdiri daripada molekul.",exEN:"Water is made of molecules."},
-  {id:"sec-018",bm:"atom",en:"atom",category:"sains",level:"secondary",difficulty:3,emoji:"⚛️",exBM:"Atom adalah zarah terkecil.",exEN:"Atoms are the smallest particles."},
-  {id:"sec-019",bm:"cahaya",en:"light",category:"sains",level:"secondary",difficulty:1,emoji:"💡",exBM:"Cahaya bergerak sangat laju.",exEN:"Light moves very fast."},
-  {id:"sec-020",bm:"haba",en:"heat",category:"sains",level:"secondary",difficulty:2,emoji:"🔥",exBM:"Haba boleh memuai benda.",exEN:"Heat can expand objects."},
-  {id:"sec-021",bm:"oksigen",en:"oxygen",category:"sains",level:"secondary",difficulty:2,emoji:"💨",exBM:"Kita perlukan oksigen untuk hidup.",exEN:"We need oxygen to live."},
-  {id:"sec-022",bm:"fotosintesis",en:"photosynthesis",category:"sains",level:"secondary",difficulty:3,emoji:"🌿",exBM:"Fotosintesis berlaku di dalam daun.",exEN:"Photosynthesis happens in leaves."},
-  {id:"sec-023",bm:"kemerdekaan",en:"independence",category:"sejarah",level:"secondary",difficulty:2,emoji:"🇲🇾",exBM:"Malaysia merdeka pada tahun 1957.",exEN:"Malaysia became independent in 1957."},
-  {id:"sec-024",bm:"penjajah",en:"colonizer",category:"sejarah",level:"secondary",difficulty:3,emoji:"⚔️",exBM:"Penjajah datang ke Tanah Melayu.",exEN:"Colonizers came to Malaya."},
-  {id:"sec-025",bm:"warisan",en:"heritage",category:"sejarah",level:"secondary",difficulty:2,emoji:"🏛️",exBM:"Kita perlu jaga warisan budaya.",exEN:"We must preserve cultural heritage."},
-  {id:"sec-026",bm:"tamadun",en:"civilisation",category:"sejarah",level:"secondary",difficulty:3,emoji:"🏺",exBM:"Tamadun manusia bermula ribuan tahun lalu.",exEN:"Human civilisation began thousands of years ago."},
-  {id:"sec-027",bm:"benua",en:"continent",category:"sejarah",level:"secondary",difficulty:2,emoji:"🌍",exBM:"Terdapat tujuh benua di dunia.",exEN:"There are seven continents in the world."},
-  {id:"sec-028",bm:"sempadan",en:"border / boundary",category:"sejarah",level:"secondary",difficulty:2,emoji:"📍",exBM:"Sempadan negara perlu dijaga.",exEN:"National borders must be protected."},
-  {id:"sec-029",bm:"populasi",en:"population",category:"sejarah",level:"secondary",difficulty:2,emoji:"👥",exBM:"Populasi Malaysia terus meningkat.",exEN:"Malaysia's population keeps growing."},
-  {id:"sec-030",bm:"bencana alam",en:"natural disaster",category:"sejarah",level:"secondary",difficulty:3,emoji:"🌊",exBM:"Bencana alam boleh menyebabkan kehilangan nyawa.",exEN:"Natural disasters can cause loss of life."},
-  {id:"sec-031",bm:"ekonomi",en:"economy",category:"ekonomi",level:"secondary",difficulty:2,emoji:"💹",exBM:"Ekonomi Malaysia terus berkembang.",exEN:"Malaysia's economy keeps growing."},
-  {id:"sec-032",bm:"pelaburan",en:"investment",category:"ekonomi",level:"secondary",difficulty:3,emoji:"💰",exBM:"Pelaburan asing penting bagi negara.",exEN:"Foreign investment is important for the country."},
-  {id:"sec-033",bm:"eksport",en:"export",category:"ekonomi",level:"secondary",difficulty:2,emoji:"📦",exBM:"Malaysia mengeksport minyak sawit.",exEN:"Malaysia exports palm oil."},
-  {id:"sec-034",bm:"import",en:"import",category:"ekonomi",level:"secondary",difficulty:2,emoji:"🚢",exBM:"Kita mengimport teknologi dari luar.",exEN:"We import technology from abroad."},
-  {id:"sec-035",bm:"inflasi",en:"inflation",category:"ekonomi",level:"secondary",difficulty:3,emoji:"💸",exBM:"Inflasi menyebabkan harga barang naik.",exEN:"Inflation causes prices to rise."},
-  {id:"sec-036",bm:"perdagangan",en:"trade",category:"ekonomi",level:"secondary",difficulty:2,emoji:"🤝",exBM:"Perdagangan antara negara penting.",exEN:"Trade between countries is important."},
-  {id:"sec-037",bm:"mencapai",en:"to achieve",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"🏆",exBM:"Dia mencapai kejayaan besar.",exEN:"She achieved great success."},
-  {id:"sec-038",bm:"membangun",en:"to develop",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"🏗️",exBM:"Kita perlu membangun negara.",exEN:"We need to develop the country."},
-  {id:"sec-039",bm:"menganalisis",en:"to analyse",category:"kata_kerja",level:"secondary",difficulty:3,emoji:"🔬",exBM:"Kita perlu menganalisis data ini.",exEN:"We need to analyse this data."},
-  {id:"sec-040",bm:"menjelaskan",en:"to explain",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"💬",exBM:"Guru menjelaskan topik itu.",exEN:"The teacher explains the topic."},
-  {id:"sec-041",bm:"mempertahankan",en:"to defend",category:"kata_kerja",level:"secondary",difficulty:3,emoji:"🛡️",exBM:"Kita mesti mempertahankan negara.",exEN:"We must defend our country."},
-  {id:"sec-042",bm:"menyumbang",en:"to contribute",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"🤲",exBM:"Mari kita menyumbang kepada komuniti.",exEN:"Let us contribute to the community."},
-  {id:"sec-043",bm:"meningkatkan",en:"to increase / improve",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"📈",exBM:"Kita perlu meningkatkan prestasi.",exEN:"We need to improve performance."},
-  {id:"sec-044",bm:"mengurangkan",en:"to reduce / decrease",category:"kata_kerja",level:"secondary",difficulty:2,emoji:"📉",exBM:"Kurangkan pembaziran makanan.",exEN:"Reduce food wastage."},
-  {id:"sec-045",bm:"cemerlang",en:"excellent",category:"adjektif",level:"secondary",difficulty:2,emoji:"⭐",exBM:"Dia pelajar yang cemerlang.",exEN:"She is an excellent student."},
-  {id:"sec-046",bm:"berkesan",en:"effective",category:"adjektif",level:"secondary",difficulty:2,emoji:"✅",exBM:"Kaedah ini sangat berkesan.",exEN:"This method is very effective."},
-  {id:"sec-047",bm:"mencabar",en:"challenging",category:"adjektif",level:"secondary",difficulty:2,emoji:"⚡",exBM:"Soalan ini sangat mencabar.",exEN:"This question is very challenging."},
-  {id:"sec-048",bm:"harmoni",en:"harmonious",category:"adjektif",level:"secondary",difficulty:2,emoji:"🕊️",exBM:"Masyarakat kita hidup harmoni.",exEN:"Our society lives harmoniously."},
-  {id:"sec-049",bm:"berdaya saing",en:"competitive",category:"adjektif",level:"secondary",difficulty:3,emoji:"🏅",exBM:"Pelajar mesti berdaya saing.",exEN:"Students must be competitive."},
-  {id:"sec-050",bm:"mapan",en:"sustainable",category:"adjektif",level:"secondary",difficulty:3,emoji:"♻️",exBM:"Pembangunan mapan adalah penting.",exEN:"Sustainable development is important."},
-  {id:"sec-051",bm:"teknologi",en:"technology",category:"teknologi",level:"secondary",difficulty:1,emoji:"💻",exBM:"Teknologi memudahkan kehidupan.",exEN:"Technology makes life easier."},
-  {id:"sec-052",bm:"rangkaian",en:"network",category:"teknologi",level:"secondary",difficulty:2,emoji:"🌐",exBM:"Rangkaian internet laju di sini.",exEN:"The internet network is fast here."},
-  {id:"sec-053",bm:"perisian",en:"software",category:"teknologi",level:"secondary",difficulty:3,emoji:"💿",exBM:"Perisian ini percuma digunakan.",exEN:"This software is free to use."},
-  {id:"sec-054",bm:"perkakasan",en:"hardware",category:"teknologi",level:"secondary",difficulty:3,emoji:"🖥️",exBM:"Perkakasan komputer perlu dikemas kini.",exEN:"Computer hardware needs to be updated."},
-  {id:"sec-055",bm:"kecerdasan buatan",en:"artificial intelligence",category:"teknologi",level:"secondary",difficulty:3,emoji:"🤖",exBM:"Kecerdasan buatan mengubah dunia.",exEN:"Artificial intelligence is changing the world."},
-  {id:"sec-056",bm:"oleh itu",en:"therefore",category:"frasa",level:"secondary",difficulty:2,emoji:"➡️",exBM:"Oleh itu, kita perlu berhati-hati.",exEN:"Therefore, we need to be careful."},
-  {id:"sec-057",bm:"walau bagaimanapun",en:"however",category:"frasa",level:"secondary",difficulty:3,emoji:"↩️",exBM:"Walau bagaimanapun, masalah masih ada.",exEN:"However, the problem still exists."},
-  {id:"sec-058",bm:"selain itu",en:"besides that / furthermore",category:"frasa",level:"secondary",difficulty:2,emoji:"➕",exBM:"Selain itu, kita juga perlu belajar.",exEN:"Besides that, we also need to study."},
-  {id:"sec-059",bm:"sebagai contoh",en:"for example",category:"frasa",level:"secondary",difficulty:2,emoji:"📝",exBM:"Sebagai contoh, kita boleh kitar semula.",exEN:"For example, we can recycle."},
-  {id:"sec-060",bm:"kesimpulannya",en:"in conclusion",category:"frasa",level:"secondary",difficulty:2,emoji:"🔚",exBM:"Kesimpulannya, kita mesti berusaha.",exEN:"In conclusion, we must strive."},
-  {id:"sec-061",bm:"kesihatan",en:"health",category:"kesihatan",level:"secondary",difficulty:1,emoji:"❤️",exBM:"Jaga kesihatan anda.",exEN:"Take care of your health."},
-  {id:"sec-062",bm:"penyakit",en:"disease",category:"kesihatan",level:"secondary",difficulty:2,emoji:"🤒",exBM:"Penyakit boleh dicegah.",exEN:"Diseases can be prevented."},
-  {id:"sec-063",bm:"vaksin",en:"vaccine",category:"kesihatan",level:"secondary",difficulty:2,emoji:"💉",exBM:"Vaksin melindungi daripada penyakit.",exEN:"Vaccines protect against disease."},
-  {id:"sec-064",bm:"pemakanan",en:"nutrition",category:"kesihatan",level:"secondary",difficulty:2,emoji:"🥗",exBM:"Pemakanan seimbang penting untuk kesihatan.",exEN:"Balanced nutrition is important for health."},
-  {id:"sec-065",bm:"senaman",en:"exercise",category:"kesihatan",level:"secondary",difficulty:2,emoji:"🏃",exBM:"Lakukan senaman setiap hari.",exEN:"Do exercise every day."},
-  {id:"sec-066",bm:"budaya",en:"culture",category:"budaya",level:"secondary",difficulty:1,emoji:"🎭",exBM:"Budaya kita kaya dan unik.",exEN:"Our culture is rich and unique."},
-  {id:"sec-067",bm:"adat",en:"customs / tradition",category:"budaya",level:"secondary",difficulty:2,emoji:"🎎",exBM:"Kita hormati adat setempat.",exEN:"We respect local customs."},
-  {id:"sec-068",bm:"perpaduan",en:"unity",category:"budaya",level:"secondary",difficulty:2,emoji:"🤝",exBM:"Perpaduan kaum adalah kekuatan kita.",exEN:"Racial unity is our strength."},
-  {id:"sec-069",bm:"kepelbagaian",en:"diversity",category:"budaya",level:"secondary",difficulty:3,emoji:"🌈",exBM:"Kepelbagaian budaya menambah kekayaan.",exEN:"Cultural diversity adds richness."},
-  {id:"sec-070",bm:"perayaan",en:"festival / celebration",category:"budaya",level:"secondary",difficulty:2,emoji:"🎉",exBM:"Perayaan disambut bersama-sama.",exEN:"Festivals are celebrated together."},
-  {id:"sec-071",bm:"bakat",en:"talent",category:"adjektif",level:"secondary",difficulty:2,emoji:"🌟",exBM:"Dia mempunyai bakat dalam muzik.",exEN:"She has a talent in music."},
-  {id:"sec-072",bm:"usaha",en:"effort",category:"kata_nama",level:"secondary",difficulty:1,emoji:"💪",exBM:"Usaha keras membuahkan hasil.",exEN:"Hard effort bears results."},
-  {id:"sec-073",bm:"impian",en:"dream / aspiration",category:"kata_nama",level:"secondary",difficulty:1,emoji:"💭",exBM:"Kejar impian anda dengan gigih.",exEN:"Chase your dreams with determination."},
-  {id:"sec-074",bm:"keberanian",en:"bravery / courage",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🦁",exBM:"Keberanian diperlukan untuk berjaya.",exEN:"Courage is needed to succeed."},
-  {id:"sec-075",bm:"kepimpinan",en:"leadership",category:"kata_nama",level:"secondary",difficulty:3,emoji:"👑",exBM:"Kepimpinan yang baik penting.",exEN:"Good leadership is important."},
-  {id:"sec-076",bm:"inovasi",en:"innovation",category:"teknologi",level:"secondary",difficulty:2,emoji:"💡",exBM:"Inovasi membantu kemajuan.",exEN:"Innovation helps progress."},
-  {id:"sec-077",bm:"kreatif",en:"creative",category:"adjektif",level:"secondary",difficulty:1,emoji:"🎨",exBM:"Dia seorang pelajar yang kreatif.",exEN:"She is a creative student."},
-  {id:"sec-078",bm:"kerjasama",en:"cooperation / teamwork",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🤝",exBM:"Kerjasama penting dalam sebuah pasukan.",exEN:"Cooperation is important in a team."},
-  {id:"sec-079",bm:"komunikasi",en:"communication",category:"kata_nama",level:"secondary",difficulty:2,emoji:"💬",exBM:"Komunikasi yang baik penting.",exEN:"Good communication is important."},
-  {id:"sec-080",bm:"strategi",en:"strategy",category:"kata_nama",level:"secondary",difficulty:2,emoji:"♟️",exBM:"Kita perlukan strategi yang baik.",exEN:"We need a good strategy."},
-  {id:"sec-081",bm:"analisis",en:"analysis",category:"kata_nama",level:"secondary",difficulty:3,emoji:"🔍",exBM:"Analisis data menunjukkan trend.",exEN:"Data analysis shows trends."},
-  {id:"sec-082",bm:"hipotesis",en:"hypothesis",category:"sains",level:"secondary",difficulty:3,emoji:"🔬",exBM:"Buat hipotesis sebelum eksperimen.",exEN:"Form a hypothesis before the experiment."},
-  {id:"sec-083",bm:"eksperimen",en:"experiment",category:"sains",level:"secondary",difficulty:2,emoji:"⚗️",exBM:"Eksperimen sains sangat menarik.",exEN:"Science experiments are very interesting."},
-  {id:"sec-084",bm:"data",en:"data",category:"teknologi",level:"secondary",difficulty:1,emoji:"📊",exBM:"Data ini sangat berguna.",exEN:"This data is very useful."},
-  {id:"sec-085",bm:"digital",en:"digital",category:"teknologi",level:"secondary",difficulty:1,emoji:"📱",exBM:"Era digital membawa banyak perubahan.",exEN:"The digital era brings many changes."},
-  {id:"sec-086",bm:"planet",en:"planet",category:"sains",level:"secondary",difficulty:1,emoji:"🪐",exBM:"Bumi adalah planet ketiga.",exEN:"Earth is the third planet."},
-  {id:"sec-087",bm:"toleransi",en:"tolerance",category:"budaya",level:"secondary",difficulty:2,emoji:"🕊️",exBM:"Toleransi penting dalam masyarakat berbilang kaum.",exEN:"Tolerance is important in a multiracial society."},
-  {id:"sec-088",bm:"patriotisme",en:"patriotism",category:"budaya",level:"secondary",difficulty:3,emoji:"🇲🇾",exBM:"Patriotisme bermaksud cinta akan negara.",exEN:"Patriotism means love for the country."},
-  {id:"sec-089",bm:"integriti",en:"integrity",category:"kata_nama",level:"secondary",difficulty:3,emoji:"🛡️",exBM:"Integriti adalah nilai yang mulia.",exEN:"Integrity is a noble value."},
-  {id:"sec-090",bm:"amanah",en:"trustworthiness",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🤲",exBM:"Jadilah seorang yang amanah.",exEN:"Be a trustworthy person."},
-  {id:"sec-091",bm:"hormat",en:"respect",category:"budaya",level:"secondary",difficulty:1,emoji:"🙏",exBM:"Hormati orang yang lebih tua.",exEN:"Respect the elderly."},
-  {id:"sec-092",bm:"dedikasi",en:"dedication",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🎯",exBM:"Dedikasi beliau patut dicontohi.",exEN:"His dedication is worth emulating."},
-  {id:"sec-093",bm:"motivasi",en:"motivation",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🚀",exBM:"Motivasi penting untuk berjaya.",exEN:"Motivation is important to succeed."},
-  {id:"sec-094",bm:"nilai",en:"value",category:"kata_nama",level:"secondary",difficulty:1,emoji:"💎",exBM:"Nilai murni perlu diamalkan.",exEN:"Noble values must be practised."},
-  {id:"sec-095",bm:"hak",en:"rights",category:"kata_nama",level:"secondary",difficulty:2,emoji:"⚖️",exBM:"Setiap orang mempunyai hak.",exEN:"Every person has rights."},
-  {id:"sec-096",bm:"kewajipan",en:"obligation / duty",category:"kata_nama",level:"secondary",difficulty:3,emoji:"📋",exBM:"Kewajipan kita ialah belajar bersungguh.",exEN:"Our duty is to study diligently."},
-  {id:"sec-097",bm:"persaingan",en:"competition",category:"kata_nama",level:"secondary",difficulty:2,emoji:"🥊",exBM:"Persaingan sihat menggalakkan kemajuan.",exEN:"Healthy competition encourages progress."},
-  {id:"sec-098",bm:"dermawan",en:"generous / charitable",category:"adjektif",level:"secondary",difficulty:3,emoji:"💝",exBM:"Dia seorang yang dermawan.",exEN:"He is a generous person."},
-  {id:"sec-099",bm:"gigih",en:"persevering / tenacious",category:"adjektif",level:"secondary",difficulty:2,emoji:"🏋️",exBM:"Dia belajar dengan gigih.",exEN:"She studies with perseverance."},
-  {id:"sec-100",bm:"berwawasan",en:"visionary",category:"adjektif",level:"secondary",difficulty:3,emoji:"🔭",exBM:"Pemimpin yang berwawasan penting.",exEN:"Visionary leaders are important."},
-];
+// ╔══════════════════════════════════════════════════════════╗
+// ║  PHASE 2 FIREBASE HOOKS  (all marked TODO)               ║
+// ║  Replace localStorage calls with Firestore equivalents   ║
+// ╚══════════════════════════════════════════════════════════╝
 
-// ══════════════════════════════════════════════
-// CATEGORIES CONFIG
-// ══════════════════════════════════════════════
-const CATEGORIES = {
-  primary: [
-    {id:"all",label:"All",labelBM:"Semua",icon:"🌟"},
-    {id:"haiwan",label:"Animals",labelBM:"Haiwan",icon:"🐾"},
-    {id:"makanan",label:"Food",labelBM:"Makanan",icon:"🍚"},
-    {id:"keluarga",label:"Family",labelBM:"Keluarga",icon:"👨‍👩‍👧"},
-    {id:"warna",label:"Colours",labelBM:"Warna",icon:"🎨"},
-    {id:"sekolah",label:"School",labelBM:"Sekolah",icon:"📚"},
-    {id:"rumah",label:"Home",labelBM:"Rumah",icon:"🏠"},
-    {id:"alam",label:"Nature",labelBM:"Alam",icon:"🌳"},
-    {id:"perbuatan",label:"Actions",labelBM:"Perbuatan",icon:"⚽"},
-    {id:"sifat",label:"Describing",labelBM:"Sifat",icon:"💡"},
-    {id:"nombor",label:"Time & Numbers",labelBM:"Nombor",icon:"🕐"},
-  ],
-  secondary: [
-    {id:"all",label:"All",labelBM:"Semua",icon:"🌟"},
-    {id:"kata_nama",label:"Nouns",labelBM:"Kata Nama",icon:"📖"},
-    {id:"kata_kerja",label:"Verbs",labelBM:"Kata Kerja",icon:"⚡"},
-    {id:"adjektif",label:"Adjectives",labelBM:"Adjektif",icon:"✨"},
-    {id:"frasa",label:"Phrases",labelBM:"Frasa",icon:"💬"},
-    {id:"sains",label:"Science",labelBM:"Sains",icon:"🔬"},
-    {id:"sejarah",label:"History",labelBM:"Sejarah",icon:"🏛️"},
-    {id:"ekonomi",label:"Economics",labelBM:"Ekonomi",icon:"💹"},
-    {id:"teknologi",label:"Technology",labelBM:"Teknologi",icon:"💻"},
-    {id:"kesihatan",label:"Health",labelBM:"Kesihatan",icon:"❤️"},
-    {id:"budaya",label:"Culture",labelBM:"Budaya",icon:"🎭"},
-  ]
+// ── i18n strings ────────────────────────────────────────────
+const I18N = {
+en:{
+  greet:      n=>`Welcome back, ${n}! 👋`,
+  greet2:     "What will you learn today?",
+  cat:        "Choose a category",
+  mode:       "Pick a game mode",
+  mas:"MASTERED", seen:"SEEN", nw:"NEW",
+  fc:"Flashcards", fc2:"Flip & learn BM ↔ English",
+  qz:"Quiz me!",   qz2:"4 choices — pick the right one",
+  sp:"Speed round",sp2:"Coming in Phase 3",
+  mp:"Match & pair",mp2:"Coming in Phase 3",
+  prog:"My Progress 📊", prog2:"Keep it up! Every word counts.",
+  prog3:"Progress by category",
+  plmas:"Words mastered", plseen:"Words seen",
+  plnew:"Still to learn", placc:"Accuracy",
+  set:"Settings ⚙️",
+  slang:"UI Language",    slang2:"Switch between English and Bahasa Malaysia",
+  slv:"School Level",     slv2:"Switch between Primary and Secondary",
+  shard:"Hard Mode Quiz", shard2:"Quiz without emoji hints — text only",
+  reset:"🗑️ Reset all progress",
+  navHome:"Home", navWords:"Words", navProg:"Progress",
+  tapReveal:"👆 Tap to reveal English",
+  base: (bw,be)=>`🌱 Base word: "${bw}" = ${be}`,
+  newWord:"✨ New word!",
+  seenN:  n=>`Seen ${n}× before`,
+  mastered:"⭐ Already mastered",
+  stillLrn:"❌ Still learning",
+  gotIt:   "✅ Got it!",
+  skip:    "Skip this card →",
+  recapBanner:"⚡ Quick Recap — last 10 words!",
+  recapQ:  n=>`Recap question ${n}`,
+  recapScore:(g,t)=>`You got ${g} / ${t} correct!`,
+  recapCont:"Continue flashcards →",
+  hardTag: "🔥 HARD MODE — no emoji hints!",
+  whatMeans:"What does this mean in English?",
+  backHome:"← Back to home",
+  playAgain:"Play again",
+  reviewed:n=>`You reviewed ${n} cards`,
+  qComplete:n=>`Quiz complete · ${n} questions`,
+  scoreLabel:"Score:",
+  gotLbl:"✅ Got:", missLbl:"❌ Missed:",
+  confirmReset:"Reset ALL progress? This cannot be undone.",
+  exc:"Hebat!", good:"Good job!", try:"Keep trying!",
+  amazing:"Luar biasa!", wellDone:"Well done!", goOn:"Keep going!",
+},
+bm:{
+  greet:      n=>`Selamat datang, ${n}! 👋`,
+  greet2:     "Apa yang akan kamu pelajari hari ini?",
+  cat:        "Pilih kategori",
+  mode:       "Pilih mod permainan",
+  mas:"DIKUASAI", seen:"DILIHAT", nw:"BAHARU",
+  fc:"Kad Imbas",  fc2:"Balik & belajar BM ↔ Inggeris",
+  qz:"Uji Saya!",  qz2:"4 pilihan — pilih yang betul",
+  sp:"Perlumbaan", sp2:"Akan datang Fasa 3",
+  mp:"Padankan",   mp2:"Akan datang Fasa 3",
+  prog:"Kemajuan Saya 📊", prog2:"Teruskan! Setiap perkataan penting.",
+  prog3:"Kemajuan mengikut kategori",
+  plmas:"Perkataan dikuasai", plseen:"Perkataan dilihat",
+  plnew:"Masih perlu belajar", placc:"Ketepatan",
+  set:"Tetapan ⚙️",
+  slang:"Bahasa Antara Muka",   slang2:"Tukar antara Bahasa Inggeris dan Bahasa Malaysia",
+  slv:"Peringkat Sekolah",       slv2:"Tukar antara Rendah dan Menengah",
+  shard:"Mod Susah Kuiz",        shard2:"Kuiz tanpa emoji — teks sahaja",
+  reset:"🗑️ Padam semua kemajuan",
+  navHome:"Utama", navWords:"Perkataan", navProg:"Kemajuan",
+  tapReveal:"👆 Ketik untuk tunjuk",
+  base: (bw,be)=>`🌱 Kata akar: "${bw}" = ${be}`,
+  newWord:"✨ Perkataan baharu!",
+  seenN:  n=>`Dilihat ${n}× sebelum ini`,
+  mastered:"⭐ Sudah dikuasai",
+  stillLrn:"❌ Masih belajar",
+  gotIt:   "✅ Tahu!",
+  skip:    "Langkau kad ini →",
+  recapBanner:"⚡ Ulangkaji Pantas — 10 perkataan tadi!",
+  recapQ:  n=>`Soalan ulangkaji ${n}`,
+  recapScore:(g,t)=>`Kamu dapat ${g} / ${t} betul!`,
+  recapCont:"Teruskan kad imbas →",
+  hardTag: "🔥 MOD SUSAH — tiada emoji!",
+  whatMeans:"Apakah maksudnya dalam Bahasa Inggeris?",
+  backHome:"← Kembali ke utama",
+  playAgain:"Main semula",
+  reviewed:n=>`Kamu ulangkaji ${n} kad`,
+  qComplete:n=>`Kuiz selesai · ${n} soalan`,
+  scoreLabel:"Markah:",
+  gotLbl:"✅ Betul:", missLbl:"❌ Salah:",
+  confirmReset:"Padam SEMUA kemajuan? Tidak boleh dibatalkan.",
+  exc:"Hebat!", good:"Bagus!", try:"Cuba lagi!",
+  amazing:"Luar biasa!", wellDone:"Bagus sekali!", goOn:"Teruskan belajar!",
+},
 };
 
-// ══════════════════════════════════════════════
-// STATE
-// TODO Phase 2: Replace localStorage with Firestore
-// import { doc, setDoc, getDoc } from "firebase/firestore";
-// ══════════════════════════════════════════════
-let state = {
-  name: null,
-  level: null,           // "primary" | "secondary"
-  selectedLevel: null,   // during onboarding
-  activeCategory: "all",
-  currentTab: "home",
-  progress: {},          // { wordId: {attempts, correct, mastered} }
-  // Phase 2 additions: uid, streak, lastSeen, badges
-};
+// ── State (TODO Phase 2: sync to Firestore) ──────────────────
+const DEF = {name:null,level:"primary",lang:"en",hard:false};
+let S = {...DEF};
+let PROG = {};   // { wordId: {attempts, correct, mastered} }
+let activeCat = "all";
+let curTab = "home";
 
-function loadState() {
-  const p = localStorage.getItem("bm_prefs_v1");
-  const pr = localStorage.getItem("bm_progress_v1");
-  if (p) { const pp = JSON.parse(p); state.name = pp.name; state.level = pp.level; }
-  if (pr) state.progress = JSON.parse(pr);
+function loadState(){
+  try{
+    const p=JSON.parse(localStorage.getItem("bmv3_prefs")||"null"); // TODO: Firestore users/{uid}
+    const r=JSON.parse(localStorage.getItem("bmv3_prog") ||"null"); // TODO: Firestore progress/{uid}
+    if(p){S={...DEF,...p};}
+    if(r){PROG=r;}
+  }catch(e){}
 }
-function savePrefs() {
-  localStorage.setItem("bm_prefs_v1", JSON.stringify({name:state.name, level:state.level}));
+function savePrefs(){ localStorage.setItem("bmv3_prefs",JSON.stringify(S)); }
+function saveProg() { localStorage.setItem("bmv3_prog", JSON.stringify(PROG));}
+
+// ── Helpers ──────────────────────────────────────────────────
+const L = ()=> I18N[S.lang];
+const ac = ()=> S.level==="primary" ? "var(--pri)" : "var(--sec)";
+const sf = ()=> S.level==="primary" ? "p" : "s";
+const myW = ()=> WORDS.filter(w=>w.level===S.level);
+const masC = ()=> myW().filter(w=>PROG[w.id]?.mastered).length;
+const seenC= ()=> myW().filter(w=>PROG[w.id]?.attempts>0).length;
+function shuffle(a){
+  const r=[...a];
+  for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}
+  return r;
 }
-function saveProgress() {
-  localStorage.setItem("bm_progress_v1", JSON.stringify(state.progress));
+function catWords(){ return WORDS.filter(w=>w.level===S.level&&(activeCat==="all"||w.category===activeCat)); }
+function updProg(id,correct){
+  const c=PROG[id]||{attempts:0,correct:0,mastered:false};
+  PROG[id]={attempts:c.attempts+1, correct:c.correct+(correct?1:0),
+            mastered:(c.correct+(correct?1:0))>=3};
+  saveProg(); // TODO: Firestore setDoc
 }
 
-// ══════════════════════════════════════════════
-// UTILITIES
-// ══════════════════════════════════════════════
-function shuffle(a) {
-  const arr = [...a];
-  for (let i = arr.length-1; i > 0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]] = [arr[j],arr[i]];
+// ── Confetti ─────────────────────────────────────────────────
+function confetti(){
+  const W=document.getElementById("cfw");
+  const cols=["#FF6B35","#6C63FF","#22C55E","#FBBF24","#EF4444","#EC4899"];
+  W.innerHTML="";
+  for(let i=0;i<38;i++){
+    const p=document.createElement("div");
+    p.className="cp";
+    p.style.cssText=`background:${cols[i%6]};left:${Math.random()*100}%;`+
+      `animation-delay:${(Math.random()*.6).toFixed(2)}s;`+
+      `animation-duration:${(.8+Math.random()*.9).toFixed(2)}s`;
+    W.appendChild(p);
   }
-  return arr;
+  setTimeout(()=>{W.innerHTML="";},2600);
 }
-function getWords(level, cat) {
-  return WORDS.filter(w => w.level === level && (cat === "all" || w.category === cat));
-}
-function accentColor(level) {
-  return level === "primary" ? "var(--pri)" : "var(--sec)";
-}
-function accentSuffix(level) {
-  return level === "primary" ? "pri" : "sec";
-}
-function myWords() { return WORDS.filter(w => w.level === state.level); }
-function masteredCount() { return myWords().filter(w => state.progress[w.id]?.mastered).length; }
-function seenCount() { return myWords().filter(w => state.progress[w.id]?.attempts > 0).length; }
-function updateProgressEntry(id, correct) {
-  const curr = state.progress[id] || {attempts:0, correct:0, mastered:false};
-  state.progress[id] = {
-    attempts: curr.attempts + 1,
-    correct: curr.correct + (correct ? 1 : 0),
-    mastered: (curr.correct + (correct ? 1 : 0)) >= 3,
+
+// ── Refresh all translatable UI strings ──────────────────────
+function refreshStrings(){
+  const t=L();
+  const ids={
+    "t-greet2":t.greet2,"t-cat":t.cat,"t-mode":t.mode,
+    "sl-mas":t.mas,"sl-seen":t.seen,"sl-new":t.nw,
+    "t-fc":t.fc,"t-fc2":t.fc2,"t-qz":t.qz,"t-qz2":t.qz2,
+    "t-sp":t.sp,"t-sp2":t.sp2,"t-mp":t.mp,"t-mp2":t.mp2,
+    "t-prog":t.prog,"t-prog2":t.prog2,"t-prog3":t.prog3,
+    "pl-mas":t.plmas,"pl-seen":t.plseen,"pl-new":t.plnew,"pl-acc":t.placc,
+    "t-set":t.set,"t-slang":t.slang,"t-slang2":t.slang2,
+    "t-slv":t.slv,"t-slv2":t.slv2,
+    "t-shard":t.shard,"t-shard2":t.shard2,"t-reset":t.reset,
   };
-  saveProgress();
-}
-
-// ══════════════════════════════════════════════
-// CONFETTI
-// ══════════════════════════════════════════════
-function showConfetti() {
-  const wrap = document.getElementById("confetti");
-  const colors = ["#FF6B35","#6C63FF","#22C55E","#FBBF24","#EF4444","#EC4899"];
-  wrap.innerHTML = "";
-  for (let i = 0; i < 35; i++) {
-    const p = document.createElement("div");
-    p.className = "cp";
-    p.style.cssText = `background:${colors[i%6]};left:${Math.random()*100}%;animation-delay:${Math.random()*.6}s;animation-duration:${.8+Math.random()*.8}s`;
-    wrap.appendChild(p);
+  for(const [id,val] of Object.entries(ids)){
+    const el=document.getElementById(id);
+    if(el) el.textContent=val;
   }
-  setTimeout(() => { wrap.innerHTML = ""; }, 2500);
-}
-
-// ══════════════════════════════════════════════
-// ONBOARDING
-// ══════════════════════════════════════════════
-function selectLevel(lvl) {
-  state.selectedLevel = lvl;
-  document.getElementById("lc-pri").className = "level-card" + (lvl==="primary" ? " sel-pri" : "");
-  document.getElementById("lc-sec").className = "level-card" + (lvl==="secondary" ? " sel-sec" : "");
-  checkObBtn();
-}
-function checkObBtn() {
-  const name = document.getElementById("ob-name").value.trim();
-  const btn = document.getElementById("ob-btn");
-  btn.disabled = !name || !state.selectedLevel;
-  btn.className = `btn btn-${state.selectedLevel === "secondary" ? "sec" : "pri"}`;
-}
-document.getElementById("ob-name").addEventListener("input", checkObBtn);
-
-function completeOnboard() {
-  state.name = document.getElementById("ob-name").value.trim();
-  state.level = state.selectedLevel;
-  savePrefs();
-  document.getElementById("screen-onboard").style.display = "none";
-  document.getElementById("screen-main").className = "screen active";
-  initMain();
-}
-
-// ══════════════════════════════════════════════
-// MAIN INIT
-// ══════════════════════════════════════════════
-function initMain() {
-  const ac = accentColor(state.level);
-  const suf = accentSuffix(state.level);
-
-  document.getElementById("greeting").textContent = `Selamat datang, ${state.name}! 👋`;
-  const lb = document.getElementById("level-badge-el");
-  lb.textContent = state.level === "primary" ? "🏫 Primary school" : "📘 Secondary school";
-  lb.className = `level-badge badge-${suf}`;
-
-  // Nav colours
-  document.querySelectorAll(".nav-btn").forEach(b => b.className = "nav-btn");
-  document.getElementById("nav-home").classList.add(`active-${suf}`);
-
-  updateStatsDisplay();
-  renderCatChips("home-cats", true);
-  renderCatChips("words-cats", false);
-  switchTab("home");
-}
-
-function updateStatsDisplay() {
-  const ac = accentColor(state.level);
-  const mw = myWords();
-  const mas = masteredCount();
-  const seen = seenCount();
-  const nw = mw.length - seen;
-  const streak = Math.min(Math.floor(seen/5), 30);
-  const xp = seen * 10;
-
-  document.getElementById("s-mastered").textContent = mas;
-  document.getElementById("s-seen").textContent = seen;
-  document.getElementById("s-new").textContent = nw;
-  document.getElementById("s-mastered").style.color = ac;
-  document.getElementById("s-seen").style.color = ac;
-  document.getElementById("s-new").style.color = ac;
-  document.getElementById("streak-num").textContent = streak;
-  document.getElementById("xp-num").textContent = xp;
-}
-
-// ══════════════════════════════════════════════
-// CATEGORY CHIPS
-// ══════════════════════════════════════════════
-function renderCatChips(containerId, showLabel) {
-  const suf = accentSuffix(state.level);
-  const cats = CATEGORIES[state.level];
-  const container = document.getElementById(containerId);
-  container.innerHTML = cats.map(c => `
-    <button class="cat-chip ${state.activeCategory === c.id ? `act-${suf}` : ""}"
-      onclick="setCategory('${c.id}','${containerId}')">${c.icon} ${showLabel ? c.label : c.labelBM}</button>
-  `).join("");
-}
-
-function setCategory(cat, fromContainer) {
-  state.activeCategory = cat;
-  renderCatChips("home-cats", true);
-  renderCatChips("words-cats", false);
-  if (fromContainer === "words-cats") renderWordList();
-}
-
-// ══════════════════════════════════════════════
-// TABS
-// ══════════════════════════════════════════════
-function switchTab(tab) {
-  state.currentTab = tab;
-  const suf = accentSuffix(state.level);
-  document.querySelectorAll(".nav-btn").forEach(b => {
-    b.className = "nav-btn";
-    if (b.id === `nav-${tab}`) b.classList.add(`active-${suf}`);
+  // greeting with name
+  const gEl=document.getElementById("t-greet");
+  if(gEl&&S.name) gEl.textContent=t.greet(S.name);
+  // nav labels
+  document.querySelectorAll(".nl").forEach(el=>{
+    el.textContent=S.lang==="en"?el.dataset.en:el.dataset.bm;
   });
-  ["home","words","progress"].forEach(t => {
-    const el = document.getElementById(`tab-${t}`);
-    el.className = t === tab ? "home-pad slide-up" : (t === "words" ? "screen" : "screen");
-    if (t !== "home") {
-      document.getElementById(`tab-${t}`).style.display = t === tab ? "block" : "none";
+  // lang pill
+  document.getElementById("h-lang").textContent="🌐 "+S.lang.toUpperCase();
+  // hard mode badge
+  document.getElementById("hard-badge").style.display=S.hard?"block":"none";
+  // level pill / settings header
+  const lPill=document.getElementById("h-set");
+  if(lPill) lPill.textContent= S.level==="primary"?"🏫":"📘";
+  // cat chips (language changes label)
+  renderCatChips("home-cats");
+  renderCatChips("words-cats");
+  // settings toggles
+  syncSettingToggles();
+}
+
+// ── Stats display ────────────────────────────────────────────
+function updateStats(){
+  const col=ac(), mw=myW(), mas=masC(), seen=seenC(), nw=mw.length-seen;
+  const streak=Math.min(Math.floor(seen/5),30);
+  const xp=seen*10;
+  set("s-mas",mas); set("s-seen",seen); set("s-new",nw);
+  set("p-mas",mas); set("p-seen",seen); set("p-new",mw.length-seen);
+  set("h-streak",streak); set("h-xp",xp);
+  ["s-mas","s-seen","s-new","p-mas","p-seen","p-new"].forEach(id=>col3(id,col));
+  // accuracy
+  const tot=mw.reduce((a,w)=>a+(PROG[w.id]?.attempts||0),0);
+  const cor=mw.reduce((a,w)=>a+(PROG[w.id]?.correct||0),0);
+  const acc=tot>0?Math.round(cor/tot*100):0;
+  set("p-acc",acc+"%"); col3("p-acc",col);
+}
+function set(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
+function col3(id,c){ const e=document.getElementById(id); if(e) e.style.color=c; }
+
+// ── Category chips ────────────────────────────────────────────
+function renderCatChips(containerId){
+  const el=document.getElementById(containerId); if(!el) return;
+  const cats=CATEGORIES[S.level], s=sf();
+  el.innerHTML=cats.map(c=>`
+    <button class="chip ${activeCat===c.id?`a${s}`:""}"
+      onclick="selectCat('${c.id}','${containerId}')">
+      ${c.icon} ${S.lang==="en"?c.label:c.labelBM}
+    </button>`).join("");
+}
+function selectCat(cat, fromId){
+  activeCat=cat;
+  renderCatChips("home-cats");
+  renderCatChips("words-cats");
+  if(fromId==="words-cats") renderWordList();
+}
+
+// ── Tabs ─────────────────────────────────────────────────────
+function goTab(tab){
+  curTab=tab;
+  const s=sf();
+  ["home","words","progress"].forEach(t=>{
+    document.getElementById("tab-"+t).style.display=(t===tab?"block":"none");
+  });
+  document.querySelectorAll(".nb").forEach(b=>b.className="nb");
+  const nbId={home:"nb-home",words:"nb-words",progress:"nb-prog"}[tab];
+  document.getElementById(nbId).classList.add("act-"+s);
+  if(tab==="words")    renderWordList();
+  if(tab==="progress") renderProgressTab();
+  updateStats();
+}
+
+// ── Word list ─────────────────────────────────────────────────
+function renderWordList(){
+  const words=catWords(), col=ac();
+  document.getElementById("word-list").innerHTML=words.map(w=>{
+    const pr=PROG[w.id];
+    const dots=[1,2,3].map(d=>`<div class="dd" style="background:${d<=w.difficulty?col:"var(--bdr)"}"></div>`).join("");
+    const baseH=w.baseWord?`<div class="wbase">🌱 ${w.baseWord} = ${w.baseWordEn}</div>`:"";
+    return `<div class="wrow">
+      <span class="wem">${w.emoji}</span>
+      <div style="min-width:0">
+        <div class="wbm">${w.bm}</div>
+        <div class="wen">${w.en}</div>${baseH}
+      </div>
+      <div class="wright">${dots}${pr?.mastered?'<span style="font-size:.9rem">⭐</span>':""}</div>
+    </div>`;
+  }).join("");
+}
+
+// ── Progress tab ──────────────────────────────────────────────
+function renderProgressTab(){
+  const col=ac(), cats=CATEGORIES[S.level].filter(c=>c.id!=="all");
+  document.getElementById("cat-prog").innerHTML=cats.map(cat=>{
+    const cw=WORDS.filter(w=>w.level===S.level&&w.category===cat.id);
+    const cm=cw.filter(w=>PROG[w.id]?.mastered).length;
+    const pct=cw.length?Math.round(cm/cw.length*100):0;
+    const lbl=S.lang==="en"?cat.label:cat.labelBM;
+    return `<div class="cprow">
+      <div class="cptop"><div class="cpn">${cat.icon} ${lbl}</div><div class="cpc">${cm}/${cw.length}</div></div>
+      <div class="cpbar"><div class="cpfill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join("");
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════════════
+// FLASHCARD MODE   (with 5-question recap after every 10 cards)
+// ══════════════════════════════════════════════════════════════
+function startFlashcard(){
+  const words=catWords(); if(!words.length) return;
+  const deck=shuffle(words);
+  const col=ac(), s=sf(), t=L();
+  let idx=0, got=0, nope=0;
+  let recapBatch=[];          // accumulates up to 10 cards before recap
+  const RECAP_AT=10;
+
+  const C=document.getElementById("scr-fc");
+  showGameScreen("scr-fc");
+
+  function renderCard(){
+    // ── Trigger recap after every RECAP_AT cards (if more remain) ──
+    if(recapBatch.length>=RECAP_AT && idx<deck.length){
+      runRecap([...recapBatch], ()=>{ recapBatch=[]; renderCard(); });
+      return;
     }
-  });
-  document.getElementById("tab-home").style.display = tab === "home" ? "block" : "none";
+    if(idx>=deck.length){ scoreScreen(); return; }
 
-  if (tab === "words") renderWordList();
-  if (tab === "progress") renderProgressTab();
-  updateStatsDisplay();
-}
+    const w=deck[idx];
+    recapBatch.push(w);
+    const pr=PROG[w.id];
+    const statusTxt=pr?.mastered?t.mastered:pr?.attempts>0?t.seenN(pr.attempts):t.newWord;
+    const baseHtml=w.baseWord
+      ?`<div class="fc-base">${t.base(w.baseWord,w.baseWordEn)}</div>`:"";
 
-// ══════════════════════════════════════════════
-// WORD LIST
-// ══════════════════════════════════════════════
-function renderWordList() {
-  const words = getWords(state.level, state.activeCategory);
-  const ac = accentColor(state.level);
-  document.getElementById("word-list").innerHTML = words.map(w => {
-    const pr = state.progress[w.id];
-    const diffDots = [1,2,3].map(d =>
-      `<div class="diff-dot" style="background:${d <= w.difficulty ? ac : "var(--border)"}"></div>`).join("");
-    return `<div class="word-row">
-      <span class="we">${w.emoji}</span>
-      <div><div class="wbm">${w.bm}</div><div class="wen">${w.en}</div></div>
-      <div class="word-right">${diffDots}${pr?.mastered ? '<span class="mastered-star">⭐</span>' : ""}</div>
-    </div>`;
-  }).join("");
-}
-
-// ══════════════════════════════════════════════
-// PROGRESS TAB
-// ══════════════════════════════════════════════
-function renderProgressTab() {
-  const ac = accentColor(state.level);
-  const mw = myWords();
-  const mas = masteredCount();
-  const seen = seenCount();
-  const totalAttempts = mw.reduce((a,w) => a + (state.progress[w.id]?.attempts||0), 0);
-  const totalCorrect = mw.reduce((a,w) => a + (state.progress[w.id]?.correct||0), 0);
-  const acc = totalAttempts > 0 ? Math.round((totalCorrect/totalAttempts)*100) : 0;
-
-  ["mastered","seen"].forEach(k => {
-    document.getElementById(`ps-${k}`).style.color = ac;
-  });
-  document.getElementById("ps-mastered").textContent = mas;
-  document.getElementById("ps-seen").textContent = seen;
-  document.getElementById("ps-new").textContent = mw.length - seen;
-  document.getElementById("ps-acc").textContent = acc + "%";
-  document.getElementById("ps-new").style.color = ac;
-  document.getElementById("ps-acc").style.color = ac;
-
-  const cats = CATEGORIES[state.level].filter(c => c.id !== "all");
-  document.getElementById("cat-prog-list").innerHTML = cats.map(cat => {
-    const cw = WORDS.filter(w => w.level === state.level && w.category === cat.id);
-    const cm = cw.filter(w => state.progress[w.id]?.mastered).length;
-    const pct = cw.length > 0 ? Math.round((cm/cw.length)*100) : 0;
-    return `<div class="cat-prog-row">
-      <div class="cpr-top"><div class="cpr-name">${cat.icon} ${cat.label}</div><div class="cpr-count">${cm}/${cw.length}</div></div>
-      <div class="cpr-bar"><div class="cpr-fill" style="width:${pct}%;background:${ac}"></div></div>
-    </div>`;
-  }).join("");
-}
-
-// ══════════════════════════════════════════════
-// FLASHCARD MODE
-// ══════════════════════════════════════════════
-function startMode(mode) {
-  const words = getWords(state.level, state.activeCategory);
-  if (words.length === 0) return;
-  if (mode === "flashcard") startFlashcard(words);
-  if (mode === "quiz") startQuiz(words);
-}
-
-function startFlashcard(words) {
-  const deck = shuffle(words);
-  let idx = 0, flipped = false, got = 0, nope = 0;
-  const suf = accentSuffix(state.level);
-  const ac = accentColor(state.level);
-  const container = document.getElementById("screen-flashcard");
-
-  // Hide tabs, show mode screen
-  document.getElementById("tab-home").style.display = "none";
-  document.getElementById("tab-words").style.display = "none";
-  document.getElementById("tab-progress").style.display = "none";
-  container.className = "screen active";
-
-  function render() {
-    if (idx >= deck.length) { renderScore(); return; }
-    const w = deck[idx];
-    const pr = state.progress[w.id];
-    flipped = false;
-    container.innerHTML = `
-      <div class="mode-screen">
-        <div class="mhdr">
-          <button class="back-btn" onclick="exitMode()">←</button>
-          <div><div class="mhdr-title">🃏 Flashcards</div>
-          <div class="mhdr-sub">${idx+1} of ${deck.length} · ${w.category}</div></div>
+    C.innerHTML=`<div class="ms">
+      <div class="mhdr">
+        <button class="bb" onclick="exitGame()">←</button>
+        <div>
+          <div class="mht">🃏 ${t.fc}</div>
+          <div class="mhs">${idx+1} / ${deck.length} &nbsp;·&nbsp; ${Math.floor(idx/RECAP_AT)+1}st batch</div>
         </div>
-        <div class="prog-bar"><div class="prog-fill fill-${suf}" style="width:${(idx/deck.length)*100}%"></div></div>
-        <div class="fc-wrap" id="fc-wrap" onclick="flipCard()">
-          <div class="fc" id="fc">
-            <div class="face face-front">
-              <div class="fc-emoji">${w.emoji}</div>
-              <div class="fc-word">${w.bm}</div>
-              <div class="fc-sub">${w.category}</div>
-              <div class="fc-hint">👆 Tap to reveal</div>
-            </div>
-            <div class="face face-back ${suf === "sec" ? "sec" : ""}">
-              <div class="fc-emoji">${w.emoji}</div>
-              <div class="fc-word">${w.en}</div>
-              <div class="fc-sub">${w.bm}</div>
-              <div class="fc-ex">"${w.exBM}"<br>"${w.exEN}"</div>
-            </div>
+      </div>
+      <div class="pbar"><div class="pfill f${s}" id="pf" style="width:${idx/deck.length*100}%"></div></div>
+
+      <div class="fcw" onclick="flipCard()">
+        <div class="fc" id="fc">
+          <div class="face ff">
+            <div class="fce">${w.emoji}</div>
+            <div class="fcw2">${w.bm}</div>
+            <div class="fcs">${w.category}</div>
+            <div class="fch">${t.tapReveal}</div>
+          </div>
+          <div class="face fb ${s==="s"?"sec":""}">
+            <div class="fce">${w.emoji}</div>
+            <div class="fcw2">${w.en}</div>
+            <div class="fcs" style="font-style:italic">${w.bm}</div>
+            ${baseHtml}
+            <div class="fcex">"${w.exBM}"<br><span style="opacity:.75">"${w.exEN}"</span></div>
           </div>
         </div>
-        <div id="fc-bottom">
-          <button class="fc-skip" onclick="nextCard(false)">Skip →</button>
-        </div>
-        <div style="text-align:center;margin-top:.75rem;font-size:.78rem;color:var(--muted)">
-          ${pr?.mastered ? "⭐ Already mastered" : pr?.attempts > 0 ? `Seen ${pr.attempts}× before` : "New word!"}
-        </div>
-      </div>`;
+      </div>
+
+      <div id="fc-bot">
+        <button class="fskip" onclick="fcNext(false)">${t.skip}</button>
+      </div>
+      <div style="text-align:center;margin-top:.75rem;font-size:.76rem;color:var(--mut)">${statusTxt}</div>
+    </div>`;
+
+    // expose functions for inline onclick
+    window._fcFlip=flipCard;
+    window._fcNext=fcNext;
   }
 
-  function flipCard() {
-    flipped = !flipped;
-    document.getElementById("fc").classList.toggle("flipped", flipped);
-    if (flipped) {
-      document.getElementById("fc-bottom").innerHTML = `
-        <div class="fc-actions">
-          <button class="fc-btn fc-nope" onclick="nextCard(false)">❌ Still learning</button>
-          <button class="fc-btn fc-got" onclick="nextCard(true)">✅ Got it!</button>
+  function flipCard(){
+    const fc=document.getElementById("fc"); if(!fc) return;
+    fc.classList.toggle("fl");
+    if(fc.classList.contains("fl")){
+      document.getElementById("fc-bot").innerHTML=`
+        <div class="fca">
+          <button class="fcb fc-n" onclick="_fcNext(false)">${t.stillLrn}</button>
+          <button class="fcb fc-y" onclick="_fcNext(true)">${t.gotIt}</button>
         </div>`;
     }
   }
+  window.flipCard=flipCard;
 
-  function nextCard(correct) {
-    updateProgressEntry(deck[idx].id, correct);
-    if (correct) { got++; showConfetti(); }
-    else nope++;
+  function fcNext(correct){
+    updProg(deck[idx].id,correct);
+    correct?(got++,confetti()):nope++;
     idx++;
-    render();
+    renderCard();
+  }
+  window.fcNext=fcNext;
+
+  function scoreScreen(){
+    const pct=Math.round(got/deck.length*100);
+    C.innerHTML=`<div class="scscrn">
+      <div class="sce">${pct>=80?"🎉":pct>=50?"👍":"💪"}</div>
+      <div class="sct">${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
+      <div class="scsu">${t.reviewed(deck.length)}</div>
+      <div class="scbig" style="color:${pct>=80?"var(--grn)":col}">${pct}%</div>
+      <div class="scd">${t.gotLbl} ${got} &nbsp;|&nbsp; ${t.missLbl} ${nope}</div>
+      <div class="scbtns">
+        <button class="btn btn-${s}" onclick="exitGame()">${t.backHome}</button>
+        <button class="btn btn-o" onclick="startFlashcard()">${t.playAgain}</button>
+      </div>
+    </div>`;
+    updateStats();
   }
 
-  function renderScore() {
-    const pct = Math.round((got/deck.length)*100);
-    container.innerHTML = `
-      <div class="score-screen">
-        <div class="sc-emoji">${pct>=80?"🎉":pct>=50?"👍":"💪"}</div>
-        <div class="sc-title">${pct>=80?"Hebat!":pct>=50?"Bagus!":"Cuba lagi!"}</div>
-        <div class="sc-sub">You reviewed ${deck.length} cards</div>
-        <div class="sc-big" style="color:${pct>=80?"var(--green)":ac}">${pct}%</div>
-        <div class="sc-detail">✅ Got it: ${got} &nbsp;|&nbsp; ❌ Missed: ${nope}</div>
-        <button class="btn btn-${suf}" onclick="exitMode()">Back to home</button>
-      </div>`;
-    updateStatsDisplay();
-  }
-
-  // Expose to onclick
-  window.flipCard = flipCard;
-  window.nextCard = nextCard;
-  render();
+  renderCard();
 }
 
-// ══════════════════════════════════════════════
-// QUIZ MODE
-// ══════════════════════════════════════════════
-function startQuiz(words) {
-  const deck = shuffle(words).slice(0, Math.min(10, words.length));
-  const suf = accentSuffix(state.level);
-  const ac = accentColor(state.level);
-  let idx = 0, score = 0, chosen = null;
-  const container = document.getElementById("screen-quiz");
+// ══════════════════════════════════════════════════════════════
+// RECAP QUIZ  (5 questions on the last 10 flashcards, no emoji)
+// ══════════════════════════════════════════════════════════════
+function runRecap(batch, onDone){
+  const C=document.getElementById("scr-fc");
+  const s=sf(), col=ac(), t=L();
+  // pick up to 5 random from the batch
+  const pool=shuffle(batch).slice(0,Math.min(5,batch.length));
+  let qi=0, correct=0;
+  // pre-generate distractors once
+  const allPool=WORDS.filter(w=>w.level===S.level);
+  const opts=pool.map(w=>shuffle([w,...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
 
-  document.getElementById("tab-home").style.display = "none";
-  document.getElementById("tab-words").style.display = "none";
-  document.getElementById("tab-progress").style.display = "none";
-  container.className = "screen active";
-
-  // Pre-generate options for all cards
-  const allOptions = deck.map(w => shuffle([w, ...shuffle(words.filter(x => x.id !== w.id)).slice(0, 3)]));
-
-  function render() {
-    if (idx >= deck.length) { renderScore(); return; }
-    const w = deck[idx];
-    const opts = allOptions[idx];
-    chosen = null;
-    container.innerHTML = `
-      <div class="mode-screen">
-        <div class="mhdr">
-          <button class="back-btn" onclick="exitMode()">←</button>
-          <div><div class="mhdr-title">❓ Quiz</div>
-          <div class="mhdr-sub">Question ${idx+1} of ${deck.length} · Score: ${score}</div></div>
+  function renderQ(){
+    if(qi>=pool.length){ renderResult(); return; }
+    const w=pool[qi], os=opts[qi];
+    C.innerHTML=`<div class="ms">
+      <div class="mhdr" style="margin-bottom:.75rem">
+        <div style="flex:1">
+          <div class="mht">⚡ ${t.recapBanner}</div>
+          <div class="mhs">${t.recapQ(qi+1)} / ${pool.length}</div>
         </div>
-        <div class="prog-bar"><div class="prog-fill fill-${suf}" style="width:${(idx/deck.length)*100}%"></div></div>
-        <div class="quiz-qcard">
-          <div class="qz-emoji">${w.emoji}</div>
-          <div class="qz-prompt">What does this mean in English?</div>
-          <div class="qz-word">${w.bm}</div>
-        </div>
-        <div class="quiz-opts">
-          ${opts.map(opt => `
-            <button class="qopt" id="opt-${opt.id}" onclick="chooseAnswer('${w.id}','${opt.id}',${JSON.stringify(opts).replace(/"/g,'&quot;')})">${opt.en}</button>
-          `).join("")}
-        </div>
-      </div>`;
+        <div style="font-size:1.3rem font-weight:800;color:var(--org)">${qi+1}/${pool.length}</div>
+      </div>
+      <div class="recap-banner">${t.recapBanner}</div>
+      <div class="rcard">
+        <div class="rprompt">${t.whatMeans}</div>
+        <div class="rword">${w.bm}</div>
+      </div>
+      <div class="ropts">
+        ${os.map(o=>`<button class="ropt" id="ro${o.id}" onclick="rcAns('${w.id}','${o.id}')">${o.en}</button>`).join("")}
+      </div>
+    </div>`;
   }
 
-  function chooseAnswer(correctId, chosenId, optsJson) {
-    if (chosen) return;
-    chosen = chosenId;
-    const correct = chosenId === correctId;
-    updateProgressEntry(correctId, correct);
-    if (correct) { score++; showConfetti(); }
+  window.rcAns=function(correctId,chosenId){
+    const ok=chosenId===correctId;
+    ok?(correct++,confetti()):null;
+    updProg(correctId,ok);
+    document.querySelectorAll(".ropt").forEach(b=>b.disabled=true);
+    document.getElementById("ro"+correctId).classList.add("rv");
+    if(!ok){
+      const el=document.getElementById("ro"+chosenId);
+      el.classList.add("no");
+      el.classList.add("anim-shake");
+    }
+    setTimeout(()=>{ qi++; renderQ(); },1050);
+  };
 
-    // highlight
-    document.querySelectorAll(".qopt").forEach(btn => btn.disabled = true);
-    document.getElementById(`opt-${correctId}`).classList.add("correct");
-    if (!correct) document.getElementById(`opt-${chosenId}`).classList.add("wrong");
-
-    setTimeout(() => {
-      idx++;
-      render();
-    }, 1100);
+  function renderResult(){
+    const pct=Math.round(correct/pool.length*100);
+    C.innerHTML=`<div class="ms">
+      <div class="rresult">
+        <div class="rre">${pct>=80?"🌟":pct>=50?"👍":"💪"}</div>
+        <div class="rrt">${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
+        <div class="rrs">${t.recapScore(correct,pool.length)}</div>
+        <button class="btn btn-${s}" onclick="_rcDone()">${t.recapCont}</button>
+      </div>
+    </div>`;
+    window._rcDone=onDone;
   }
 
-  function renderScore() {
-    const pct = Math.round((score/deck.length)*100);
-    container.innerHTML = `
-      <div class="score-screen">
-        <div class="sc-emoji">${pct>=80?"🏆":pct>=50?"🌟":"📚"}</div>
-        <div class="sc-title">${pct>=80?"Luar biasa!":pct>=50?"Bagus sekali!":"Teruskan belajar!"}</div>
-        <div class="sc-sub">Quiz complete! ${deck.length} questions</div>
-        <div class="sc-big" style="color:${pct>=80?"var(--green)":ac}">${score}/${deck.length}</div>
-        <div class="sc-detail">Score: ${pct}%</div>
-        <button class="btn btn-${suf}" onclick="exitMode()">Back to home</button>
-      </div>`;
-    updateStatsDisplay();
-  }
-
-  window.chooseAnswer = chooseAnswer;
-  render();
+  renderQ();
 }
 
-// ══════════════════════════════════════════════
-// EXIT MODE
-// ══════════════════════════════════════════════
-function exitMode() {
-  document.getElementById("screen-flashcard").className = "screen";
-  document.getElementById("screen-quiz").className = "screen";
-  switchTab("home");
+// ══════════════════════════════════════════════════════════════
+// QUIZ MODE  (hard mode hides emoji from question + options)
+// ══════════════════════════════════════════════════════════════
+function startQuiz(){
+  const words=catWords(); if(!words.length) return;
+  const deck=shuffle(words).slice(0,Math.min(10,words.length));
+  const s=sf(), col=ac(), t=L();
+  let qi=0, score=0;
+  const allPool=WORDS.filter(w=>w.level===S.level);
+  const opts=deck.map(w=>shuffle([w,...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+
+  const C=document.getElementById("scr-qz");
+  showGameScreen("scr-qz");
+
+  function renderQ(){
+    if(qi>=deck.length){ scoreScreen(); return; }
+    const w=deck[qi], os=opts[qi];
+
+    // Hard mode: question card shows NO emoji
+    const qHead=S.hard
+      ?`<div class="hard-tag">${t.hardTag}</div>`
+      :`<div class="qemoji">${w.emoji}</div>`;
+
+    C.innerHTML=`<div class="ms">
+      <div class="mhdr">
+        <button class="bb" onclick="exitGame()">←</button>
+        <div>
+          <div class="mht">❓ ${t.qz}</div>
+          <div class="mhs">${qi+1} / ${deck.length} &nbsp;·&nbsp; ${t.scoreLabel} ${score}</div>
+        </div>
+      </div>
+      <div class="pbar"><div class="pfill f${s}" style="width:${qi/deck.length*100}%"></div></div>
+      <div class="qcard anim-pop">
+        ${qHead}
+        <div class="qprompt">${t.whatMeans}</div>
+        <div class="qword">${w.bm}</div>
+      </div>
+      <div class="qopts">
+        ${os.map(o=>{
+          // Hard mode: option label has NO emoji
+          const lbl=S.hard ? o.en : `${o.emoji} &nbsp;${o.en}`;
+          return `<button class="qo" id="qo${o.id}" onclick="qAns('${w.id}','${o.id}')">${lbl}</button>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+
+  window.qAns=function(correctId,chosenId){
+    const ok=chosenId===correctId;
+    ok?(score++,confetti()):null;
+    updProg(correctId,ok);
+    document.querySelectorAll(".qo").forEach(b=>b.disabled=true);
+    document.getElementById("qo"+correctId).classList.add("rv");
+    if(!ok){
+      const el=document.getElementById("qo"+chosenId);
+      el.classList.add("no");
+      el.classList.add("anim-shake");
+    }
+    setTimeout(()=>{ qi++; renderQ(); },1100);
+  };
+
+  function scoreScreen(){
+    const pct=Math.round(score/deck.length*100);
+    C.innerHTML=`<div class="scscrn">
+      <div class="sce">${pct>=80?"🏆":pct>=50?"🌟":"📚"}</div>
+      <div class="sct">${pct>=80?t.amazing:pct>=50?t.wellDone:t.goOn}</div>
+      <div class="scsu">${t.qComplete(deck.length)}</div>
+      <div class="scbig" style="color:${pct>=80?"var(--grn)":col}">${score}/${deck.length}</div>
+      <div class="scd">${t.scoreLabel} ${pct}%</div>
+      <div class="scbtns">
+        <button class="btn btn-${s}" onclick="exitGame()">${t.backHome}</button>
+        <button class="btn btn-o" onclick="startQuiz()">${t.playAgain}</button>
+      </div>
+    </div>`;
+    updateStats();
+  }
+
+  renderQ();
 }
 
-// ══════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════
+// ── Show/hide game screen ─────────────────────────────────────
+function showGameScreen(id){
+  document.getElementById("tab-home").style.display="none";
+  document.getElementById("tab-words").style.display="none";
+  document.getElementById("tab-progress").style.display="none";
+  document.getElementById("scr-fc").className="screen";
+  document.getElementById("scr-qz").className="screen";
+  document.getElementById(id).className="screen active";
+}
+function exitGame(){
+  document.getElementById("scr-fc").className="screen";
+  document.getElementById("scr-qz").className="screen";
+  goTab("home");
+}
+
+// ══════════════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════════════
+function openSettings(){ document.getElementById("ov").style.display="flex"; syncSettingToggles(); }
+function closeSettings(){ document.getElementById("ov").style.display="none"; }
+function ovClick(e){ if(e.target===document.getElementById("ov")) closeSettings(); }
+
+function syncSettingToggles(){
+  // lang
+  document.getElementById("tb-en").className="tb"+(S.lang==="en"?" on-g":"");
+  document.getElementById("tb-bm").className="tb"+(S.lang==="bm"?" on-g":"");
+  // level
+  document.getElementById("tb-pri").className="tb"+(S.level==="primary"?" on-p":"");
+  document.getElementById("tb-sec").className="tb"+(S.level==="secondary"?" on-s":"");
+  // hard
+  document.getElementById("tb-easy").className="tb"+(!S.hard?" on-g":"");
+  document.getElementById("tb-hard").className="tb"+(S.hard?" on-r":"");
+}
+
+function toggleLang(){ setLang(S.lang==="en"?"bm":"en"); }
+function setLang(l){
+  S.lang=l; savePrefs();
+  refreshStrings();
+}
+function setLevel(lv){
+  S.level=lv; activeCat="all"; savePrefs();
+  closeSettings();
+  initMain();
+}
+function setHard(val){
+  S.hard=val; savePrefs();
+  syncSettingToggles();
+  document.getElementById("hard-badge").style.display=val?"block":"none";
+}
+function resetProg(){
+  if(!confirm(L().confirmReset)) return;
+  PROG={}; saveProg(); closeSettings();
+  updateStats();
+  if(curTab==="progress") renderProgressTab();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ONBOARDING
+// ══════════════════════════════════════════════════════════════
+document.getElementById("ob-name").addEventListener("input",checkOb);
+function obSelectLevel(lv){
+  S.level=lv; // temp
+  document.getElementById("lc-p").className="lv-card"+(lv==="primary"?" sel-p":"");
+  document.getElementById("lc-s").className="lv-card"+(lv==="secondary"?" sel-s":"");
+  checkOb();
+}
+function checkOb(){
+  const n=document.getElementById("ob-name").value.trim();
+  const btn=document.getElementById("ob-btn");
+  btn.disabled=!n||!S.level;
+  if(!btn.disabled) btn.className=`btn btn-${S.level==="secondary"?"s":"p"}`;
+}
+function obComplete(){
+  S.name=document.getElementById("ob-name").value.trim();
+  savePrefs();
+  document.getElementById("ob").style.display="none";
+  document.getElementById("main").className="screen active";
+  initMain();
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+function initMain(){
+  updateStats();
+  renderCatChips("home-cats");
+  renderCatChips("words-cats");
+  refreshStrings();
+  goTab("home");
+}
+
+// ── Boot ──────────────────────────────────────────────────────
 loadState();
-if (state.name && state.level) {
-  document.getElementById("screen-onboard").style.display = "none";
-  document.getElementById("screen-main").className = "screen active";
+if(S.name && S.level){
+  document.getElementById("ob").style.display="none";
+  document.getElementById("main").className="screen active";
   initMain();
 }
 </script>
