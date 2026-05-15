@@ -3,29 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#FF6B35">
+<meta name="description" content="Learn Bahasa Malaysia vocabulary the fun way">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BMvocab">
+<link rel="manifest" href="manifest.json">
 <title>BMvocab — Learn Bahasa Malaysia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-<!--
-  ╔══════════════════════════════════════════════════════╗
-  ║  WORD DATA  — loaded from external file              ║
-  ║  Place bm-words.js in the SAME folder as this file.  ║
-  ║  To add words: edit bm-words.js only, no app change. ║
-  ╚══════════════════════════════════════════════════════╝
--->
 <script src="bm-words.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+const firebaseConfig = {
+  apiKey:            "AIzaSyDSqq2TYi04j_uSFeTKw67Kyksdq7E1xDU",
+  authDomain:        "bmvocab.firebaseapp.com",
+  projectId:         "bmvocab",
+  storageBucket:     "bmvocab.firebasestorage.app",
+  messagingSenderId: "80809532749",
+  appId:             "1:80809532749:web:a1a7fe94b1b12916422b04",
+  measurementId:     "G-WVBH7B04V4"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const gp   = new GoogleAuthProvider();
+window._FB = { auth, db, gp, signInWithPopup, signOut, doc, setDoc, getDoc, updateDoc };
+
+onAuthStateChanged(auth, user => {
+  window._fbUser = user || null;
+  if (user) window._onFbSignIn(user);
+  else      window._onFbSignOut();
+});
+</script>
 <style>
-/* ─── Reset & Root ──────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --pri:#FF6B35; --pri-l:#FFF0EB;
-  --sec:#6C63FF; --sec-l:#F0EEFF;
-  --grn:#22C55E; --red:#EF4444; --ylw:#FBBF24; --org:#F97316;
-  --bg:#FAFAF8;  --sur:#FFFFFF;  --bdr:#E8E5DF;
-  --txt:#1A1A2E; --mut:#6B7280;
-  --rr:16px; --sh:0 2px 12px rgba(0,0,0,.08);
+  --pri:#FF6B35;--pri-l:#FFF0EB;
+  --sec:#6C63FF;--sec-l:#F0EEFF;
+  --grn:#22C55E;--red:#EF4444;--org:#F97316;--ylw:#FBBF24;
+  --bg:#FAFAF8;--sur:#FFFFFF;--bdr:#E8E5DF;
+  --txt:#1A1A2E;--mut:#6B7280;
+  --rr:16px;--sh:0 2px 12px rgba(0,0,0,.08);
 }
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
      -webkit-tap-highlight-color:transparent;user-select:none}
@@ -33,105 +58,131 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
 .screen{display:none;min-height:100vh;padding-bottom:80px}
 .screen.active{display:block}
 
-/* ─── Onboarding ─────────────────────────────────────── */
-#ob{display:flex;flex-direction:column;align-items:center;
-    justify-content:center;padding:2rem;text-align:center;min-height:100vh}
-.ob-logo{font-size:4.5rem;margin-bottom:1rem;animation:bounce 2s infinite}
-.ob-title{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;
-          line-height:1.2;margin-bottom:.5rem}
-.ob-title span{color:var(--pri)}
+/* Login */
+#login-screen{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:2rem;text-align:center;min-height:100vh}
+.l-logo{font-size:5rem;margin-bottom:1rem;animation:bounce 2s infinite}
+.l-title{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;
+  line-height:1.2;margin-bottom:.5rem}
+.l-title span{color:var(--pri)}
+.l-sub{color:var(--mut);font-size:.92rem;margin-bottom:2rem;line-height:1.65}
+.g-btn{display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;max-width:320px;padding:15px 24px;border-radius:12px;
+  border:2px solid var(--bdr);background:var(--sur);cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
+  color:var(--txt);transition:all .15s;margin:0 auto 12px}
+.g-btn:hover{border-color:#4285f4;box-shadow:var(--sh)}
+.g-btn:active{transform:scale(.97)}
+.g-logo{width:22px;height:22px;flex-shrink:0}
+.l-divider{display:flex;align-items:center;gap:10px;width:100%;max-width:320px;
+  margin:0 auto 12px;font-size:.8rem;color:var(--mut)}
+.l-divider::before,.l-divider::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.guest-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;max-width:320px;padding:13px 24px;border-radius:12px;
+  border:1.5px dashed var(--bdr);background:transparent;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;
+  color:var(--mut);transition:all .15s;margin:0 auto 1rem}
+.guest-btn:hover{border-color:var(--sec);color:var(--sec)}
+.guest-btn:active{transform:scale(.97)}
+.l-note{font-size:.78rem;color:var(--mut);line-height:1.6;max-width:280px;margin:0 auto}
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:12px;margin-top:1rem}
+.spinner{width:32px;height:32px;border:3px solid var(--bdr);
+  border-top-color:var(--pri);border-radius:50%;animation:spin .7s linear infinite}
+.guest-banner{background:var(--ylw);color:#7c4f00;padding:8px 16px;
+  font-size:.78rem;font-weight:700;text-align:center;position:sticky;top:0;z-index:60}
+
+/* Onboarding */
+#ob{display:none;flex-direction:column;align-items:center;
+  justify-content:center;padding:2rem;text-align:center;min-height:100vh}
+.ob-hi{font-family:'Baloo 2',cursive;font-size:1.9rem;font-weight:800;margin-bottom:.4rem}
 .ob-sub{color:var(--mut);font-size:.92rem;margin-bottom:2rem;line-height:1.65}
-.ob-inp{width:100%;padding:14px 18px;border-radius:12px;border:2px solid var(--bdr);
-        font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;
-        background:var(--sur);color:var(--txt);outline:none;
-        margin-bottom:1.5rem;transition:border-color .2s}
-.ob-inp:focus{border-color:var(--pri)}
-.lv-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;
-           width:100%;margin-bottom:1.5rem}
+.lv-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:1.5rem}
 .lv-card{padding:1.4rem 1rem;border-radius:var(--rr);border:2.5px solid var(--bdr);
-         background:var(--sur);cursor:pointer;transition:all .2s}
+  background:var(--sur);cursor:pointer;transition:all .2s}
 .lv-card:hover{transform:translateY(-2px)}
 .lv-card.sel-p{border-color:var(--pri);background:var(--pri-l)}
 .lv-card.sel-s{border-color:var(--sec);background:var(--sec-l)}
-.lc-ico{font-size:2.5rem;margin-bottom:.5rem}
-.lc-ttl{font-weight:800;font-size:.95rem}
-.lc-dsc{font-size:.78rem;color:var(--mut);margin-top:4px;line-height:1.4}
+.lci{font-size:2.5rem;margin-bottom:.5rem}
+.lct{font-weight:800;font-size:.95rem}
+.lcd{font-size:.78rem;color:var(--mut);margin-top:4px;line-height:1.4}
 
-/* ─── Buttons ────────────────────────────────────────── */
+/* Buttons */
 .btn{width:100%;padding:16px;border-radius:12px;border:none;
-     font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;
-     cursor:pointer;transition:all .15s}
+  font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;
+  cursor:pointer;transition:all .15s}
 .btn:active{transform:scale(.97)}
 .btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
 .btn-p{background:var(--pri);color:#fff}
 .btn-s{background:var(--sec);color:#fff}
 .btn-g{background:var(--grn);color:#fff}
 .btn-o{background:transparent;border:1.5px solid var(--bdr);color:var(--mut)}
-.btn-sm{padding:10px 18px;font-size:.85rem;width:auto;border-radius:10px}
+.btn-red{background:var(--red);color:#fff}
+.btn-org{background:var(--org);color:#fff}
 
-/* ─── Header ─────────────────────────────────────────── */
+/* Header */
 .hdr{position:sticky;top:0;z-index:50;background:var(--bg);
-     padding:.85rem 1.25rem .6rem;display:flex;align-items:center;
-     justify-content:space-between;border-bottom:1px solid var(--bdr)}
+  padding:.85rem 1.25rem .6rem;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid var(--bdr)}
 .brand{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800}
 .brand span{color:var(--pri)}
 .hdr-r{display:flex;gap:6px;align-items:center}
 .pill{display:flex;align-items:center;gap:4px;border-radius:999px;
-      padding:4px 10px;font-weight:800;font-size:.78rem;
-      cursor:pointer;transition:opacity .15s;white-space:nowrap}
+  padding:4px 10px;font-weight:800;font-size:.78rem;
+  cursor:pointer;transition:opacity .15s;white-space:nowrap}
 .pill:hover{opacity:.8}
 .p-flame{background:#FFF7ED;border:1.5px solid #FED7AA;color:#EA580C}
 .p-xp   {background:var(--sec-l);border:1.5px solid #C4B5FD;color:var(--sec)}
 .p-lang {background:var(--sur);border:1.5px solid var(--bdr);color:var(--txt)}
 .p-set  {background:var(--sur);border:1.5px solid var(--bdr);color:var(--mut)}
 
-/* ─── Bottom Nav ─────────────────────────────────────── */
+/* Bottom nav */
 .bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-      width:100%;max-width:480px;background:var(--sur);
-      border-top:1px solid var(--bdr);display:flex;z-index:50}
+  width:100%;max-width:480px;background:var(--sur);
+  border-top:1px solid var(--bdr);display:flex;z-index:50}
 .nb{flex:1;padding:11px 0 13px;display:flex;flex-direction:column;
-    align-items:center;gap:3px;border:none;background:none;cursor:pointer;
-    font-family:'Nunito',sans-serif;font-size:.67rem;font-weight:700;
-    color:var(--mut);transition:color .15s}
+  align-items:center;gap:3px;border:none;background:none;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.67rem;font-weight:700;
+  color:var(--mut);transition:color .15s}
 .nb.act-p{color:var(--pri)} .nb.act-s{color:var(--sec)}
 .ni{font-size:1.3rem;line-height:1}
 
-/* ─── Home ───────────────────────────────────────────── */
+/* Home */
 .pad{padding:1.25rem}
 .grt{font-size:1.45rem;font-weight:900;margin-bottom:.2rem}
 .grt-sub{color:var(--mut);font-size:.84rem;margin-bottom:1.2rem}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
 .sc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rr);
-    padding:14px 10px;text-align:center}
+  padding:14px 10px;text-align:center}
 .sn{font-size:1.9rem;font-weight:900;line-height:1}
 .sl{font-size:.66rem;color:var(--mut);font-weight:700;margin-top:3px}
 .stitle{font-weight:800;font-size:.94rem;margin-bottom:.7rem}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
 .mc{background:var(--sur);border:1.5px solid var(--bdr);border-radius:var(--rr);
-    padding:1.2rem 1rem;cursor:pointer;transition:all .18s;position:relative}
+  padding:1.2rem 1rem;cursor:pointer;transition:all .18s;position:relative}
 .mc:hover{transform:translateY(-2px);box-shadow:var(--sh)}
-.mc.lk{opacity:.5;cursor:default} .mc.lk:hover{transform:none;box-shadow:none}
+.mc.new-mode{border-color:var(--grn)}
 .mci{font-size:1.9rem;margin-bottom:.5rem}
 .mct{font-weight:800;font-size:.9rem}
 .mcd{font-size:.72rem;color:var(--mut);margin-top:3px}
-.mbadge{position:absolute;top:8px;right:8px;background:var(--red);color:#fff;
-        font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:999px}
+.mbadge{position:absolute;top:8px;right:8px;color:#fff;
+  font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:999px}
+.mb-hard{background:var(--red)} .mb-new{background:var(--grn)}
 
-/* ─── Category chips ─────────────────────────────────── */
+/* Category chips */
 .cscroll{padding:0 1.25rem .75rem;overflow-x:auto;display:flex;gap:8px;
-         scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .cscroll::-webkit-scrollbar{display:none}
 .chip{white-space:nowrap;padding:7px 13px;border-radius:999px;
-      border:1.5px solid var(--bdr);background:var(--sur);cursor:pointer;
-      font-family:'Nunito',sans-serif;font-size:.79rem;font-weight:700;
-      color:var(--txt);transition:all .15s;flex-shrink:0}
+  border:1.5px solid var(--bdr);background:var(--sur);cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.79rem;font-weight:700;
+  color:var(--txt);transition:all .15s;flex-shrink:0}
 .chip.ap{background:var(--pri);border-color:var(--pri);color:#fff}
 .chip.as{background:var(--sec);border-color:var(--sec);color:#fff}
 
-/* ─── Word list ──────────────────────────────────────── */
+/* Word list */
 .wlist{padding:.75rem 1.25rem;display:flex;flex-direction:column;gap:8px}
 .wrow{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;
-      padding:13px 15px;display:flex;align-items:center;gap:13px;transition:all .15s}
+  padding:13px 15px;display:flex;align-items:center;gap:13px;transition:all .15s}
 .wrow:hover{box-shadow:var(--sh);transform:translateX(2px)}
 .wem{font-size:1.75rem;flex-shrink:0}
 .wbm{font-weight:800;font-size:.94rem}
@@ -139,118 +190,163 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
 .wbase{font-size:.71rem;color:var(--sec);font-weight:700;margin-top:2px}
 .wright{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0}
 .dd{width:7px;height:7px;border-radius:50%}
+.srs-tag{font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:999px;
+  display:inline-block;margin-top:4px}
+.srs-new{background:#EDE9FE;color:#5b21b6}
+.srs-due{background:#FEF3C7;color:#92400e}
+.srs-ok {background:#D1FAE5;color:#065f46}
 
-/* ─── Settings sheet ─────────────────────────────────── */
+/* Settings sheet */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
-    display:flex;align-items:flex-end;justify-content:center}
+  display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--sur);border-radius:20px 20px 0 0;
-       padding:1.5rem 1.25rem 2rem;width:100%;max-width:480px;
-       animation:slideUp .25s ease}
+  padding:1.5rem 1.25rem 2.5rem;width:100%;max-width:480px;
+  animation:slideUp .25s ease;max-height:90vh;overflow-y:auto}
 .sh-handle{width:40px;height:4px;background:var(--bdr);border-radius:2px;
-           margin:0 auto 1.25rem}
+  margin:0 auto 1.25rem}
 .sh-title{font-weight:900;font-size:1.1rem;margin-bottom:1.25rem}
 .srow{display:flex;align-items:center;justify-content:space-between;
-      padding:13px 0;border-bottom:1px solid var(--bdr)}
+  padding:13px 0;border-bottom:1px solid var(--bdr)}
 .srow:last-of-type{border-bottom:none}
 .slbl{font-weight:700;font-size:.9rem}
 .ssub{font-size:.77rem;color:var(--mut);margin-top:2px}
-.trow{display:flex;gap:8px}
+.trow{display:flex;gap:8px;flex-wrap:wrap}
 .tb{padding:7px 15px;border-radius:999px;border:1.5px solid var(--bdr);
-    background:transparent;font-family:'Nunito',sans-serif;
-    font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
+  background:transparent;font-family:'Nunito',sans-serif;
+  font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
 .tb.on-p{background:var(--pri);border-color:var(--pri);color:#fff}
 .tb.on-s{background:var(--sec);border-color:var(--sec);color:#fff}
 .tb.on-g{background:var(--grn);border-color:var(--grn);color:#fff}
 .tb.on-r{background:var(--red);border-color:var(--red);color:#fff}
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:var(--bg);border-radius:12px;margin-bottom:1rem}
+.u-ph{width:44px;height:44px;border-radius:50%;background:var(--pri-l);
+  border:2px solid var(--pri);display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:1.1rem;color:var(--pri);flex-shrink:0}
+.u-name{font-weight:800;font-size:.95rem}
+.u-email{font-size:.78rem;color:var(--mut);margin-top:2px}
 
-/* ─── Mode screen shell ──────────────────────────────── */
+/* Mode shell */
 .ms{padding:1.25rem;animation:slideUp .3s ease forwards}
 .mhdr{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem}
 .bb{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;
-    width:38px;height:38px;display:flex;align-items:center;justify-content:center;
-    cursor:pointer;font-size:1.1rem;flex-shrink:0;font-family:inherit}
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1.1rem;flex-shrink:0;font-family:inherit}
 .mht{font-weight:800;font-size:1.05rem}
 .mhs{font-size:.74rem;color:var(--mut);font-weight:600}
-.pbar{height:6px;background:var(--bdr);border-radius:999px;
-      margin-bottom:1.25rem;overflow:hidden}
+.pbar{height:6px;background:var(--bdr);border-radius:999px;margin-bottom:1.25rem;overflow:hidden}
 .pfill{height:100%;border-radius:999px;transition:width .4s}
 .fp{background:var(--pri)} .fs{background:var(--sec)}
+.fo{background:var(--org)} .fg{background:var(--grn)}
 
-/* ─── Flashcard ──────────────────────────────────────── */
+/* Flashcard */
 .fcw{perspective:1000px;height:270px;margin-bottom:1.4rem;cursor:pointer}
 .fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;
-    transition:transform .45s cubic-bezier(.4,0,.2,1)}
+  transition:transform .45s cubic-bezier(.4,0,.2,1)}
 .fc.fl{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;border-radius:20px;display:flex;
-      flex-direction:column;align-items:center;justify-content:center;
-      padding:1.6rem;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:1.6rem;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .ff{background:var(--sur);border:2px solid var(--bdr)}
 .fb{background:var(--pri-l);border:2px solid var(--pri);transform:rotateY(180deg)}
 .fb.sec{background:var(--sec-l);border-color:var(--sec)}
 .fce{font-size:3.2rem;margin-bottom:.8rem}
 .fcw2{font-family:'Baloo 2',cursive;font-size:1.95rem;font-weight:800;
-      text-align:center;line-height:1.2}
+  text-align:center;line-height:1.2}
 .fcs{font-size:.8rem;color:var(--mut);margin-top:.45rem;font-weight:600}
 .fch{font-size:.76rem;color:var(--mut);margin-top:.8rem}
 .fc-base{font-size:.76rem;color:var(--sec);font-weight:700;margin-top:.5rem;
-         text-align:center;background:var(--sec-l);padding:3px 11px;
-         border-radius:999px;display:inline-block}
+  text-align:center;background:var(--sec-l);padding:3px 11px;
+  border-radius:999px;display:inline-block}
 .fcex{font-size:.76rem;color:var(--mut);text-align:center;margin-top:.55rem;
-      line-height:1.55;font-style:italic;padding:0 .4rem}
+  line-height:1.55;font-style:italic;padding:0 .4rem}
+.speak-btn{background:transparent;border:1.5px solid var(--bdr);border-radius:999px;
+  padding:5px 14px;font-size:.76rem;font-weight:700;cursor:pointer;
+  color:var(--mut);margin-top:.6rem;font-family:'Nunito',sans-serif}
+.speak-btn:hover{border-color:var(--sec);color:var(--sec)}
 .fca{display:grid;grid-template-columns:1fr 1fr;gap:10px;
-     margin-bottom:1rem;animation:pop .3s ease forwards}
+  margin-bottom:1rem;animation:pop .3s ease forwards}
 .fcb{padding:14px;border-radius:12px;border:2px solid;font-family:'Nunito',sans-serif;
-     font-size:.87rem;font-weight:800;cursor:pointer;transition:all .15s}
+  font-size:.87rem;font-weight:800;cursor:pointer;transition:all .15s}
 .fcb:active{transform:scale(.96)}
 .fc-n{border-color:var(--red);color:var(--red);background:#FEF2F2}
 .fc-y{border-color:var(--grn);color:var(--grn);background:#F0FDF4}
 .fskip{width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--bdr);
-       background:transparent;font-family:'Nunito',sans-serif;
-       font-size:.82rem;font-weight:700;color:var(--mut);cursor:pointer}
+  background:transparent;font-family:'Nunito',sans-serif;
+  font-size:.82rem;font-weight:700;color:var(--mut);cursor:pointer}
 
-/* ─── Recap quiz banner ──────────────────────────────── */
+/* Recap */
 .recap-banner{background:linear-gradient(135deg,var(--org),#f59e0b);color:#fff;
-              border-radius:12px;padding:10px 16px;margin-bottom:1rem;
-              display:flex;align-items:center;gap:8px;
-              font-weight:800;font-size:.87rem}
+  border-radius:12px;padding:10px 16px;margin-bottom:1rem;
+  display:flex;align-items:center;gap:8px;font-weight:800;font-size:.87rem}
 .rcard{background:var(--sur);border:2px solid var(--bdr);border-radius:16px;
-       padding:1.5rem;text-align:center;margin-bottom:1.1rem;
-       animation:pop .3s ease forwards}
+  padding:1.5rem;text-align:center;margin-bottom:1.1rem;animation:pop .3s ease forwards}
 .rprompt{font-size:.8rem;color:var(--mut);margin-bottom:.5rem;font-weight:600}
 .rword{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800}
 .ropts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.9rem}
 .ropt{padding:12px;border-radius:12px;border:2px solid var(--bdr);
-      background:var(--sur);font-family:'Nunito',sans-serif;
-      font-size:.87rem;font-weight:700;cursor:pointer;transition:all .15s}
+  background:var(--sur);font-family:'Nunito',sans-serif;
+  font-size:.87rem;font-weight:700;cursor:pointer;transition:all .15s}
 .ropt:disabled{cursor:default}
-.ropt.ok{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.ropt.ok,.ropt.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
 .ropt.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
-.ropt.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
-.rresult{text-align:center;padding:2rem 1.25rem;animation:pop .3s forwards}
-.rre{font-size:4rem;margin-bottom:.75rem}
-.rrt{font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;margin-bottom:.25rem}
-.rrs{color:var(--mut);font-size:.88rem;margin-bottom:1.2rem}
 
-/* ─── Quiz ───────────────────────────────────────────── */
+/* Quiz */
 .qcard{background:var(--sur);border:2px solid var(--bdr);border-radius:20px;
-       padding:1.75rem 1.5rem;text-align:center;margin-bottom:1.1rem;
-       animation:pop .3s ease forwards}
+  padding:1.75rem 1.5rem;text-align:center;margin-bottom:1.1rem;
+  animation:pop .3s ease forwards}
 .qprompt{font-size:.82rem;color:var(--mut);font-weight:600;margin-bottom:.65rem}
 .qemoji{font-size:2.5rem;margin-bottom:.35rem}
 .qword{font-family:'Baloo 2',cursive;font-size:2.1rem;font-weight:800}
 .hard-tag{display:inline-block;background:var(--red);color:#fff;
-          font-size:.7rem;font-weight:800;padding:2px 9px;
-          border-radius:999px;margin-top:.4rem}
+  font-size:.7rem;font-weight:800;padding:2px 9px;border-radius:999px;margin-top:.4rem}
 .qopts{display:flex;flex-direction:column;gap:9px}
 .qo{padding:15px 18px;border-radius:13px;border:2px solid var(--bdr);
-    background:var(--sur);font-family:'Nunito',sans-serif;
-    font-size:.94rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:left}
+  background:var(--sur);font-family:'Nunito',sans-serif;
+  font-size:.94rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:left}
 .qo:disabled{cursor:default}
-.qo.ok{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.qo.ok,.qo.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
 .qo.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
-.qo.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
 
-/* ─── Score screen ───────────────────────────────────── */
+/* Speed round */
+.timer-ring-wrap{display:flex;justify-content:center;margin-bottom:1rem}
+.timer-ring{width:80px;height:80px}
+.timer-ring circle{fill:none;stroke-width:7}
+.timer-bg{stroke:var(--bdr)}
+.timer-fg{stroke:var(--org);stroke-linecap:round;
+  transform:rotate(-90deg);transform-origin:40px 40px;transition:stroke-dashoffset .9s linear}
+.timer-wrap{position:relative;display:flex;align-items:center;
+  justify-content:center;width:80px;height:80px;margin:0 auto 1rem}
+.timer-txt{position:absolute;font-family:'Baloo 2',cursive;font-size:1.4rem;
+  font-weight:800;color:var(--org)}
+.speed-word{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;
+  text-align:center;margin-bottom:1.2rem}
+.speed-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.speed-opt{padding:16px;border-radius:14px;border:2px solid var(--bdr);
+  background:var(--sur);font-family:'Nunito',sans-serif;
+  font-size:.95rem;font-weight:700;cursor:pointer;transition:all .12s}
+.speed-opt.ok,.speed-opt.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.speed-opt.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
+.speed-opt:disabled{cursor:default}
+.streak-flash{font-size:.85rem;font-weight:800;color:var(--org);
+  text-align:center;min-height:1.4rem;margin-bottom:.5rem}
+
+/* Match & pair */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.2rem}
+.match-col-title{font-size:.75rem;font-weight:800;color:var(--mut);
+  text-align:center;margin-bottom:6px;letter-spacing:.04em}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-card{padding:12px 10px;border-radius:12px;border:2px solid var(--bdr);
+  background:var(--sur);font-family:'Nunito',sans-serif;font-size:.88rem;
+  font-weight:700;cursor:pointer;transition:all .15s;text-align:center;
+  min-height:52px;display:flex;align-items:center;justify-content:center;
+  line-height:1.3}
+.match-card.sel{border-color:var(--sec);background:var(--sec-l);color:var(--sec)}
+.match-card.matched{border-color:var(--grn);background:#F0FDF4;color:#166534;cursor:default}
+.match-card.wrong{border-color:var(--red);background:#FEF2F2;animation:shake .3s ease}
+.match-card:disabled{opacity:.4;cursor:default}
+
+/* Score screen */
 .scscrn{text-align:center;padding:3rem 1.5rem;animation:slideUp .3s ease forwards}
 .sce{font-size:5rem;margin-bottom:1rem}
 .sct{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;margin-bottom:.5rem}
@@ -258,86 +354,144 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
 .scbig{font-size:3.5rem;font-weight:900;margin-bottom:.5rem}
 .scd{color:var(--mut);font-size:.9rem;margin-bottom:2rem}
 .scbtns{display:flex;flex-direction:column;gap:10px}
+.score-row{display:flex;gap:10px;justify-content:center;margin-bottom:1.5rem}
+.score-chip{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;
+  padding:12px 20px;text-align:center}
 
-/* ─── Progress tab ───────────────────────────────────── */
+/* Progress tab */
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
 .psc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rr);padding:1rem}
 .psn{font-size:2rem;font-weight:900}
 .psl{font-size:.71rem;color:var(--mut);font-weight:600;margin-top:2px}
 .cprow{background:var(--sur);border:1px solid var(--bdr);border-radius:12px;
-       padding:11px 15px;margin-bottom:8px}
+  padding:11px 15px;margin-bottom:8px}
 .cptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
 .cpn{font-weight:700;font-size:.87rem}
 .cpc{font-size:.77rem;color:var(--mut)}
 .cpbar{height:5px;background:var(--bdr);border-radius:999px;overflow:hidden}
 .cpfill{height:100%;border-radius:999px}
 
-/* ─── Confetti ───────────────────────────────────────── */
-.cfw{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
-.cp{position:absolute;width:10px;height:10px;border-radius:2px;
-    animation:fall linear forwards}
+/* SRS section */
+.srs-box{background:var(--sur);border:1.5px solid var(--ylw);border-radius:var(--rr);padding:1rem}
+.srs-legend{display:flex;gap:12px;margin-bottom:.75rem;flex-wrap:wrap}
+.srs-leg-item{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--mut);font-weight:600}
+.srs-dot-sm{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-/* ─── Animations ─────────────────────────────────────── */
+/* Sync toast */
+.sync-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--txt);color:#fff;padding:7px 16px;border-radius:999px;
+  font-size:.78rem;font-weight:700;opacity:0;transition:opacity .3s;
+  pointer-events:none;z-index:100;white-space:nowrap}
+.sync-toast.show{opacity:1}
+
+/* Confetti */
+.cfw{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.cp{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall linear forwards}
+
+/* Animations */
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 @keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}
-                100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.anim-up{animation:slideUp .3s ease forwards}
-.anim-pop{animation:pop .3s ease forwards}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .anim-shake{animation:shake .35s ease}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- ══════════════ ONBOARDING ══════════════ -->
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="l-logo">🇲🇾</div>
+  <h1 class="l-title">Learn <span>Bahasa</span><br>Malaysia!</h1>
+  <p class="l-sub">Master BM vocabulary the fun way.<br>Sign in to save progress everywhere.</p>
+
+  <button class="g-btn" onclick="signInGoogle()">
+    <svg class="g-logo" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    Continue with Google
+  </button>
+
+  <div class="l-divider">or</div>
+
+  <button class="guest-btn" onclick="startGuest()">
+    👤 Try as Guest
+  </button>
+
+  <p class="l-note">Guest progress saves on this device only.<br>Sign in anytime to sync across devices.</p>
+
+  <div class="spinner-wrap" id="spin-wrap">
+    <div class="spinner"></div>
+    <div style="font-size:.85rem;color:var(--mut)">Signing in…</div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
 <div id="ob">
-  <div class="ob-logo">🇲🇾</div>
-  <h1 class="ob-title">Learn <span>Bahasa</span><br>Malaysia!</h1>
-  <p class="ob-sub">Master BM vocabulary the fun way.<br>Seronok dan mudah untuk semua!</p>
-  <input class="ob-inp" id="ob-name" placeholder="Your name / Nama kamu?" maxlength="30">
+  <div class="ob-hi" id="ob-hi">Welcome! 👋</div>
+  <p class="ob-sub">Pick your school level to get started.<br>You can change this anytime in Settings.</p>
   <div class="lv-cards">
-    <div class="lv-card" id="lc-p" onclick="obSelectLevel('primary')">
-      <div class="lc-ico">🏫</div>
-      <div class="lc-ttl">Primary / Rendah</div>
-      <div class="lc-dsc">Year 1–6 · Everyday words</div>
+    <div class="lv-card" id="lc-p" onclick="obPick('primary')">
+      <div class="lci">🏫</div>
+      <div class="lct">Primary / Rendah</div>
+      <div class="lcd">Year 1–6 · Everyday words</div>
     </div>
-    <div class="lv-card" id="lc-s" onclick="obSelectLevel('secondary')">
-      <div class="lc-ico">📘</div>
-      <div class="lc-ttl">Secondary / Menengah</div>
-      <div class="lc-dsc">Form 1–5 · Advanced vocab</div>
+    <div class="lv-card" id="lc-s" onclick="obPick('secondary')">
+      <div class="lci">📘</div>
+      <div class="lct">Secondary / Menengah</div>
+      <div class="lcd">Form 1–5 · Advanced vocab</div>
     </div>
   </div>
-  <button class="btn btn-p" id="ob-btn" disabled onclick="obComplete()">
+  <button class="btn btn-p" id="ob-btn" disabled onclick="obDone()">
     Jom belajar! &nbsp;Let's go! →
   </button>
 </div>
 
-<!-- ══════════════ MAIN APP ══════════════ -->
+<!-- MAIN APP -->
 <div id="main" class="screen">
+  <div id="guest-banner" class="guest-banner" style="display:none">
+    👤 Guest mode —
+    <a href="#" onclick="signInGoogle();return false"
+      style="color:inherit;font-weight:900;text-decoration:underline">Sign in with Google</a>
+    to save progress permanently
+  </div>
 
-  <!-- Header -->
   <div class="hdr">
     <div class="brand">BM<span>vocab</span></div>
     <div class="hdr-r">
       <div class="pill p-flame">🔥<span id="h-streak">0</span></div>
       <div class="pill p-xp">⭐<span id="h-xp">0</span></div>
-      <div class="pill p-lang" id="h-lang" onclick="toggleLang()" title="Switch language">🌐 EN</div>
-      <div class="pill p-set"  id="h-set"  onclick="openSettings()">⚙️</div>
+      <div class="pill p-lang" id="h-lang" onclick="toggleLang()">🌐 EN</div>
+      <div class="pill p-set"  id="h-lv"   onclick="openSettings()">🏫</div>
     </div>
   </div>
 
-  <!-- Home tab -->
-  <div id="tab-home" class="pad anim-up">
-    <div class="grt"  id="t-greet">Selamat datang! 👋</div>
+  <!-- Home -->
+  <div id="tab-home" class="pad" style="animation:slideUp .3s ease forwards">
+    <div class="grt"     id="t-greet">Selamat datang! 👋</div>
     <div class="grt-sub" id="t-greet2">What will you learn today?</div>
     <div class="stats">
       <div class="sc"><div class="sn" id="s-mas">0</div><div class="sl" id="sl-mas">MASTERED</div></div>
       <div class="sc"><div class="sn" id="s-seen">0</div><div class="sl" id="sl-seen">SEEN</div></div>
       <div class="sc"><div class="sn" id="s-new">0</div><div class="sl" id="sl-new">NEW</div></div>
     </div>
+
+    <!-- SRS daily queue (hidden until words are due) -->
+    <div id="srs-section" style="display:none;margin-bottom:1.5rem">
+      <div class="stitle" id="t-srs">📅 Due for review today</div>
+      <div class="srs-box">
+        <div id="srs-preview" style="font-size:.88rem;color:var(--mut);margin-bottom:.75rem"></div>
+        <button class="btn btn-org" style="padding:12px;font-size:.9rem" onclick="startSRS()">
+          Start review session →
+        </button>
+      </div>
+    </div>
+
     <div class="stitle" id="t-cat">Choose a category</div>
     <div class="cscroll" id="home-cats"></div>
     <div class="stitle" id="t-mode" style="margin-top:.75rem">Pick a game mode</div>
@@ -351,17 +505,19 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
         <div class="mci">❓</div>
         <div class="mct" id="t-qz">Quiz me!</div>
         <div class="mcd" id="t-qz2">4 choices — pick the right one</div>
-        <div class="mbadge" id="hard-badge" style="display:none">HARD 🔥</div>
+        <div class="mbadge mb-hard" id="hard-badge" style="display:none">HARD 🔥</div>
       </div>
-      <div class="mc lk">
+      <div class="mc new-mode" onclick="startSpeedRound()">
         <div class="mci">⏱️</div>
         <div class="mct" id="t-sp">Speed round</div>
-        <div class="mcd" id="t-sp2">Coming in Phase 3</div>
+        <div class="mcd" id="t-sp2">60 sec · score multiplier</div>
+        <div class="mbadge mb-new">NEW</div>
       </div>
-      <div class="mc lk">
+      <div class="mc new-mode" onclick="startMatchPair()">
         <div class="mci">🔗</div>
         <div class="mct" id="t-mp">Match & pair</div>
-        <div class="mcd" id="t-mp2">Coming in Phase 3</div>
+        <div class="mcd" id="t-mp2">Tap BM then English pair</div>
+        <div class="mbadge mb-new">NEW</div>
       </div>
     </div>
   </div>
@@ -370,7 +526,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
   <div id="tab-words" class="screen">
     <div style="height:12px"></div>
     <div class="cscroll" id="words-cats"></div>
-    <div class="wlist"  id="word-list"></div>
+    <div class="wlist"   id="word-list"></div>
   </div>
 
   <!-- Progress tab -->
@@ -383,6 +539,11 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
       <div class="psc"><div class="psn" id="p-new">0</div><div class="psl" id="pl-new">Still to learn</div></div>
       <div class="psc"><div class="psn" id="p-acc">0%</div><div class="psl" id="pl-acc">Accuracy</div></div>
     </div>
+    <div class="srs-legend">
+      <div class="srs-leg-item"><div class="srs-dot-sm" style="background:#8b5cf6"></div><span id="pl-srs-new">New</span></div>
+      <div class="srs-leg-item"><div class="srs-dot-sm" style="background:var(--ylw)"></div><span id="pl-srs-due">Due today</span></div>
+      <div class="srs-leg-item"><div class="srs-dot-sm" style="background:var(--grn)"></div><span id="pl-srs-ok">On schedule</span></div>
+    </div>
     <div class="stitle" id="t-prog3">Progress by category</div>
     <div id="cat-prog"></div>
   </div>
@@ -390,477 +551,779 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
   <!-- Game screens -->
   <div id="scr-fc" class="screen"></div>
   <div id="scr-qz" class="screen"></div>
+  <div id="scr-sp" class="screen"></div>
+  <div id="scr-mp" class="screen"></div>
 
-  <!-- Bottom nav -->
   <nav class="bnav">
-    <button class="nb" id="nb-home"  onclick="goTab('home')"><span class="ni">🏠</span><span class="nl" data-en="Home"     data-bm="Utama">Home</span></button>
-    <button class="nb" id="nb-words" onclick="goTab('words')"><span class="ni">📖</span><span class="nl" data-en="Words"    data-bm="Perkataan">Words</span></button>
-    <button class="nb" id="nb-prog"  onclick="goTab('progress')"><span class="ni">📊</span><span class="nl" data-en="Progress" data-bm="Kemajuan">Progress</span></button>
+    <button class="nb" id="nb-home"  onclick="goTab('home')">
+      <span class="ni">🏠</span><span class="nl" data-en="Home" data-bm="Utama">Home</span>
+    </button>
+    <button class="nb" id="nb-words" onclick="goTab('words')">
+      <span class="ni">📖</span><span class="nl" data-en="Words" data-bm="Perkataan">Words</span>
+    </button>
+    <button class="nb" id="nb-prog"  onclick="goTab('progress')">
+      <span class="ni">📊</span><span class="nl" data-en="Progress" data-bm="Kemajuan">Progress</span>
+    </button>
   </nav>
 </div>
 
-<!-- ══════════════ SETTINGS SHEET ══════════════ -->
+<!-- SETTINGS SHEET -->
 <div id="ov" class="ov" style="display:none" onclick="ovClick(event)">
   <div class="sheet">
     <div class="sh-handle"></div>
     <div class="sh-title" id="t-set">Settings ⚙️</div>
 
-    <!-- UI Language -->
-    <div class="srow">
+    <div class="user-row" id="user-row">
+      <div class="u-ph" id="u-avatar">?</div>
       <div>
-        <div class="slbl" id="t-slang">UI Language</div>
-        <div class="ssub" id="t-slang2">Switch between English and Bahasa Malaysia</div>
+        <div class="u-name"  id="u-name">—</div>
+        <div class="u-email" id="u-email">—</div>
       </div>
+    </div>
+
+    <div class="srow">
+      <div><div class="slbl" id="t-slang">UI Language</div>
+      <div class="ssub" id="t-slang2">English or Bahasa Malaysia</div></div>
       <div class="trow">
         <button class="tb on-g" id="tb-en" onclick="setLang('en')">EN</button>
         <button class="tb"      id="tb-bm" onclick="setLang('bm')">BM</button>
       </div>
     </div>
 
-    <!-- School level -->
     <div class="srow">
-      <div>
-        <div class="slbl" id="t-slv">School Level</div>
-        <div class="ssub" id="t-slv2">Switch between Primary and Secondary</div>
-      </div>
+      <div><div class="slbl" id="t-slv">School Level</div>
+      <div class="ssub" id="t-slv2">Primary or Secondary</div></div>
       <div class="trow">
         <button class="tb on-p" id="tb-pri" onclick="setLevel('primary')">Primary</button>
         <button class="tb"      id="tb-sec" onclick="setLevel('secondary')">Secondary</button>
       </div>
     </div>
 
-    <!-- Hard mode -->
     <div class="srow">
-      <div>
-        <div class="slbl" id="t-shard">Hard Mode Quiz</div>
-        <div class="ssub" id="t-shard2">Quiz without emoji hints — text only</div>
-      </div>
+      <div><div class="slbl" id="t-shard">Hard Mode Quiz</div>
+      <div class="ssub" id="t-shard2">No emoji hints — text only</div></div>
       <div class="trow">
         <button class="tb on-g" id="tb-easy" onclick="setHard(false)">Normal</button>
         <button class="tb"      id="tb-hard" onclick="setHard(true)">Hard 🔥</button>
       </div>
     </div>
 
-    <!-- Reset -->
-    <div style="margin-top:1.25rem">
-      <button class="btn btn-o btn-sm" id="t-reset" onclick="resetProg()">
-        🗑️ Reset all progress
-      </button>
+    <div class="srow">
+      <div><div class="slbl" id="t-svoc">Pronunciation</div>
+      <div class="ssub" id="t-svoc2">🔊 Speaker button on flashcard answers</div></div>
+      <div class="trow">
+        <button class="tb on-g" id="tb-voc-on"  onclick="setVoice(true)">On 🔊</button>
+        <button class="tb"      id="tb-voc-off" onclick="setVoice(false)">Off</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:1.25rem">
+      <button class="btn btn-o" id="t-reset" onclick="resetProg()"
+        style="padding:12px;font-size:.88rem">🗑️ Reset all progress</button>
+      <button class="btn btn-red" id="signout-btn" onclick="doSignOut()"
+        style="padding:12px;font-size:.88rem">Sign out</button>
     </div>
   </div>
 </div>
 
-<!-- Confetti layer -->
+<div class="sync-toast" id="sync-toast">☁️ Saved</div>
 <div class="cfw" id="cfw"></div>
-
 </div><!-- #app -->
 
 <script>
-// ╔══════════════════════════════════════════════════════════╗
-// ║  PHASE 2 FIREBASE HOOKS  (all marked TODO)               ║
-// ║  Replace localStorage calls with Firestore equivalents   ║
-// ╚══════════════════════════════════════════════════════════╝
-
-// ── i18n strings ────────────────────────────────────────────
+/* ═══════════════════════════════════════════
+   i18n strings
+═══════════════════════════════════════════ */
 const I18N = {
 en:{
-  greet:      n=>`Welcome back, ${n}! 👋`,
-  greet2:     "What will you learn today?",
-  cat:        "Choose a category",
-  mode:       "Pick a game mode",
+  greet:n=>`Welcome back, ${n}! 👋`,
+  greet2:"What will you learn today?",
+  cat:"Choose a category", mode:"Pick a game mode",
   mas:"MASTERED", seen:"SEEN", nw:"NEW",
-  fc:"Flashcards", fc2:"Flip & learn BM ↔ English",
-  qz:"Quiz me!",   qz2:"4 choices — pick the right one",
-  sp:"Speed round",sp2:"Coming in Phase 3",
-  mp:"Match & pair",mp2:"Coming in Phase 3",
+  fc:"Flashcards",   fc2:"Flip & learn BM ↔ English",
+  qz:"Quiz me!",     qz2:"4 choices — pick the right one",
+  sp:"Speed round",  sp2:"60 sec · score multiplier",
+  mp:"Match & pair", mp2:"Tap BM then English pair",
   prog:"My Progress 📊", prog2:"Keep it up! Every word counts.",
   prog3:"Progress by category",
   plmas:"Words mastered", plseen:"Words seen",
   plnew:"Still to learn", placc:"Accuracy",
+  plsrsnew:"New", plsrsdue:"Due today", plsrsok:"On schedule",
   set:"Settings ⚙️",
-  slang:"UI Language",    slang2:"Switch between English and Bahasa Malaysia",
-  slv:"School Level",     slv2:"Switch between Primary and Secondary",
-  shard:"Hard Mode Quiz", shard2:"Quiz without emoji hints — text only",
+  slang:"UI Language",    slang2:"English or Bahasa Malaysia",
+  slv:"School Level",     slv2:"Primary or Secondary",
+  shard:"Hard Mode Quiz", shard2:"No emoji hints — text only",
+  svoc:"Pronunciation",   svoc2:"🔊 Speaker button on flashcard answers",
   reset:"🗑️ Reset all progress",
-  navHome:"Home", navWords:"Words", navProg:"Progress",
   tapReveal:"👆 Tap to reveal English",
-  base: (bw,be)=>`🌱 Base word: "${bw}" = ${be}`,
-  newWord:"✨ New word!",
-  seenN:  n=>`Seen ${n}× before`,
-  mastered:"⭐ Already mastered",
-  stillLrn:"❌ Still learning",
-  gotIt:   "✅ Got it!",
-  skip:    "Skip this card →",
+  base:(b,e)=>`🌱 Base: "${b}" = ${e}`,
+  newWord:"✨ New!", seenN:n=>`Seen ${n}×`, mastered:"⭐ Mastered",
+  stillLrn:"❌ Still learning", gotIt:"✅ Got it!", skip:"Skip →",
   recapBanner:"⚡ Quick Recap — last 10 words!",
-  recapQ:  n=>`Recap question ${n}`,
-  recapScore:(g,t)=>`You got ${g} / ${t} correct!`,
-  recapCont:"Continue flashcards →",
-  hardTag: "🔥 HARD MODE — no emoji hints!",
-  whatMeans:"What does this mean in English?",
-  backHome:"← Back to home",
-  playAgain:"Play again",
-  reviewed:n=>`You reviewed ${n} cards`,
-  qComplete:n=>`Quiz complete · ${n} questions`,
-  scoreLabel:"Score:",
-  gotLbl:"✅ Got:", missLbl:"❌ Missed:",
-  confirmReset:"Reset ALL progress? This cannot be undone.",
+  recapScore:(g,t)=>`${g} / ${t} correct!`, recapCont:"Continue flashcards →",
+  hardTag:"🔥 HARD — no emoji!", whatMeans:"What does this mean in English?",
+  backHome:"← Back to home", playAgain:"Play again",
+  reviewed:n=>`Reviewed ${n} cards`, qComplete:n=>`${n} questions done`,
+  scoreLabel:"Score:", gotLbl:"✅", missLbl:"❌",
+  confirmReset:"Reset ALL progress? Cannot be undone.",
   exc:"Hebat!", good:"Good job!", try:"Keep trying!",
   amazing:"Luar biasa!", wellDone:"Well done!", goOn:"Keep going!",
+  srsDue:n=>`${n} word${n!==1?"s":""} due for review`,
+  srsTitle:"📅 SRS Review",
+  matchTitle:"🔗 Match & pair", matchInst:"Tap a BM word then its English pair",
+  matchLeft:"pairs left",
+  speedTitle:"⏱️ Speed round",
+  spScore:"Score", spStreak:"Streak",
+  timeUp:"Time's up!", wordsAttempted:n=>`${n} words attempted`,
+  ptsScored:"points scored", perfect:"Perfect!", wellDone2:"Well done!", keepGoing:"Keep going!",
+  matched:n=>`Matched all ${n} pairs`,
 },
 bm:{
-  greet:      n=>`Selamat datang, ${n}! 👋`,
-  greet2:     "Apa yang akan kamu pelajari hari ini?",
-  cat:        "Pilih kategori",
-  mode:       "Pilih mod permainan",
+  greet:n=>`Selamat datang, ${n}! 👋`,
+  greet2:"Apa yang akan kamu pelajari hari ini?",
+  cat:"Pilih kategori", mode:"Pilih mod permainan",
   mas:"DIKUASAI", seen:"DILIHAT", nw:"BAHARU",
   fc:"Kad Imbas",  fc2:"Balik & belajar BM ↔ Inggeris",
   qz:"Uji Saya!",  qz2:"4 pilihan — pilih yang betul",
-  sp:"Perlumbaan", sp2:"Akan datang Fasa 3",
-  mp:"Padankan",   mp2:"Akan datang Fasa 3",
+  sp:"Perlumbaan", sp2:"60 saat · pengganda markah",
+  mp:"Padankan",   mp2:"Ketik BM kemudian padanan Inggeris",
   prog:"Kemajuan Saya 📊", prog2:"Teruskan! Setiap perkataan penting.",
   prog3:"Kemajuan mengikut kategori",
   plmas:"Perkataan dikuasai", plseen:"Perkataan dilihat",
   plnew:"Masih perlu belajar", placc:"Ketepatan",
+  plsrsnew:"Baharu", plsrsdue:"Perlu ulang kaji hari ini", plsrsok:"Dalam jadual",
   set:"Tetapan ⚙️",
-  slang:"Bahasa Antara Muka",   slang2:"Tukar antara Bahasa Inggeris dan Bahasa Malaysia",
-  slv:"Peringkat Sekolah",       slv2:"Tukar antara Rendah dan Menengah",
-  shard:"Mod Susah Kuiz",        shard2:"Kuiz tanpa emoji — teks sahaja",
+  slang:"Bahasa Antara Muka",   slang2:"Inggeris atau Bahasa Malaysia",
+  slv:"Peringkat Sekolah",       slv2:"Rendah atau Menengah",
+  shard:"Mod Susah Kuiz",        shard2:"Tiada emoji — teks sahaja",
+  svoc:"Sebutan",                svoc2:"🔊 Butang pembesar suara pada jawapan kad",
   reset:"🗑️ Padam semua kemajuan",
-  navHome:"Utama", navWords:"Perkataan", navProg:"Kemajuan",
   tapReveal:"👆 Ketik untuk tunjuk",
-  base: (bw,be)=>`🌱 Kata akar: "${bw}" = ${be}`,
-  newWord:"✨ Perkataan baharu!",
-  seenN:  n=>`Dilihat ${n}× sebelum ini`,
-  mastered:"⭐ Sudah dikuasai",
-  stillLrn:"❌ Masih belajar",
-  gotIt:   "✅ Tahu!",
-  skip:    "Langkau kad ini →",
+  base:(b,e)=>`🌱 Kata akar: "${b}" = ${e}`,
+  newWord:"✨ Baharu!", seenN:n=>`Dilihat ${n}×`, mastered:"⭐ Dikuasai",
+  stillLrn:"❌ Masih belajar", gotIt:"✅ Tahu!", skip:"Langkau →",
   recapBanner:"⚡ Ulangkaji Pantas — 10 perkataan tadi!",
-  recapQ:  n=>`Soalan ulangkaji ${n}`,
-  recapScore:(g,t)=>`Kamu dapat ${g} / ${t} betul!`,
-  recapCont:"Teruskan kad imbas →",
-  hardTag: "🔥 MOD SUSAH — tiada emoji!",
-  whatMeans:"Apakah maksudnya dalam Bahasa Inggeris?",
-  backHome:"← Kembali ke utama",
-  playAgain:"Main semula",
-  reviewed:n=>`Kamu ulangkaji ${n} kad`,
-  qComplete:n=>`Kuiz selesai · ${n} soalan`,
-  scoreLabel:"Markah:",
-  gotLbl:"✅ Betul:", missLbl:"❌ Salah:",
+  recapScore:(g,t)=>`${g} / ${t} betul!`, recapCont:"Teruskan kad imbas →",
+  hardTag:"🔥 SUSAH — tiada emoji!", whatMeans:"Apakah maksudnya dalam Bahasa Inggeris?",
+  backHome:"← Kembali ke utama", playAgain:"Main semula",
+  reviewed:n=>`Ulangkaji ${n} kad`, qComplete:n=>`${n} soalan selesai`,
+  scoreLabel:"Markah:", gotLbl:"✅", missLbl:"❌",
   confirmReset:"Padam SEMUA kemajuan? Tidak boleh dibatalkan.",
   exc:"Hebat!", good:"Bagus!", try:"Cuba lagi!",
   amazing:"Luar biasa!", wellDone:"Bagus sekali!", goOn:"Teruskan belajar!",
+  srsDue:n=>`${n} perkataan perlu ulang kaji`,
+  srsTitle:"📅 Ulang Kaji SRS",
+  matchTitle:"🔗 Padankan", matchInst:"Ketik perkataan BM kemudian padanan Inggeris",
+  matchLeft:"pasangan lagi",
+  speedTitle:"⏱️ Perlumbaan Laju",
+  spScore:"Markah", spStreak:"Berturut",
+  timeUp:"Masa tamat!", wordsAttempted:n=>`${n} perkataan dicuba`,
+  ptsScored:"mata markah", perfect:"Sempurna!", wellDone2:"Bagus sekali!", keepGoing:"Teruskan!",
+  matched:n=>`Padanan ${n} pasangan selesai`,
 },
 };
 
-// ── State (TODO Phase 2: sync to Firestore) ──────────────────
-const DEF = {name:null,level:"primary",lang:"en",hard:false};
-let S = {...DEF};
-let PROG = {};   // { wordId: {attempts, correct, mastered} }
+/* ═══════════════════════════════════════════
+   State
+═══════════════════════════════════════════ */
+let S    = {name:null,level:"primary",lang:"en",hard:false,voice:true,streak:0,isGuest:false};
+let PROG = {}; // {wordId:{attempts,correct,mastered,srsInterval,nextReview}}
 let activeCat = "all";
-let curTab = "home";
+let curTab    = "home";
+let syncTimer = null;
 
-function loadState(){
-  try{
-    const p=JSON.parse(localStorage.getItem("bmv3_prefs")||"null"); // TODO: Firestore users/{uid}
-    const r=JSON.parse(localStorage.getItem("bmv3_prog") ||"null"); // TODO: Firestore progress/{uid}
-    if(p){S={...DEF,...p};}
-    if(r){PROG=r;}
-  }catch(e){}
+/* ═══════════════════════════════════════════
+   Firestore helpers
+═══════════════════════════════════════════ */
+const FB  = () => window._FB;
+const uid = () => window._fbUser?.uid;
+
+async function fsGet(col, id) {
+  const {db,doc,getDoc} = FB();
+  const snap = await getDoc(doc(db,col,id));
+  return snap.exists() ? snap.data() : null;
 }
-function savePrefs(){ localStorage.setItem("bmv3_prefs",JSON.stringify(S)); }
-function saveProg() { localStorage.setItem("bmv3_prog", JSON.stringify(PROG));}
+async function fsSet(col, id, data, merge=false) {
+  const {db,doc,setDoc} = FB();
+  await setDoc(doc(db,col,id), data, merge ? {merge:true} : undefined);
+}
+async function fsUpd(col, id, data) {
+  const {db,doc,updateDoc} = FB();
+  try { await updateDoc(doc(db,col,id), data); }
+  catch(e) { await fsSet(col, id, data, true); }
+}
 
-// ── Helpers ──────────────────────────────────────────────────
-const L = ()=> I18N[S.lang];
-const ac = ()=> S.level==="primary" ? "var(--pri)" : "var(--sec)";
-const sf = ()=> S.level==="primary" ? "p" : "s";
-const myW = ()=> WORDS.filter(w=>w.level===S.level);
-const masC = ()=> myW().filter(w=>PROG[w.id]?.mastered).length;
-const seenC= ()=> myW().filter(w=>PROG[w.id]?.attempts>0).length;
-function shuffle(a){
-  const r=[...a];
-  for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}
+/* ═══════════════════════════════════════════
+   Firebase auth callbacks
+═══════════════════════════════════════════ */
+window._onFbSignIn = async function(user) {
+  hideSpinner();
+  S.isGuest = false;
+  const userData = await fsGet("users", user.uid);
+  if (userData) {
+    S.name   = userData.name  || user.displayName || "Student";
+    S.level  = userData.level || "primary";
+    S.lang   = userData.lang  || "en";
+    S.hard   = !!userData.hard;
+    S.voice  = userData.voice !== false;
+    S.streak = userData.streak || 0;
+    const now       = Date.now();
+    const daysSince = Math.floor((now - (userData.lastSeen||0)) / 86400000);
+    if      (daysSince === 1) S.streak += 1;
+    else if (daysSince  >  1) S.streak  = 1;
+    fsUpd("users", user.uid, {streak:S.streak, lastSeen:now});
+    const progData = await fsGet("progress", user.uid);
+    PROG = progData || {};
+    showMain();
+  } else {
+    S.name = user.displayName || "Student";
+    el("ob-hi").textContent = `Hi, ${S.name}! 👋`;
+    el("login-screen").style.display = "none";
+    el("ob").style.display = "flex";
+  }
+};
+
+window._onFbSignOut = function() {
+  if (S.isGuest) return;
+  S    = {name:null,level:"primary",lang:"en",hard:false,voice:true,streak:0,isGuest:false};
+  PROG = {};
+  el("main").className   = "screen";
+  el("ob").style.display = "none";
+  el("login-screen").style.display = "flex";
+  hideSpinner();
+};
+
+/* ═══════════════════════════════════════════
+   Guest mode
+═══════════════════════════════════════════ */
+function startGuest() {
+  try {
+    const p = JSON.parse(localStorage.getItem("bmv3_guest_prefs") || "null");
+    const r = JSON.parse(localStorage.getItem("bmv3_guest_prog")  || "null");
+    if (p) { S = {...S, ...p, isGuest:true}; }
+    if (r) { PROG = r; }
+  } catch(e) {}
+
+  if (!S.name || !S.level) {
+    S.isGuest = true;
+    S.name    = "Guest";
+    el("ob-hi").textContent = "Welcome, Guest! 👋";
+    el("login-screen").style.display = "none";
+    el("ob").style.display = "flex";
+  } else {
+    S.isGuest = true;
+    showMain();
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Auth actions
+═══════════════════════════════════════════ */
+function signInGoogle() {
+  showSpinner();
+  const {auth,gp,signInWithPopup} = FB();
+  signInWithPopup(auth, gp).catch(err => {
+    hideSpinner();
+    alert("Sign-in failed: " + err.message);
+  });
+}
+function doSignOut() {
+  closeSettings();
+  if (S.isGuest) {
+    S    = {name:null,level:"primary",lang:"en",hard:false,voice:true,streak:0,isGuest:false};
+    PROG = {};
+    el("main").className   = "screen";
+    el("ob").style.display = "none";
+    el("login-screen").style.display = "flex";
+    return;
+  }
+  const {auth,signOut} = FB();
+  signOut(auth);
+}
+function showSpinner() {
+  el("spin-wrap").style.display = "flex";
+  document.querySelector(".g-btn").style.display   = "none";
+  document.querySelector(".guest-btn").style.display = "none";
+}
+function hideSpinner() {
+  el("spin-wrap").style.display = "none";
+  document.querySelector(".g-btn").style.display   = "flex";
+  document.querySelector(".guest-btn").style.display = "flex";
+}
+function showMain() {
+  el("login-screen").style.display = "none";
+  el("ob").style.display           = "none";
+  el("main").className             = "screen active";
+  el("guest-banner").style.display = S.isGuest ? "block" : "none";
+  el("signout-btn").textContent    = S.isGuest ? "Exit guest mode" : "Sign out";
+  initMain();
+}
+
+/* ═══════════════════════════════════════════
+   Onboarding
+═══════════════════════════════════════════ */
+function obPick(lv) {
+  S.level = lv;
+  el("lc-p").className = "lv-card" + (lv === "primary"   ? " sel-p" : "");
+  el("lc-s").className = "lv-card" + (lv === "secondary" ? " sel-s" : "");
+  el("ob-btn").disabled  = false;
+  el("ob-btn").className = `btn btn-${lv === "secondary" ? "s" : "p"}`;
+}
+async function obDone() {
+  if (!S.level) return;
+  if (S.isGuest) {
+    const prefs = {name:"Guest",level:S.level,lang:"en",hard:false,voice:true,streak:1,isGuest:true};
+    localStorage.setItem("bmv3_guest_prefs", JSON.stringify(prefs));
+    S = {...S, ...prefs};
+    showMain(); return;
+  }
+  const u = window._fbUser;
+  await fsSet("users", u.uid, {
+    name:S.name, level:S.level, lang:"en", hard:false, voice:true,
+    streak:1, lastSeen:Date.now(), createdAt:Date.now()
+  });
+  S.streak = 1;
+  showMain();
+}
+
+/* ═══════════════════════════════════════════
+   Progress sync
+═══════════════════════════════════════════ */
+function debouncedSync() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    if (S.isGuest) {
+      localStorage.setItem("bmv3_guest_prog",   JSON.stringify(PROG));
+      localStorage.setItem("bmv3_guest_prefs",  JSON.stringify(S));
+      toast("💾 Saved locally");
+    } else if (uid()) {
+      await fsSet("progress", uid(), PROG, true);
+      toast("☁️ Saved");
+    }
+  }, 2000);
+}
+async function syncPrefs() {
+  if (S.isGuest) { localStorage.setItem("bmv3_guest_prefs", JSON.stringify(S)); return; }
+  if (!uid()) return;
+  await fsUpd("users", uid(), {name:S.name,level:S.level,lang:S.lang,hard:S.hard,voice:S.voice});
+}
+
+/* ═══════════════════════════════════════════
+   SRS — Spaced Repetition (SM-2 simplified)
+   Intervals: 1, 3, 7, 14, 30, 90 days
+═══════════════════════════════════════════ */
+const SRS_IV = [1, 3, 7, 14, 30, 90];
+
+function srsUpdate(id, correct) {
+  const c   = PROG[id] || {attempts:0, correct:0, mastered:false, srsInterval:0, nextReview:0};
+  let   iv  = c.srsInterval || 0;
+  const now = Date.now();
+
+  if (correct) iv = Math.min(iv + 1, SRS_IV.length - 1);
+  else          iv = 0;
+
+  PROG[id] = {
+    ...c,
+    attempts:    (c.attempts  || 0) + 1,
+    correct:     (c.correct   || 0) + (correct ? 1 : 0),
+    mastered:    ((c.correct  || 0) + (correct ? 1 : 0)) >= 3,
+    srsInterval: iv,
+    nextReview:  now + SRS_IV[iv] * 86400000,
+  };
+  debouncedSync();
+}
+
+function srsDueWords() {
+  const now = Date.now();
+  return WORDS.filter(w => w.level === S.level && PROG[w.id]?.nextReview && PROG[w.id].nextReview <= now);
+}
+function updateSRSSection() {
+  const due = srsDueWords();
+  const sec = el("srs-section");
+  if (!due.length) { sec.style.display = "none"; return; }
+  sec.style.display = "block";
+  el("srs-preview").textContent = L().srsDue(due.length);
+}
+function srsTagHTML(id) {
+  const p = PROG[id];
+  if (!p) return `<span class="srs-tag srs-new">${L().newWord}</span>`;
+  if (p.nextReview && p.nextReview <= Date.now()) return `<span class="srs-tag srs-due">⚡ Due</span>`;
+  if (p.mastered) return `<span class="srs-tag srs-ok">✓</span>`;
+  return `<span class="srs-tag srs-ok">${L().seenN(p.attempts)}</span>`;
+}
+
+/* ═══════════════════════════════════════════
+   Pronunciation — Web Speech API
+═══════════════════════════════════════════ */
+function speak(text) {
+  if (!S.voice || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang  = "ms-MY";
+  u.rate  = 0.85;
+  u.pitch = 1;
+  // prefer Malay voice, fall back to Indonesian
+  const vcs = window.speechSynthesis.getVoices();
+  const v   = vcs.find(v => v.lang.startsWith("ms")) || vcs.find(v => v.lang.startsWith("id"));
+  if (v) u.voice = v;
+  window.speechSynthesis.speak(u);
+}
+// voices load asynchronously
+if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => {};
+
+/* ═══════════════════════════════════════════
+   Helpers
+═══════════════════════════════════════════ */
+const L    = ()  => I18N[S.lang];
+const ac   = ()  => S.level === "primary" ? "var(--pri)" : "var(--sec)";
+const sf   = ()  => S.level === "primary" ? "p" : "s";
+const myW  = ()  => WORDS.filter(w => w.level === S.level);
+const masC = ()  => myW().filter(w => PROG[w.id]?.mastered).length;
+const seenC= ()  => myW().filter(w => PROG[w.id]?.attempts > 0).length;
+const el   = id  => document.getElementById(id);
+const txt  = (id,v) => { const e=el(id); if(e) e.textContent=v; };
+const clr  = (id,c) => { const e=el(id); if(e) e.style.color=c; };
+
+function shuffle(a) {
+  const r = [...a];
+  for (let i = r.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1)); [r[i],r[j]] = [r[j],r[i]];
+  }
   return r;
 }
-function catWords(){ return WORDS.filter(w=>w.level===S.level&&(activeCat==="all"||w.category===activeCat)); }
-function updProg(id,correct){
-  const c=PROG[id]||{attempts:0,correct:0,mastered:false};
-  PROG[id]={attempts:c.attempts+1, correct:c.correct+(correct?1:0),
-            mastered:(c.correct+(correct?1:0))>=3};
-  saveProg(); // TODO: Firestore setDoc
+function catWords() {
+  return WORDS.filter(w => w.level === S.level && (activeCat === "all" || w.category === activeCat));
 }
-
-// ── Confetti ─────────────────────────────────────────────────
-function confetti(){
-  const W=document.getElementById("cfw");
-  const cols=["#FF6B35","#6C63FF","#22C55E","#FBBF24","#EF4444","#EC4899"];
-  W.innerHTML="";
-  for(let i=0;i<38;i++){
-    const p=document.createElement("div");
-    p.className="cp";
-    p.style.cssText=`background:${cols[i%6]};left:${Math.random()*100}%;`+
-      `animation-delay:${(Math.random()*.6).toFixed(2)}s;`+
+function toast(msg) {
+  const t = el("sync-toast"); t.textContent = msg;
+  t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1800);
+}
+function confetti() {
+  const W = el("cfw");
+  const cols = ["#FF6B35","#6C63FF","#22C55E","#FBBF24","#EF4444","#EC4899"];
+  W.innerHTML = "";
+  for (let i=0; i<38; i++) {
+    const p = document.createElement("div"); p.className = "cp";
+    p.style.cssText = `background:${cols[i%6]};left:${Math.random()*100}%;` +
+      `animation-delay:${(Math.random()*.6).toFixed(2)}s;` +
       `animation-duration:${(.8+Math.random()*.9).toFixed(2)}s`;
     W.appendChild(p);
   }
-  setTimeout(()=>{W.innerHTML="";},2600);
+  setTimeout(() => { W.innerHTML = ""; }, 2600);
 }
 
-// ── Refresh all translatable UI strings ──────────────────────
-function refreshStrings(){
-  const t=L();
-  const ids={
+/* ═══════════════════════════════════════════
+   UI string refresh
+═══════════════════════════════════════════ */
+function refreshStrings() {
+  const t = L();
+  const map = {
     "t-greet2":t.greet2,"t-cat":t.cat,"t-mode":t.mode,
     "sl-mas":t.mas,"sl-seen":t.seen,"sl-new":t.nw,
     "t-fc":t.fc,"t-fc2":t.fc2,"t-qz":t.qz,"t-qz2":t.qz2,
     "t-sp":t.sp,"t-sp2":t.sp2,"t-mp":t.mp,"t-mp2":t.mp2,
     "t-prog":t.prog,"t-prog2":t.prog2,"t-prog3":t.prog3,
     "pl-mas":t.plmas,"pl-seen":t.plseen,"pl-new":t.plnew,"pl-acc":t.placc,
+    "pl-srs-new":t.plsrsnew,"pl-srs-due":t.plsrsdue,"pl-srs-ok":t.plsrsok,
     "t-set":t.set,"t-slang":t.slang,"t-slang2":t.slang2,
     "t-slv":t.slv,"t-slv2":t.slv2,
-    "t-shard":t.shard,"t-shard2":t.shard2,"t-reset":t.reset,
+    "t-shard":t.shard,"t-shard2":t.shard2,
+    "t-svoc":t.svoc,"t-svoc2":t.svoc2,
+    "t-reset":t.reset,
   };
-  for(const [id,val] of Object.entries(ids)){
-    const el=document.getElementById(id);
-    if(el) el.textContent=val;
+  for (const [id,val] of Object.entries(map)) txt(id, val);
+  const g = el("t-greet"); if (g && S.name) g.textContent = t.greet(S.name);
+  document.querySelectorAll(".nl").forEach(e => {
+    e.textContent = S.lang === "en" ? e.dataset.en : e.dataset.bm;
+  });
+  el("h-lang").textContent = "🌐 " + S.lang.toUpperCase();
+  el("hard-badge").style.display = S.hard ? "block" : "none";
+  el("h-lv").textContent = S.level === "primary" ? "🏫" : "📘";
+  syncToggles();
+  renderChips("home-cats");
+  renderChips("words-cats");
+  if (curTab === "words")    renderWordList();
+  if (curTab === "progress") renderProgressTab();
+  updateStats();
+  updateSRSSection();
+}
+
+function updateStats() {
+  const c = ac(), mw = myW(), mas = masC(), seen = seenC(), nw = mw.length - seen;
+  txt("s-mas",mas); txt("s-seen",seen); txt("s-new",nw);
+  txt("p-mas",mas); txt("p-seen",seen); txt("p-new",mw.length-seen);
+  txt("h-streak",S.streak); txt("h-xp",seen*10);
+  ["s-mas","s-seen","s-new","p-mas","p-seen","p-new"].forEach(id => clr(id,c));
+  const tot = mw.reduce((a,w) => a+(PROG[w.id]?.attempts||0), 0);
+  const cor = mw.reduce((a,w) => a+(PROG[w.id]?.correct||0),  0);
+  const acc = tot > 0 ? Math.round(cor/tot*100) : 0;
+  txt("p-acc", acc+"%"); clr("p-acc", c);
+}
+
+function updateUserCard() {
+  const u = window._fbUser;
+  if (S.isGuest) {
+    txt("u-name","Guest 👤"); txt("u-email","Progress saved on this device");
+    el("u-avatar").textContent = "👤"; return;
   }
-  // greeting with name
-  const gEl=document.getElementById("t-greet");
-  if(gEl&&S.name) gEl.textContent=t.greet(S.name);
-  // nav labels
-  document.querySelectorAll(".nl").forEach(el=>{
-    el.textContent=S.lang==="en"?el.dataset.en:el.dataset.bm;
+  if (!u) return;
+  txt("u-name",  u.displayName || S.name || "Student");
+  txt("u-email", u.email || "");
+  const av = el("u-avatar");
+  if (u.photoURL) {
+    av.outerHTML = `<img class="u-ph" id="u-avatar" src="${u.photoURL}" alt="" style="object-fit:cover">`;
+  } else {
+    av.textContent = (u.displayName||"S").split(" ").map(n=>n[0]).join("").slice(0,2).toUpperCase();
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Category chips
+═══════════════════════════════════════════ */
+function renderChips(cId) {
+  const c = el(cId); if (!c) return;
+  const cats = CATEGORIES[S.level], s = sf();
+  c.innerHTML = cats.map(cat =>
+    `<button class="chip ${activeCat===cat.id?"a"+s:""}"
+      onclick="pickCat('${cat.id}','${cId}')">
+      ${cat.icon} ${S.lang==="en" ? cat.label : cat.labelBM}
+    </button>`
+  ).join("");
+}
+function pickCat(cat, fromId) {
+  activeCat = cat;
+  renderChips("home-cats"); renderChips("words-cats");
+  if (fromId === "words-cats") renderWordList();
+}
+
+/* ═══════════════════════════════════════════
+   Tabs
+═══════════════════════════════════════════ */
+function goTab(tab) {
+  curTab = tab; const s = sf();
+  ["home","words","progress"].forEach(t => {
+    el("tab-"+t).style.display = (t===tab ? "block" : "none");
   });
-  // lang pill
-  document.getElementById("h-lang").textContent="🌐 "+S.lang.toUpperCase();
-  // hard mode badge
-  document.getElementById("hard-badge").style.display=S.hard?"block":"none";
-  // level pill / settings header
-  const lPill=document.getElementById("h-set");
-  if(lPill) lPill.textContent= S.level==="primary"?"🏫":"📘";
-  // cat chips (language changes label)
-  renderCatChips("home-cats");
-  renderCatChips("words-cats");
-  // settings toggles
-  syncSettingToggles();
-}
-
-// ── Stats display ────────────────────────────────────────────
-function updateStats(){
-  const col=ac(), mw=myW(), mas=masC(), seen=seenC(), nw=mw.length-seen;
-  const streak=Math.min(Math.floor(seen/5),30);
-  const xp=seen*10;
-  set("s-mas",mas); set("s-seen",seen); set("s-new",nw);
-  set("p-mas",mas); set("p-seen",seen); set("p-new",mw.length-seen);
-  set("h-streak",streak); set("h-xp",xp);
-  ["s-mas","s-seen","s-new","p-mas","p-seen","p-new"].forEach(id=>col3(id,col));
-  // accuracy
-  const tot=mw.reduce((a,w)=>a+(PROG[w.id]?.attempts||0),0);
-  const cor=mw.reduce((a,w)=>a+(PROG[w.id]?.correct||0),0);
-  const acc=tot>0?Math.round(cor/tot*100):0;
-  set("p-acc",acc+"%"); col3("p-acc",col);
-}
-function set(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
-function col3(id,c){ const e=document.getElementById(id); if(e) e.style.color=c; }
-
-// ── Category chips ────────────────────────────────────────────
-function renderCatChips(containerId){
-  const el=document.getElementById(containerId); if(!el) return;
-  const cats=CATEGORIES[S.level], s=sf();
-  el.innerHTML=cats.map(c=>`
-    <button class="chip ${activeCat===c.id?`a${s}`:""}"
-      onclick="selectCat('${c.id}','${containerId}')">
-      ${c.icon} ${S.lang==="en"?c.label:c.labelBM}
-    </button>`).join("");
-}
-function selectCat(cat, fromId){
-  activeCat=cat;
-  renderCatChips("home-cats");
-  renderCatChips("words-cats");
-  if(fromId==="words-cats") renderWordList();
-}
-
-// ── Tabs ─────────────────────────────────────────────────────
-function goTab(tab){
-  curTab=tab;
-  const s=sf();
-  ["home","words","progress"].forEach(t=>{
-    document.getElementById("tab-"+t).style.display=(t===tab?"block":"none");
-  });
-  document.querySelectorAll(".nb").forEach(b=>b.className="nb");
-  const nbId={home:"nb-home",words:"nb-words",progress:"nb-prog"}[tab];
-  document.getElementById(nbId).classList.add("act-"+s);
-  if(tab==="words")    renderWordList();
-  if(tab==="progress") renderProgressTab();
+  document.querySelectorAll(".nb").forEach(b => b.className = "nb");
+  el({home:"nb-home",words:"nb-words",progress:"nb-prog"}[tab]).classList.add("act-"+s);
+  if (tab==="words")    renderWordList();
+  if (tab==="progress") renderProgressTab();
+  if (tab==="home")     updateSRSSection();
   updateStats();
 }
 
-// ── Word list ─────────────────────────────────────────────────
-function renderWordList(){
-  const words=catWords(), col=ac();
-  document.getElementById("word-list").innerHTML=words.map(w=>{
-    const pr=PROG[w.id];
-    const dots=[1,2,3].map(d=>`<div class="dd" style="background:${d<=w.difficulty?col:"var(--bdr)"}"></div>`).join("");
-    const baseH=w.baseWord?`<div class="wbase">🌱 ${w.baseWord} = ${w.baseWordEn}</div>`:"";
+/* ═══════════════════════════════════════════
+   Word list
+═══════════════════════════════════════════ */
+function renderWordList() {
+  const words = catWords(), c = ac();
+  el("word-list").innerHTML = words.map(w => {
+    const pr   = PROG[w.id];
+    const dots = [1,2,3].map(d =>
+      `<div class="dd" style="background:${d<=w.difficulty?c:"var(--bdr)"}"></div>`).join("");
+    const base = w.baseWord ? `<div class="wbase">🌱 ${w.baseWord} = ${w.baseWordEn}</div>` : "";
     return `<div class="wrow">
       <span class="wem">${w.emoji}</span>
-      <div style="min-width:0">
+      <div style="min-width:0;flex:1">
         <div class="wbm">${w.bm}</div>
-        <div class="wen">${w.en}</div>${baseH}
+        <div class="wen">${w.en}</div>${base}
+        ${srsTagHTML(w.id)}
       </div>
       <div class="wright">${dots}${pr?.mastered?'<span style="font-size:.9rem">⭐</span>':""}</div>
     </div>`;
   }).join("");
 }
 
-// ── Progress tab ──────────────────────────────────────────────
-function renderProgressTab(){
-  const col=ac(), cats=CATEGORIES[S.level].filter(c=>c.id!=="all");
-  document.getElementById("cat-prog").innerHTML=cats.map(cat=>{
-    const cw=WORDS.filter(w=>w.level===S.level&&w.category===cat.id);
-    const cm=cw.filter(w=>PROG[w.id]?.mastered).length;
-    const pct=cw.length?Math.round(cm/cw.length*100):0;
-    const lbl=S.lang==="en"?cat.label:cat.labelBM;
+/* ═══════════════════════════════════════════
+   Progress tab
+═══════════════════════════════════════════ */
+function renderProgressTab() {
+  const c = ac(), cats = CATEGORIES[S.level].filter(x => x.id !== "all");
+  el("cat-prog").innerHTML = cats.map(cat => {
+    const cw  = WORDS.filter(w => w.level===S.level && w.category===cat.id);
+    const cm  = cw.filter(w => PROG[w.id]?.mastered).length;
+    const pct = cw.length ? Math.round(cm/cw.length*100) : 0;
+    const lbl = S.lang === "en" ? cat.label : cat.labelBM;
     return `<div class="cprow">
       <div class="cptop"><div class="cpn">${cat.icon} ${lbl}</div><div class="cpc">${cm}/${cw.length}</div></div>
-      <div class="cpbar"><div class="cpfill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="cpbar"><div class="cpfill" style="width:${pct}%;background:${c}"></div></div>
     </div>`;
   }).join("");
   updateStats();
 }
 
-// ══════════════════════════════════════════════════════════════
-// FLASHCARD MODE   (with 5-question recap after every 10 cards)
-// ══════════════════════════════════════════════════════════════
-function startFlashcard(){
-  const words=catWords(); if(!words.length) return;
-  const deck=shuffle(words);
-  const col=ac(), s=sf(), t=L();
-  let idx=0, got=0, nope=0;
-  let recapBatch=[];          // accumulates up to 10 cards before recap
-  const RECAP_AT=10;
+/* ═══════════════════════════════════════════
+   Settings
+═══════════════════════════════════════════ */
+function openSettings()  { updateUserCard(); syncToggles(); el("ov").style.display="flex"; }
+function closeSettings() { el("ov").style.display="none"; }
+function ovClick(e)      { if (e.target===el("ov")) closeSettings(); }
+function syncToggles() {
+  el("tb-en").className    = "tb"+(S.lang==="en"        ? " on-g":"");
+  el("tb-bm").className    = "tb"+(S.lang==="bm"        ? " on-g":"");
+  el("tb-pri").className   = "tb"+(S.level==="primary"  ? " on-p":"");
+  el("tb-sec").className   = "tb"+(S.level==="secondary"? " on-s":"");
+  el("tb-easy").className  = "tb"+(!S.hard              ? " on-g":"");
+  el("tb-hard").className  = "tb"+(S.hard               ? " on-r":"");
+  el("tb-voc-on").className  = "tb"+(S.voice  ? " on-g":"");
+  el("tb-voc-off").className = "tb"+(!S.voice ? " on-r":"");
+}
+function toggleLang() { setLang(S.lang==="en" ? "bm" : "en"); }
+function setLang(l)   { S.lang=l;  syncPrefs(); refreshStrings(); }
+function setLevel(lv) { S.level=lv; activeCat="all"; syncPrefs(); closeSettings(); initMain(); }
+function setHard(val) { S.hard=val;  syncPrefs(); syncToggles(); el("hard-badge").style.display=val?"block":"none"; }
+function setVoice(val){ S.voice=val; syncPrefs(); syncToggles(); }
+async function resetProg() {
+  if (!confirm(L().confirmReset)) return;
+  PROG = {};
+  if (S.isGuest) localStorage.removeItem("bmv3_guest_prog");
+  else if (uid()) await fsSet("progress", uid(), {}, false);
+  closeSettings(); updateStats(); updateSRSSection();
+  if (curTab==="progress") renderProgressTab();
+  toast("🗑️ Reset");
+}
 
-  const C=document.getElementById("scr-fc");
-  showGameScreen("scr-fc");
+/* ═══════════════════════════════════════════
+   Init
+═══════════════════════════════════════════ */
+function initMain() {
+  updateStats(); renderChips("home-cats"); renderChips("words-cats");
+  refreshStrings(); updateSRSSection(); goTab("home");
+}
 
-  function renderCard(){
-    // ── Trigger recap after every RECAP_AT cards (if more remain) ──
-    if(recapBatch.length>=RECAP_AT && idx<deck.length){
-      runRecap([...recapBatch], ()=>{ recapBatch=[]; renderCard(); });
+/* ═══════════════════════════════════════════
+   Game screen helpers
+═══════════════════════════════════════════ */
+function showGame(id) {
+  ["tab-home","tab-words","tab-progress","scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
+    const e = el(i); if(e) { e.style.display="none"; e.className=e.className.replace(" active",""); }
+  });
+  el(id).className = "screen active";
+}
+function exitGame() {
+  if (window._speedTimer) { clearInterval(window._speedTimer); window._speedTimer = null; }
+  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(id => { el(id).className="screen"; });
+  goTab("home");
+}
+
+/* ═══════════════════════════════════════════
+   FLASHCARD MODE  +  SRS MODE
+═══════════════════════════════════════════ */
+function startFlashcard() { _runFlashcard(catWords()); }
+function startSRS()       { _runFlashcard(shuffle(srsDueWords()).slice(0,20), true); }
+
+function _runFlashcard(words, isSRS=false) {
+  if (!words.length) return;
+  const deck = shuffle(words);
+  const c=ac(), s=sf(), t=L();
+  let idx=0, got=0, nope=0, recapBatch=[];
+  const RECAP_AT = 10;
+  const C = el("scr-fc");
+  showGame("scr-fc");
+
+  function renderCard() {
+    if (recapBatch.length >= RECAP_AT && idx < deck.length) {
+      runRecap([...recapBatch], () => { recapBatch=[]; renderCard(); });
       return;
     }
-    if(idx>=deck.length){ scoreScreen(); return; }
+    if (idx >= deck.length) { scoreScreen(); return; }
 
-    const w=deck[idx];
+    const w  = deck[idx];
     recapBatch.push(w);
-    const pr=PROG[w.id];
-    const statusTxt=pr?.mastered?t.mastered:pr?.attempts>0?t.seenN(pr.attempts):t.newWord;
-    const baseHtml=w.baseWord
-      ?`<div class="fc-base">${t.base(w.baseWord,w.baseWordEn)}</div>`:"";
+    const pr  = PROG[w.id];
+    const now = Date.now();
+    let stTag = "";
+    if (!pr) stTag = `<span class="srs-tag srs-new">${t.newWord}</span>`;
+    else if (pr.nextReview && pr.nextReview <= now) stTag = `<span class="srs-tag srs-due">⚡ Due</span>`;
+    else if (pr.mastered) stTag = `<span class="srs-tag srs-ok">⭐ ${t.mastered}</span>`;
+    else stTag = `<span class="srs-tag srs-ok">${t.seenN(pr.attempts)}</span>`;
 
-    C.innerHTML=`<div class="ms">
+    const bh = w.baseWord ? `<div class="fc-base">${t.base(w.baseWord, w.baseWordEn)}</div>` : "";
+    const spk = S.voice && window.speechSynthesis
+      ? `<button class="speak-btn" onclick="speak('${w.bm.replace(/'/g,"\\'")}')">🔊 Hear it</button>` : "";
+
+    C.innerHTML = `<div class="ms">
       <div class="mhdr">
         <button class="bb" onclick="exitGame()">←</button>
-        <div>
-          <div class="mht">🃏 ${t.fc}</div>
-          <div class="mhs">${idx+1} / ${deck.length} &nbsp;·&nbsp; ${Math.floor(idx/RECAP_AT)+1}st batch</div>
-        </div>
+        <div><div class="mht">${isSRS ? t.srsTitle : "🃏 "+t.fc}</div>
+        <div class="mhs">${idx+1} / ${deck.length}</div></div>
       </div>
-      <div class="pbar"><div class="pfill f${s}" id="pf" style="width:${idx/deck.length*100}%"></div></div>
-
+      <div class="pbar"><div class="pfill f${s}" style="width:${idx/deck.length*100}%"></div></div>
       <div class="fcw" onclick="flipCard()">
         <div class="fc" id="fc">
           <div class="face ff">
             <div class="fce">${w.emoji}</div>
             <div class="fcw2">${w.bm}</div>
             <div class="fcs">${w.category}</div>
+            ${stTag}
             <div class="fch">${t.tapReveal}</div>
           </div>
           <div class="face fb ${s==="s"?"sec":""}">
             <div class="fce">${w.emoji}</div>
             <div class="fcw2">${w.en}</div>
             <div class="fcs" style="font-style:italic">${w.bm}</div>
-            ${baseHtml}
+            ${bh}${spk}
             <div class="fcex">"${w.exBM}"<br><span style="opacity:.75">"${w.exEN}"</span></div>
           </div>
         </div>
       </div>
-
-      <div id="fc-bot">
-        <button class="fskip" onclick="fcNext(false)">${t.skip}</button>
-      </div>
-      <div style="text-align:center;margin-top:.75rem;font-size:.76rem;color:var(--mut)">${statusTxt}</div>
+      <div id="fc-bot"><button class="fskip" onclick="fcNext(false)">${t.skip}</button></div>
     </div>`;
 
-    // expose functions for inline onclick
-    window._fcFlip=flipCard;
-    window._fcNext=fcNext;
-  }
-
-  function flipCard(){
-    const fc=document.getElementById("fc"); if(!fc) return;
-    fc.classList.toggle("fl");
-    if(fc.classList.contains("fl")){
-      document.getElementById("fc-bot").innerHTML=`
-        <div class="fca">
-          <button class="fcb fc-n" onclick="_fcNext(false)">${t.stillLrn}</button>
-          <button class="fcb fc-y" onclick="_fcNext(true)">${t.gotIt}</button>
+    window.flipCard = () => {
+      const fc = el("fc"); if(!fc) return;
+      fc.classList.toggle("fl");
+      if (fc.classList.contains("fl")) {
+        el("fc-bot").innerHTML = `<div class="fca">
+          <button class="fcb fc-n" onclick="fcNext(false)">${t.stillLrn}</button>
+          <button class="fcb fc-y" onclick="fcNext(true)">${t.gotIt}</button>
         </div>`;
-    }
+      }
+    };
+    window.fcNext = (correct) => {
+      srsUpdate(deck[idx].id, correct);
+      correct ? (got++, confetti()) : nope++;
+      idx++; renderCard();
+    };
   }
-  window.flipCard=flipCard;
 
-  function fcNext(correct){
-    updProg(deck[idx].id,correct);
-    correct?(got++,confetti()):nope++;
-    idx++;
-    renderCard();
-  }
-  window.fcNext=fcNext;
-
-  function scoreScreen(){
-    const pct=Math.round(got/deck.length*100);
-    C.innerHTML=`<div class="scscrn">
+  function scoreScreen() {
+    const pct = Math.round(got/deck.length*100);
+    C.innerHTML = `<div class="scscrn">
       <div class="sce">${pct>=80?"🎉":pct>=50?"👍":"💪"}</div>
       <div class="sct">${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
       <div class="scsu">${t.reviewed(deck.length)}</div>
-      <div class="scbig" style="color:${pct>=80?"var(--grn)":col}">${pct}%</div>
-      <div class="scd">${t.gotLbl} ${got} &nbsp;|&nbsp; ${t.missLbl} ${nope}</div>
+      <div class="score-row">
+        <div class="score-chip"><div class="sn" style="color:var(--grn)">${got}</div><div class="sl">${t.gotLbl}</div></div>
+        <div class="score-chip"><div class="sn" style="color:var(--red)">${nope}</div><div class="sl">${t.missLbl}</div></div>
+      </div>
       <div class="scbtns">
         <button class="btn btn-${s}" onclick="exitGame()">${t.backHome}</button>
-        <button class="btn btn-o" onclick="startFlashcard()">${t.playAgain}</button>
+        <button class="btn btn-o" onclick="${isSRS?"startSRS":"startFlashcard"}()">${t.playAgain}</button>
       </div>
     </div>`;
-    updateStats();
+    updateStats(); updateSRSSection();
   }
-
   renderCard();
 }
 
-// ══════════════════════════════════════════════════════════════
-// RECAP QUIZ  (5 questions on the last 10 flashcards, no emoji)
-// ══════════════════════════════════════════════════════════════
-function runRecap(batch, onDone){
-  const C=document.getElementById("scr-fc");
-  const s=sf(), col=ac(), t=L();
-  // pick up to 5 random from the batch
-  const pool=shuffle(batch).slice(0,Math.min(5,batch.length));
+/* ═══════════════════════════════════════════
+   RECAP QUIZ (every 10 flashcards)
+═══════════════════════════════════════════ */
+function runRecap(batch, onDone) {
+  const C = el("scr-fc"), s=sf(), t=L();
+  const pool = shuffle(batch).slice(0, Math.min(5, batch.length));
   let qi=0, correct=0;
-  // pre-generate distractors once
-  const allPool=WORDS.filter(w=>w.level===S.level);
-  const opts=pool.map(w=>shuffle([w,...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+  const allPool = WORDS.filter(w => w.level===S.level);
+  const opts    = pool.map(w => shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
 
-  function renderQ(){
-    if(qi>=pool.length){ renderResult(); return; }
+  function renderQ() {
+    if (qi >= pool.length) { renderResult(); return; }
     const w=pool[qi], os=opts[qi];
-    C.innerHTML=`<div class="ms">
+    C.innerHTML = `<div class="ms">
       <div class="mhdr" style="margin-bottom:.75rem">
-        <div style="flex:1">
-          <div class="mht">⚡ ${t.recapBanner}</div>
-          <div class="mhs">${t.recapQ(qi+1)} / ${pool.length}</div>
-        </div>
-        <div style="font-size:1.3rem font-weight:800;color:var(--org)">${qi+1}/${pool.length}</div>
+        <div style="flex:1"><div class="mht">⚡ Recap</div>
+        <div class="mhs">${qi+1} / ${pool.length}</div></div>
       </div>
       <div class="recap-banner">${t.recapBanner}</div>
       <div class="rcard">
@@ -872,214 +1335,299 @@ function runRecap(batch, onDone){
       </div>
     </div>`;
   }
-
-  window.rcAns=function(correctId,chosenId){
-    const ok=chosenId===correctId;
-    ok?(correct++,confetti()):null;
-    updProg(correctId,ok);
+  window.rcAns = (correctId, chosenId) => {
+    const ok = chosenId===correctId;
+    if (ok) { correct++; confetti(); }
+    srsUpdate(correctId, ok);
     document.querySelectorAll(".ropt").forEach(b=>b.disabled=true);
-    document.getElementById("ro"+correctId).classList.add("rv");
-    if(!ok){
-      const el=document.getElementById("ro"+chosenId);
-      el.classList.add("no");
-      el.classList.add("anim-shake");
-    }
-    setTimeout(()=>{ qi++; renderQ(); },1050);
+    el("ro"+correctId).classList.add("rv");
+    if (!ok) { const b=el("ro"+chosenId); b.classList.add("no"); b.classList.add("anim-shake"); }
+    setTimeout(() => { qi++; renderQ(); }, 1050);
   };
-
-  function renderResult(){
-    const pct=Math.round(correct/pool.length*100);
-    C.innerHTML=`<div class="ms">
-      <div class="rresult">
-        <div class="rre">${pct>=80?"🌟":pct>=50?"👍":"💪"}</div>
-        <div class="rrt">${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
-        <div class="rrs">${t.recapScore(correct,pool.length)}</div>
-        <button class="btn btn-${s}" onclick="_rcDone()">${t.recapCont}</button>
-      </div>
-    </div>`;
-    window._rcDone=onDone;
+  function renderResult() {
+    const pct = Math.round(correct/pool.length*100);
+    C.innerHTML = `<div class="ms"><div style="text-align:center;padding:2rem 1.25rem">
+      <div style="font-size:4rem;margin-bottom:.75rem">${pct>=80?"🌟":pct>=50?"👍":"💪"}</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;margin-bottom:.25rem">
+        ${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
+      <div style="color:var(--mut);font-size:.88rem;margin-bottom:1.2rem">${t.recapScore(correct,pool.length)}</div>
+      <button class="btn btn-${s}" onclick="_rcDone()">${t.recapCont}</button>
+    </div></div>`;
+    window._rcDone = onDone;
   }
-
   renderQ();
 }
 
-// ══════════════════════════════════════════════════════════════
-// QUIZ MODE  (hard mode hides emoji from question + options)
-// ══════════════════════════════════════════════════════════════
-function startQuiz(){
-  const words=catWords(); if(!words.length) return;
-  const deck=shuffle(words).slice(0,Math.min(10,words.length));
-  const s=sf(), col=ac(), t=L();
+/* ═══════════════════════════════════════════
+   QUIZ MODE
+═══════════════════════════════════════════ */
+function startQuiz() {
+  const words = catWords(); if (!words.length) return;
+  const deck  = shuffle(words).slice(0, Math.min(10, words.length));
+  const s=sf(), c=ac(), t=L();
   let qi=0, score=0;
-  const allPool=WORDS.filter(w=>w.level===S.level);
-  const opts=deck.map(w=>shuffle([w,...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+  const allPool = WORDS.filter(w => w.level===S.level);
+  const opts    = deck.map(w => shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+  const C = el("scr-qz"); showGame("scr-qz");
 
-  const C=document.getElementById("scr-qz");
-  showGameScreen("scr-qz");
-
-  function renderQ(){
-    if(qi>=deck.length){ scoreScreen(); return; }
+  function renderQ() {
+    if (qi >= deck.length) { scoreScreen(); return; }
     const w=deck[qi], os=opts[qi];
-
-    // Hard mode: question card shows NO emoji
-    const qHead=S.hard
-      ?`<div class="hard-tag">${t.hardTag}</div>`
-      :`<div class="qemoji">${w.emoji}</div>`;
-
-    C.innerHTML=`<div class="ms">
+    const qHead = S.hard
+      ? `<div class="hard-tag">${t.hardTag}</div>`
+      : `<div class="qemoji">${w.emoji}</div>`;
+    C.innerHTML = `<div class="ms">
       <div class="mhdr">
         <button class="bb" onclick="exitGame()">←</button>
-        <div>
-          <div class="mht">❓ ${t.qz}</div>
-          <div class="mhs">${qi+1} / ${deck.length} &nbsp;·&nbsp; ${t.scoreLabel} ${score}</div>
-        </div>
+        <div><div class="mht">❓ ${t.qz}</div>
+        <div class="mhs">${qi+1} / ${deck.length} · ${t.scoreLabel} ${score}</div></div>
       </div>
       <div class="pbar"><div class="pfill f${s}" style="width:${qi/deck.length*100}%"></div></div>
-      <div class="qcard anim-pop">
-        ${qHead}
+      <div class="qcard">${qHead}
         <div class="qprompt">${t.whatMeans}</div>
         <div class="qword">${w.bm}</div>
       </div>
       <div class="qopts">
-        ${os.map(o=>{
-          // Hard mode: option label has NO emoji
-          const lbl=S.hard ? o.en : `${o.emoji} &nbsp;${o.en}`;
+        ${os.map(o => {
+          const lbl = S.hard ? o.en : `${o.emoji} &nbsp;${o.en}`;
           return `<button class="qo" id="qo${o.id}" onclick="qAns('${w.id}','${o.id}')">${lbl}</button>`;
         }).join("")}
       </div>
     </div>`;
   }
-
-  window.qAns=function(correctId,chosenId){
-    const ok=chosenId===correctId;
-    ok?(score++,confetti()):null;
-    updProg(correctId,ok);
+  window.qAns = (correctId, chosenId) => {
+    const ok = chosenId===correctId;
+    if (ok) { score++; confetti(); }
+    srsUpdate(correctId, ok);
     document.querySelectorAll(".qo").forEach(b=>b.disabled=true);
-    document.getElementById("qo"+correctId).classList.add("rv");
-    if(!ok){
-      const el=document.getElementById("qo"+chosenId);
-      el.classList.add("no");
-      el.classList.add("anim-shake");
-    }
-    setTimeout(()=>{ qi++; renderQ(); },1100);
+    el("qo"+correctId).classList.add("rv");
+    if (!ok) { const b=el("qo"+chosenId); b.classList.add("no"); b.classList.add("anim-shake"); }
+    setTimeout(() => { qi++; renderQ(); }, 1100);
   };
-
-  function scoreScreen(){
-    const pct=Math.round(score/deck.length*100);
-    C.innerHTML=`<div class="scscrn">
+  function scoreScreen() {
+    const pct = Math.round(score/deck.length*100);
+    C.innerHTML = `<div class="scscrn">
       <div class="sce">${pct>=80?"🏆":pct>=50?"🌟":"📚"}</div>
       <div class="sct">${pct>=80?t.amazing:pct>=50?t.wellDone:t.goOn}</div>
       <div class="scsu">${t.qComplete(deck.length)}</div>
-      <div class="scbig" style="color:${pct>=80?"var(--grn)":col}">${score}/${deck.length}</div>
+      <div class="scbig" style="color:${pct>=80?"var(--grn)":c}">${score}/${deck.length}</div>
       <div class="scd">${t.scoreLabel} ${pct}%</div>
       <div class="scbtns">
         <button class="btn btn-${s}" onclick="exitGame()">${t.backHome}</button>
-        <button class="btn btn-o" onclick="startQuiz()">${t.playAgain}</button>
+        <button class="btn btn-o"    onclick="startQuiz()">${t.playAgain}</button>
       </div>
     </div>`;
     updateStats();
   }
-
   renderQ();
 }
 
-// ── Show/hide game screen ─────────────────────────────────────
-function showGameScreen(id){
-  document.getElementById("tab-home").style.display="none";
-  document.getElementById("tab-words").style.display="none";
-  document.getElementById("tab-progress").style.display="none";
-  document.getElementById("scr-fc").className="screen";
-  document.getElementById("scr-qz").className="screen";
-  document.getElementById(id).className="screen active";
-}
-function exitGame(){
-  document.getElementById("scr-fc").className="screen";
-  document.getElementById("scr-qz").className="screen";
-  goTab("home");
+/* ═══════════════════════════════════════════
+   SPEED ROUND — 60 seconds, streak multiplier
+═══════════════════════════════════════════ */
+function startSpeedRound() {
+  const words = catWords(); if (!words.length) return;
+  const allPool = WORDS.filter(w => w.level===S.level);
+  let   deck    = shuffle(words);
+  const s=sf(), t=L();
+  let qi=0, score=0, streakCount=0, timeLeft=60, answered=false;
+  const CIRC = Math.PI*2*33; // r=33 circle circumference
+  const C = el("scr-sp"); showGame("scr-sp");
+
+  // pre-build option sets; auto-extend when deck runs out
+  let optsArr = deck.map(w => shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+
+  function ensureNext() {
+    if (qi >= deck.length) {
+      const extra = shuffle(words);
+      deck = [...deck, ...extra];
+      optsArr = [...optsArr, ...extra.map(w =>
+        shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]))];
+    }
+  }
+
+  function renderQ() {
+    ensureNext();
+    const w=deck[qi], os=optsArr[qi];
+    answered = false;
+    const mult = streakCount >= 3 ? `<span style="color:var(--org);font-weight:800;font-size:.85rem"> ×${Math.min(streakCount,5)}</span>` : "";
+    C.innerHTML = `<div class="ms">
+      <div class="mhdr">
+        <button class="bb" onclick="exitGame()">←</button>
+        <div style="flex:1"><div class="mht">⏱️ ${t.speedTitle}</div>
+        <div class="mhs">${t.spScore}: ${score} &nbsp;|&nbsp; ${t.spStreak}: ${streakCount}${mult}</div></div>
+      </div>
+      <div class="timer-wrap">
+        <svg class="timer-ring" viewBox="0 0 80 80">
+          <circle class="timer-bg" cx="40" cy="40" r="33"/>
+          <circle class="timer-fg" id="timer-arc" cx="40" cy="40" r="33"
+            stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC-(CIRC*timeLeft/60)}"/>
+        </svg>
+        <div class="timer-txt">${timeLeft}</div>
+      </div>
+      <div class="streak-flash" id="streak-flash"></div>
+      <div class="speed-word">${w.bm}</div>
+      <div class="speed-opts">
+        ${os.map(o=>`<button class="speed-opt" id="so${o.id}" onclick="spAns('${w.id}','${o.id}')">${o.en}</button>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  window.spAns = (correctId, chosenId) => {
+    if (answered) return; answered = true;
+    const ok = chosenId===correctId;
+    srsUpdate(correctId, ok);
+    document.querySelectorAll(".speed-opt").forEach(b=>b.disabled=true);
+    el("so"+correctId).classList.add("rv");
+    if (!ok) { el("so"+chosenId).classList.add("no"); streakCount=0; }
+    else {
+      streakCount++;
+      const mult = Math.min(streakCount, 5);
+      const pts  = 10 * mult; score += pts;
+      if (streakCount >= 3) confetti();
+      const fl = el("streak-flash");
+      if (fl) fl.textContent = streakCount>=3 ? `🔥 ×${mult} streak! +${pts}` : `+${pts}`;
+    }
+    setTimeout(() => { qi++; renderQ(); }, 450);
+  };
+
+  renderQ();
+
+  window._speedTimer = setInterval(() => {
+    timeLeft--;
+    const arc = document.getElementById("timer-arc");
+    const num = document.querySelector(".timer-txt");
+    if (arc) arc.setAttribute("stroke-dashoffset", CIRC-(CIRC*timeLeft/60));
+    if (num) num.textContent = timeLeft;
+    if (timeLeft <= 10 && arc) arc.style.stroke = "var(--red)";
+    if (timeLeft <= 0) { clearInterval(window._speedTimer); window._speedTimer=null; timeUp(); }
+  }, 1000);
+
+  function timeUp() {
+    const fs=sf();
+    C.innerHTML = `<div class="scscrn">
+      <div class="sce">⏱️</div>
+      <div class="sct">${t.timeUp}</div>
+      <div class="scsu">${t.wordsAttempted(qi)}</div>
+      <div class="scbig" style="color:var(--org)">${score}</div>
+      <div class="scd">${t.ptsScored}</div>
+      <div class="scbtns">
+        <button class="btn btn-${fs}" onclick="exitGame()">${t.backHome}</button>
+        <button class="btn btn-o"     onclick="startSpeedRound()">${t.playAgain}</button>
+      </div>
+    </div>`;
+    updateStats();
+  }
 }
 
-// ══════════════════════════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════════════════════════
-function openSettings(){ document.getElementById("ov").style.display="flex"; syncSettingToggles(); }
-function closeSettings(){ document.getElementById("ov").style.display="none"; }
-function ovClick(e){ if(e.target===document.getElementById("ov")) closeSettings(); }
+/* ═══════════════════════════════════════════
+   MATCH & PAIR — tap BM card then English card
+═══════════════════════════════════════════ */
+function startMatchPair() {
+  const words = catWords(); if (words.length < 4) return;
+  const pool  = shuffle(words).slice(0, 6);
+  const s=sf(), t=L();
+  let selectedBM=null, matched=0, mistakes=0, startTime=Date.now();
+  const C = el("scr-mp"); showGame("scr-mp");
+  const bmWords = shuffle([...pool]);
+  const enWords = shuffle([...pool]);
+  const matchedIds = new Set();
 
-function syncSettingToggles(){
-  // lang
-  document.getElementById("tb-en").className="tb"+(S.lang==="en"?" on-g":"");
-  document.getElementById("tb-bm").className="tb"+(S.lang==="bm"?" on-g":"");
-  // level
-  document.getElementById("tb-pri").className="tb"+(S.level==="primary"?" on-p":"");
-  document.getElementById("tb-sec").className="tb"+(S.level==="secondary"?" on-s":"");
-  // hard
-  document.getElementById("tb-easy").className="tb"+(!S.hard?" on-g":"");
-  document.getElementById("tb-hard").className="tb"+(S.hard?" on-r":"");
+  function render() {
+    C.innerHTML = `<div class="ms">
+      <div class="mhdr">
+        <button class="bb" onclick="exitGame()">←</button>
+        <div><div class="mht">${t.matchTitle}</div>
+        <div class="mhs">${t.matchInst}</div></div>
+      </div>
+      <div class="pbar"><div class="pfill fg" style="width:${matched/pool.length*100}%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:.82rem;color:var(--mut);font-weight:700">${pool.length-matched} ${t.matchLeft}</div>
+        <div style="font-size:.82rem;color:var(--mut);font-weight:700" id="mp-mistakes">❌ ${mistakes}</div>
+      </div>
+      <div class="match-grid">
+        <div>
+          <div class="match-col-title">BAHASA</div>
+          <div class="match-col">
+            ${bmWords.map(w => {
+              const done = matchedIds.has(w.id);
+              return `<button class="match-card${done?" matched":""}" id="bm-${w.id}"
+                onclick="mpBM('${w.id}')" ${done?"disabled":""}>${w.bm}</button>`;
+            }).join("")}
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">ENGLISH</div>
+          <div class="match-col">
+            ${enWords.map(w => {
+              const done = matchedIds.has(w.id);
+              return `<button class="match-card${done?" matched":""}" id="en-${w.id}"
+                onclick="mpEN('${w.id}')" ${done?"disabled":""}>${w.en}</button>`;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  window.mpBM = (id) => {
+    if (matchedIds.has(id)) return;
+    document.querySelectorAll(".match-card.sel").forEach(b => { if(b.id.startsWith("bm-")) b.classList.remove("sel"); });
+    selectedBM = id;
+    const btn = el("bm-"+id); if(btn) btn.classList.add("sel");
+  };
+
+  window.mpEN = (id) => {
+    if (!selectedBM || matchedIds.has(id)) return;
+    const ok = selectedBM === id;
+    const bmBtn = el("bm-"+selectedBM);
+    const enBtn = el("en-"+id);
+    if (ok) {
+      matchedIds.add(id);
+      if(bmBtn) bmBtn.className="match-card matched";
+      if(enBtn) enBtn.className="match-card matched";
+      srsUpdate(id, true);
+      matched++; confetti(); selectedBM=null;
+      if (matched >= pool.length) setTimeout(scoreScreen, 500);
+    } else {
+      mistakes++;
+      if(bmBtn){bmBtn.classList.add("wrong");setTimeout(()=>bmBtn.classList.remove("wrong"),500);}
+      if(enBtn){enBtn.classList.add("wrong");setTimeout(()=>enBtn.classList.remove("wrong"),500);}
+      srsUpdate(selectedBM, false); selectedBM=null;
+      const mm=el("mp-mistakes"); if(mm) mm.textContent=`❌ ${mistakes}`;
+    }
+  };
+
+  function scoreScreen() {
+    const secs = Math.round((Date.now()-startTime)/1000);
+    const star  = mistakes===0?"🌟":mistakes<=2?"😊":"💪";
+    const fs=sf();
+    C.innerHTML = `<div class="scscrn">
+      <div class="sce">${star}</div>
+      <div class="sct">${mistakes===0?t.perfect:mistakes<=2?t.wellDone2:t.keepGoing}</div>
+      <div class="scsu">${t.matched(pool.length)} in ${secs}s</div>
+      <div class="score-row">
+        <div class="score-chip"><div class="sn" style="color:var(--grn)">${pool.length}</div><div class="sl">matched</div></div>
+        <div class="score-chip"><div class="sn" style="color:var(--red)">${mistakes}</div><div class="sl">mistakes</div></div>
+        <div class="score-chip"><div class="sn" style="color:var(--sec)">${secs}s</div><div class="sl">time</div></div>
+      </div>
+      <div class="scbtns">
+        <button class="btn btn-${fs}" onclick="exitGame()">${t.backHome}</button>
+        <button class="btn btn-o"     onclick="startMatchPair()">${t.playAgain}</button>
+      </div>
+    </div>`;
+    updateStats();
+  }
+  render();
 }
 
-function toggleLang(){ setLang(S.lang==="en"?"bm":"en"); }
-function setLang(l){
-  S.lang=l; savePrefs();
-  refreshStrings();
-}
-function setLevel(lv){
-  S.level=lv; activeCat="all"; savePrefs();
-  closeSettings();
-  initMain();
-}
-function setHard(val){
-  S.hard=val; savePrefs();
-  syncSettingToggles();
-  document.getElementById("hard-badge").style.display=val?"block":"none";
-}
-function resetProg(){
-  if(!confirm(L().confirmReset)) return;
-  PROG={}; saveProg(); closeSettings();
-  updateStats();
-  if(curTab==="progress") renderProgressTab();
-}
-
-// ══════════════════════════════════════════════════════════════
-// ONBOARDING
-// ══════════════════════════════════════════════════════════════
-document.getElementById("ob-name").addEventListener("input",checkOb);
-function obSelectLevel(lv){
-  S.level=lv; // temp
-  document.getElementById("lc-p").className="lv-card"+(lv==="primary"?" sel-p":"");
-  document.getElementById("lc-s").className="lv-card"+(lv==="secondary"?" sel-s":"");
-  checkOb();
-}
-function checkOb(){
-  const n=document.getElementById("ob-name").value.trim();
-  const btn=document.getElementById("ob-btn");
-  btn.disabled=!n||!S.level;
-  if(!btn.disabled) btn.className=`btn btn-${S.level==="secondary"?"s":"p"}`;
-}
-function obComplete(){
-  S.name=document.getElementById("ob-name").value.trim();
-  savePrefs();
-  document.getElementById("ob").style.display="none";
-  document.getElementById("main").className="screen active";
-  initMain();
-}
-
-// ══════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════
-function initMain(){
-  updateStats();
-  renderCatChips("home-cats");
-  renderCatChips("words-cats");
-  refreshStrings();
-  goTab("home");
-}
-
-// ── Boot ──────────────────────────────────────────────────────
-loadState();
-if(S.name && S.level){
-  document.getElementById("ob").style.display="none";
-  document.getElementById("main").className="screen active";
-  initMain();
+/* ═══════════════════════════════════════════
+   PWA — register service worker
+═══════════════════════════════════════════ */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
 }
 </script>
 </body>

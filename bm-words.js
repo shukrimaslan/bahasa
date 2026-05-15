@@ -537,5 +537,242 @@ const CATEGORIES = {
   ],
 };
 
+// ════════════════════════════════════════════════════════════
+// PERIBAHASA — 30 Malay proverbs
+// Available for BOTH primary (simpler ones, difficulty 1-2)
+// and secondary (all). Category key: "peribahasa"
+// Same schema as regular words; en = English equivalent/meaning
+// ════════════════════════════════════════════════════════════
+
+// Helper note: peribahasa words use level:"secondary" so they appear
+// in the secondary word bank. The category "peribahasa" is added to
+// the secondary CATEGORIES list below.
+// To add primary-level proverbs, duplicate with level:"primary".
+
+WORDS.push(
+
+  // ── Tier 1: Well-known, used in everyday speech ──
+  {id:"peri-001",
+   bm:"Bersatu teguh, bercerai roboh",
+   en:"United we stand, divided we fall",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"🤝",
+   exBM:"Ingat peribahasa: bersatu teguh, bercerai roboh.",
+   exEN:"Remember: united we stand, divided we fall."},
+
+  {id:"peri-002",
+   bm:"Seperti api dalam sekam",
+   en:"Like fire hidden in husks — a hidden danger or grudge",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🔥",
+   exBM:"Permusuhan mereka seperti api dalam sekam.",
+   exEN:"Their enmity is like fire hidden in husks."},
+
+  {id:"peri-003",
+   bm:"Alang-alang menyeluk pekasam, biar sampai ke pangkal lengan",
+   en:"If you're going to do something, do it thoroughly",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"💪",
+   exBM:"Alang-alang menyeluk pekasam, biar sampai ke pangkal lengan — jangan buat kerja separuh jalan.",
+   exEN:"If you're going to do something, do it thoroughly — don't do things halfway."},
+
+  {id:"peri-004",
+   bm:"Seperti kacang lupakan kulit",
+   en:"Like a bean that forgets its shell — forgetting one's roots",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🫘",
+   exBM:"Jangan jadi seperti kacang lupakan kulit setelah berjaya.",
+   exEN:"Don't forget your roots after achieving success."},
+
+  {id:"peri-005",
+   bm:"Melentur buluh biarlah dari rebungnya",
+   en:"Bend the bamboo while it is still a shoot — educate children early",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🎋",
+   exBM:"Melentur buluh biarlah dari rebungnya — didik anak sejak kecil.",
+   exEN:"Train children from a young age — it is easier to shape them early."},
+
+  {id:"peri-006",
+   bm:"Harimau mati meninggalkan belang, gajah mati meninggalkan gading, manusia mati meninggalkan nama",
+   en:"Tigers leave their stripes, elephants leave their tusks, men leave their reputation",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🐯",
+   exBM:"Harimau mati meninggalkan belang — tinggalkan nama yang baik.",
+   exEN:"Leave a good name behind — your reputation outlives you."},
+
+  {id:"peri-007",
+   bm:"Air dicincang tidak akan putus",
+   en:"Water cannot be severed by chopping — blood is thicker than water",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"💧",
+   exBM:"Air dicincang tidak akan putus — hubungan adik-beradik kekal.",
+   exEN:"Sibling bonds cannot be broken — water cannot be severed by chopping."},
+
+  {id:"peri-008",
+   bm:"Bagai aur dengan tebing",
+   en:"Like bamboo and the riverbank — two things that depend on each other",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🌿",
+   exBM:"Hubungan mereka bagai aur dengan tebing, saling bergantung.",
+   exEN:"Their relationship is mutually dependent, like bamboo and a riverbank."},
+
+  {id:"peri-009",
+   bm:"Berakit-rakit ke hulu, berenang-renang ke tepian; bersakit-sakit dahulu, bersenang-senang kemudian",
+   en:"Suffer first, enjoy later — no pain, no gain",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🏆",
+   exBM:"Berakit-rakit ke hulu — usaha keras kini untuk kejayaan kemudian.",
+   exEN:"Work hard now so you can enjoy the rewards later — no pain, no gain."},
+
+  {id:"peri-010",
+   bm:"Biar lambat, asal selamat",
+   en:"Better slow and safe than fast and sorry",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"🐢",
+   exBM:"Biar lambat, asal selamat — jangan tergesa-gesa.",
+   exEN:"Better slow and safe than fast and sorry — don't rush."},
+
+  // ── Tier 2: Common in essays and formal writing ──
+  {id:"peri-011",
+   bm:"Hendak seribu daya, tak hendak seribu dalih",
+   en:"Where there is a will there is a way; unwilling people find a thousand excuses",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🎯",
+   exBM:"Hendak seribu daya — kalau mahu, pasti ada jalan.",
+   exEN:"Where there's a will there's a way — the willing always find a path."},
+
+  {id:"peri-012",
+   bm:"Carik-carik bulu ayam, lama-lama bercantum juga",
+   en:"A torn feather mends in time — family quarrels are eventually forgiven",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🐓",
+   exBM:"Carik-carik bulu ayam, lama-lama bercantum juga — keluarga akan berdamai.",
+   exEN:"Family members always reconcile eventually, no matter how bad the quarrel."},
+
+  {id:"peri-013",
+   bm:"Seperti padi, makin berisi makin tunduk",
+   en:"Like rice stalks — the more full, the more they bow (humility in success)",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🌾",
+   exBM:"Seperti padi, makin berisi makin tunduk — orang bijak sentiasa rendah hati.",
+   exEN:"The wiser and more accomplished a person, the more humble they become."},
+
+  {id:"peri-014",
+   bm:"Tak kenal maka tak cinta",
+   en:"You cannot love what you do not know — familiarity breeds affection",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"❤️",
+   exBM:"Tak kenal maka tak cinta — kenali budaya kita lebih dalam.",
+   exEN:"You cannot love what you do not know — learn about your culture first."},
+
+  {id:"peri-015",
+   bm:"Kalau tiada angin, masakan pokok bergoyang",
+   en:"There is no smoke without fire — nothing happens without a cause",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🌬️",
+   exBM:"Kalau tiada angin, masakan pokok bergoyang — mesti ada sebabnya.",
+   exEN:"There is no smoke without fire — there must be a reason behind every rumour."},
+
+  {id:"peri-016",
+   bm:"Sambil menyelam, minum air",
+   en:"Drinking water while diving — killing two birds with one stone",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"🏊",
+   exBM:"Sambil menyelam, minum air — selesaikan dua perkara sekaligus.",
+   exEN:"Kill two birds with one stone — accomplish two things at once."},
+
+  {id:"peri-017",
+   bm:"Setinggi-tinggi terbang bangau, hinggap juga di belakang kerbau",
+   en:"No matter how high the heron flies, it still lands on the buffalo's back — one always returns to one's origins",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🦩",
+   exBM:"Setinggi mana pun kita berjaya, jangan lupa asal usul kita.",
+   exEN:"No matter how successful you become, never forget where you came from."},
+
+  {id:"peri-018",
+   bm:"Bulat air kerana pembetung, bulat manusia kerana muafakat",
+   en:"Water is round because of its pipe; people are united by agreement — unity through consensus",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"⭕",
+   exBM:"Bulat manusia kerana muafakat — keputusan dibuat bersama.",
+   exEN:"Unity comes from consensus — decisions made together bind people together."},
+
+  {id:"peri-019",
+   bm:"Sedikit-sedikit, lama-lama jadi bukit",
+   en:"Little by little, a hill is formed — small efforts accumulate into something great",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"⛰️",
+   exBM:"Sedikit-sedikit, lama-lama jadi bukit — simpan duit sedikit demi sedikit.",
+   exEN:"Save a little at a time — small consistent efforts eventually amount to something great."},
+
+  {id:"peri-020",
+   bm:"Sesal dahulu pendapatan, sesal kemudian tiada berguna",
+   en:"Regret before acting is wisdom; regret after acting is useless — look before you leap",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"⚖️",
+   exBM:"Sesal dahulu pendapatan — fikir masak-masak sebelum membuat keputusan.",
+   exEN:"Think carefully before acting — regret after the fact is useless."},
+
+  // ── Tier 3: Used in formal essays, literature ──
+  {id:"peri-021",
+   bm:"Bagai membelah buluh",
+   en:"Like splitting bamboo — quick and decisive",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🎍",
+   exBM:"Kerjanya bagai membelah buluh — cepat dan tepat.",
+   exEN:"He works quickly and decisively, like splitting bamboo."},
+
+  {id:"peri-022",
+   bm:"Hujan emas di negeri orang, hujan batu di negeri sendiri, lebih baik negeri sendiri",
+   en:"Golden rain in another's land, stones in one's own, yet home is still best — there's no place like home",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🏠",
+   exBM:"Hujan emas di negeri orang — tetapi negeri sendiri tetap terbaik.",
+   exEN:"No matter how prosperous another country is, home is still the best."},
+
+  {id:"peri-023",
+   bm:"Bagai pungguk rindukan bulan",
+   en:"Like an owl longing for the moon — yearning for something unattainable",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🦉",
+   exBM:"Rindu dia bagai pungguk rindukan bulan — tidak mungkin bersama.",
+   exEN:"Longing for something that can never be — like an owl yearning for the moon."},
+
+  {id:"peri-024",
+   bm:"Di mana bumi dipijak, di situ langit dijunjung",
+   en:"Where you stand on earth, there too you hold up the sky — respect the customs of the land you are in",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🌍",
+   exBM:"Di mana bumi dipijak, di situ langit dijunjung — hormati adat tempatan.",
+   exEN:"When in Rome, do as the Romans do — respect local customs wherever you are."},
+
+  {id:"peri-025",
+   bm:"Bagai telur di hujung tanduk",
+   en:"Like an egg at the tip of a horn — in a very precarious or dangerous situation",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"🥚",
+   exBM:"Keadaan syarikat itu bagai telur di hujung tanduk.",
+   exEN:"The company's situation is extremely precarious — like an egg balanced on a horn tip."},
+
+  {id:"peri-026",
+   bm:"Mulut manis mematahkan tulang",
+   en:"A sweet mouth breaks bones — kind words can achieve what force cannot",
+   category:"peribahasa", level:"secondary", difficulty:2, emoji:"😊",
+   exBM:"Mulut manis mematahkan tulang — gunakan kata-kata baik untuk memujuk.",
+   exEN:"Gentle words are more powerful than force — a sweet mouth breaks bones."},
+
+  {id:"peri-027",
+   bm:"Seperti ketam mengajar anaknya berjalan betul",
+   en:"Like a crab teaching its child to walk straight — a hypocrite preaching what they don't practise",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🦀",
+   exBM:"Jangan jadi seperti ketam mengajar anaknya berjalan betul.",
+   exEN:"Don't be a hypocrite — practise what you preach."},
+
+  {id:"peri-028",
+   bm:"Tong kosong nyaring bunyinya",
+   en:"An empty drum makes the most noise — those who talk the most often know the least",
+   category:"peribahasa", level:"secondary", difficulty:1, emoji:"🥁",
+   exBM:"Tong kosong nyaring bunyinya — jangan banyak cakap tapi tiada isi.",
+   exEN:"Empty vessels make the most noise — those who know little often talk the most."},
+
+  {id:"peri-029",
+   bm:"Ikut hati mati, ikut rasa binasa",
+   en:"Follow your heart and die, follow your impulse and perish — don't let emotions drive decisions",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🧠",
+   exBM:"Ikut hati mati — gunakan akal bukan emosi dalam membuat keputusan.",
+   exEN:"Don't let raw emotion drive your decisions — reason must guide you."},
+
+  {id:"peri-030",
+   bm:"Genggam bara api biar sampai jadi arang",
+   en:"Hold the burning coal until it becomes charcoal — persevere until the task is done",
+   category:"peribahasa", level:"secondary", difficulty:3, emoji:"🔥",
+   exBM:"Genggam bara api biar sampai jadi arang — jangan putus asa di tengah jalan.",
+   exEN:"See things through to the end — don't give up halfway."}
+
+); // end WORDS.push
+
+// ════════════════════════════════════════════════════════════
+// Add "peribahasa" to CATEGORIES so it appears in the UI.
+// This runs once after the base CATEGORIES object is defined.
+// ════════════════════════════════════════════════════════════
+CATEGORIES.secondary.push(
+  {id:"peribahasa", label:"Peribahasa", labelBM:"Peribahasa", icon:"📜"}
+);
+
 // Export for use in HTML (no module system needed)
 // In React/Vite: export { WORDS, CATEGORIES };
