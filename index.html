@@ -1101,8 +1101,8 @@ function pickCat(cat, fromId) {
 ═══════════════════════════════════════════ */
 function goTab(tab) {
   curTab = tab; const s = sf();
-  ["home","words","progress"].forEach(t => {
-    el("tab-"+t).style.display = (t===tab ? "block" : "none");
+  ["home","words","progress"].forEach(tabId => {
+    el("tab-"+tabId).style.display = (tabId===tab ? "block" : "none");
   });
   document.querySelectorAll(".nb").forEach(b => b.className = "nb");
   el({home:"nb-home",words:"nb-words",progress:"nb-prog"}[tab]).classList.add("act-"+s);
@@ -1195,14 +1195,25 @@ function initMain() {
    Game screen helpers
 ═══════════════════════════════════════════ */
 function showGame(id) {
-  ["tab-home","tab-words","tab-progress","scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
-    const e = el(i); if(e) { e.style.display="none"; e.className=e.className.replace(" active",""); }
+  // Hide tab divs (they use inline style, not .screen class)
+  ["tab-home","tab-words","tab-progress"].forEach(i => {
+    const e = el(i); if(e) e.style.display = "none";
   });
-  el(id).className = "screen active";
+  // Reset all game screens via CLASS only — never inline style (inline overrides CSS)
+  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
+    const e = el(i);
+    if(e) { e.className = "screen"; e.style.removeProperty("display"); }
+  });
+  // Activate the target screen via class only
+  const target = el(id);
+  if(target) { target.className = "screen active"; target.style.removeProperty("display"); }
 }
 function exitGame() {
   if (window._speedTimer) { clearInterval(window._speedTimer); window._speedTimer = null; }
-  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(id => { el(id).className="screen"; });
+  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
+    const e = el(i);
+    if(e) { e.className = "screen"; e.style.removeProperty("display"); }
+  });
   goTab("home");
 }
 
@@ -1210,7 +1221,11 @@ function exitGame() {
    FLASHCARD MODE  +  SRS MODE
 ═══════════════════════════════════════════ */
 function startFlashcard() { _runFlashcard(catWords()); }
-function startSRS()       { _runFlashcard(shuffle(srsDueWords()).slice(0,20), true); }
+function startSRS() {
+  const due = srsDueWords();
+  if (!due.length) { toast("No words due for review!"); return; }
+  _runFlashcard(shuffle(due).slice(0,20), true);
+}
 
 function _runFlashcard(words, isSRS=false) {
   if (!words.length) return;
@@ -1239,8 +1254,9 @@ function _runFlashcard(words, isSRS=false) {
     else stTag = `<span class="srs-tag srs-ok">${t.seenN(pr.attempts)}</span>`;
 
     const bh = w.baseWord ? `<div class="fc-base">${t.base(w.baseWord, w.baseWordEn)}</div>` : "";
+    const safeBM = w.bm.replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/"/g,"&quot;");
     const spk = S.voice && window.speechSynthesis
-      ? `<button class="speak-btn" onclick="speak('${w.bm.replace(/'/g,"\\'")}')">🔊 Hear it</button>` : "";
+      ? `<button class="speak-btn" onclick="speak('${safeBM}')">🔊 Hear it</button>` : "";
 
     C.innerHTML = `<div class="ms">
       <div class="mhdr">
@@ -1474,7 +1490,7 @@ function startSpeedRound() {
   }
 
   window.spAns = (correctId, chosenId) => {
-    if (answered) return; answered = true;
+    if (answered || timeLeft <= 0) return; answered = true;
     const ok = chosenId===correctId;
     srsUpdate(correctId, ok);
     document.querySelectorAll(".speed-opt").forEach(b=>b.disabled=true);
@@ -1572,7 +1588,11 @@ function startMatchPair() {
 
   window.mpBM = (id) => {
     if (matchedIds.has(id)) return;
-    document.querySelectorAll(".match-card.sel").forEach(b => { if(b.id.startsWith("bm-")) b.classList.remove("sel"); });
+    // deselect previous BM selection
+    bmWords.forEach(w => {
+      const b = el("bm-"+w.id);
+      if (b && !matchedIds.has(w.id)) b.classList.remove("sel");
+    });
     selectedBM = id;
     const btn = el("bm-"+id); if(btn) btn.classList.add("sel");
   };
