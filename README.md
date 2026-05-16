@@ -237,4 +237,4 @@ If this helped your students, give it a ⭐ on GitHub!
 
 ---
 
-*BMvocab is not affiliated with the Malaysian Ministry of Education or any official examination body. Word selections are based on common primary and secondary school curricula.*
+*BMvocab is not affiliated with the Malaysian Ministry of Education or any official examination body. Word selections are based on common primary and secondary school curriculum.*
