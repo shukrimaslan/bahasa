@@ -774,5 +774,252 @@ CATEGORIES.secondary.push(
   {id:"peribahasa", label:"Peribahasa", labelBM:"Peribahasa", icon:"📜"}
 );
 
+
+// ════════════════════════════════════════════════════════════
+// UPSR-LEVEL VOCABULARY — 30 words
+// Aligned to UPSR BM exam topics: health, environment, civic,
+// daily life, description, and narrative writing.
+// Category key: "upsr" — added to primary CATEGORIES below.
+// level: "primary" so they appear in the primary word bank.
+// ════════════════════════════════════════════════════════════
+
+WORDS.push(
+
+  // ── Kesihatan & Kebersihan (Health & Hygiene) ─────────────
+  {id:"upsr-001",
+   bm:"kebersihan",
+   en:"cleanliness",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🧼",
+   baseWord:"bersih", baseWordEn:"clean",
+   exBM:"Kebersihan diri penting untuk kesihatan.",
+   exEN:"Personal cleanliness is important for health."},
+
+  {id:"upsr-002",
+   bm:"penyakit",
+   en:"illness / disease",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🤒",
+   baseWord:"sakit", baseWordEn:"sick / pain",
+   exBM:"Kita perlu elak penyakit dengan menjaga kebersihan.",
+   exEN:"We must avoid illness by maintaining cleanliness."},
+
+  {id:"upsr-003",
+   bm:"doktor",
+   en:"doctor",
+   category:"upsr", level:"primary", difficulty:1, emoji:"👨‍⚕️",
+   exBM:"Doktor merawat pesakit di hospital.",
+   exEN:"The doctor treats patients at the hospital."},
+
+  {id:"upsr-004",
+   bm:"ubat",
+   en:"medicine",
+   category:"upsr", level:"primary", difficulty:1, emoji:"💊",
+   exBM:"Minum ubat mengikut arahan doktor.",
+   exEN:"Take medicine according to the doctor's instructions."},
+
+  {id:"upsr-005",
+   bm:"senaman",
+   en:"exercise",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🏃",
+   exBM:"Lakukan senaman setiap pagi untuk sihat.",
+   exEN:"Do exercise every morning to stay healthy."},
+
+  // ── Alam Sekitar (Environment) ────────────────────────────
+  {id:"upsr-006",
+   bm:"pencemaran",
+   en:"pollution",
+   category:"upsr", level:"primary", difficulty:3, emoji:"🏭",
+   baseWord:"cemar", baseWordEn:"pollute / dirty",
+   exBM:"Pencemaran sungai merosakkan hidupan air.",
+   exEN:"River pollution destroys aquatic life."},
+
+  {id:"upsr-007",
+   bm:"kitar semula",
+   en:"recycle",
+   category:"upsr", level:"primary", difficulty:2, emoji:"♻️",
+   exBM:"Kita perlu kitar semula kertas dan plastik.",
+   exEN:"We must recycle paper and plastic."},
+
+  {id:"upsr-008",
+   bm:"alam sekitar",
+   en:"environment / surroundings",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🌿",
+   exBM:"Jaga alam sekitar supaya kekal bersih.",
+   exEN:"Take care of the environment so it stays clean."},
+
+  {id:"upsr-009",
+   bm:"pokok",
+   en:"tree",
+   category:"upsr", level:"primary", difficulty:1, emoji:"🌳",
+   exBM:"Tanam pokok untuk menghijau kawasan sekolah.",
+   exEN:"Plant trees to green the school area."},
+
+  {id:"upsr-010",
+   bm:"banjir",
+   en:"flood",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🌊",
+   exBM:"Banjir berlaku apabila hujan turun dengan lebat.",
+   exEN:"Floods occur when heavy rain falls."},
+
+  // ── Kehidupan Seharian (Daily Life) ──────────────────────
+  {id:"upsr-011",
+   bm:"pasar raya",
+   en:"supermarket",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🛒",
+   exBM:"Ibu membeli barang keperluan di pasar raya.",
+   exEN:"Mother buys household necessities at the supermarket."},
+
+  {id:"upsr-012",
+   bm:"jiran",
+   en:"neighbour",
+   category:"upsr", level:"primary", difficulty:1, emoji:"🏘️",
+   exBM:"Kita perlu hidup rukun dengan jiran.",
+   exEN:"We must live in harmony with our neighbours."},
+
+  {id:"upsr-013",
+   bm:"kenderaan",
+   en:"vehicle / transport",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🚗",
+   baseWord:"kender", baseWordEn:"ride / vehicle",
+   exBM:"Pelbagai kenderaan lalu lalang di jalan raya.",
+   exEN:"Various vehicles pass along the road."},
+
+  {id:"upsr-014",
+   bm:"bas sekolah",
+   en:"school bus",
+   category:"upsr", level:"primary", difficulty:1, emoji:"🚌",
+   exBM:"Saya naik bas sekolah setiap pagi.",
+   exEN:"I ride the school bus every morning."},
+
+  {id:"upsr-015",
+   bm:"perpustakaan",
+   en:"library",
+   category:"upsr", level:"primary", difficulty:3, emoji:"📚",
+   exBM:"Saya pergi ke perpustakaan untuk membaca buku.",
+   exEN:"I go to the library to read books."},
+
+  // ── Sifat Murni & Nilai (Values & Character) ─────────────
+  {id:"upsr-016",
+   bm:"tolong-menolong",
+   en:"helping one another / mutual assistance",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🤝",
+   exBM:"Amalan tolong-menolong mencerminkan semangat mulia.",
+   exEN:"The practice of helping one another reflects a noble spirit."},
+
+  {id:"upsr-017",
+   bm:"jujur",
+   en:"honest",
+   category:"upsr", level:"primary", difficulty:1, emoji:"✨",
+   exBM:"Kita mesti bersikap jujur dalam semua perkara.",
+   exEN:"We must be honest in all matters."},
+
+  {id:"upsr-018",
+   bm:"bertanggungjawab",
+   en:"responsible",
+   category:"upsr", level:"primary", difficulty:3, emoji:"🎯",
+   baseWord:"tanggung", baseWordEn:"bear / carry",
+   exBM:"Murid yang bertanggungjawab siapkan kerja rumah tepat masa.",
+   exEN:"A responsible student completes homework on time."},
+
+  {id:"upsr-019",
+   bm:"menghormati",
+   en:"to respect",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🙏",
+   baseWord:"hormat", baseWordEn:"respect",
+   exBM:"Kita perlu menghormati orang yang lebih tua.",
+   exEN:"We must respect our elders."},
+
+  {id:"upsr-020",
+   bm:"berani",
+   en:"brave / courageous",
+   category:"upsr", level:"primary", difficulty:1, emoji:"🦁",
+   exBM:"Murid yang berani tidak takut bertanya.",
+   exEN:"A brave student is not afraid to ask questions."},
+
+  // ── Aktiviti & Masa Lapang (Activities & Free Time) ──────
+  {id:"upsr-021",
+   bm:"aktiviti",
+   en:"activity",
+   category:"upsr", level:"primary", difficulty:2, emoji:"⚽",
+   exBM:"Aktiviti kokurikulum membantu perkembangan diri pelajar.",
+   exEN:"Co-curricular activities help students develop themselves."},
+
+  {id:"upsr-022",
+   bm:"pertandingan",
+   en:"competition / contest",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🏆",
+   baseWord:"tanding", baseWordEn:"compete",
+   exBM:"Sekolah kami menyertai pertandingan sukan peringkat daerah.",
+   exEN:"Our school entered a district-level sports competition."},
+
+  {id:"upsr-023",
+   bm:"hobi",
+   en:"hobby",
+   category:"upsr", level:"primary", difficulty:1, emoji:"🎨",
+   exBM:"Hobi saya ialah melukis dan membaca.",
+   exEN:"My hobbies are drawing and reading."},
+
+  {id:"upsr-024",
+   bm:"lawatan",
+   en:"visit / excursion",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🚌",
+   baseWord:"lawat", baseWordEn:"visit",
+   exBM:"Kami pergi lawatan sambil belajar ke muzium.",
+   exEN:"We went on an educational excursion to the museum."},
+
+  {id:"upsr-025",
+   bm:"muzium",
+   en:"museum",
+   category:"upsr", level:"primary", difficulty:2, emoji:"🏛️",
+   exBM:"Muzium menyimpan pelbagai artifak bersejarah.",
+   exEN:"The museum keeps various historical artefacts."},
+
+  // ── Kata Sifat Berguna (Useful Adjectives for essays) ────
+  {id:"upsr-026",
+   bm:"menarik",
+   en:"interesting / attractive",
+   category:"upsr", level:"primary", difficulty:1, emoji:"✨",
+   exBM:"Cerita itu sangat menarik dan menghiburkan.",
+   exEN:"The story is very interesting and entertaining."},
+
+  {id:"upsr-027",
+   bm:"berguna",
+   en:"useful / beneficial",
+   category:"upsr", level:"primary", difficulty:2, emoji:"💡",
+   baseWord:"guna", baseWordEn:"use",
+   exBM:"Teknologi sangat berguna dalam kehidupan seharian.",
+   exEN:"Technology is very useful in daily life."},
+
+  {id:"upsr-028",
+   bm:"berharga",
+   en:"valuable / precious",
+   category:"upsr", level:"primary", difficulty:2, emoji:"💎",
+   baseWord:"harga", baseWordEn:"price / value",
+   exBM:"Masa yang berlalu itu sangat berharga.",
+   exEN:"Time that has passed is very precious."},
+
+  {id:"upsr-029",
+   bm:"membanggakan",
+   en:"pride-worthy / something to be proud of",
+   category:"upsr", level:"primary", difficulty:3, emoji:"🏅",
+   baseWord:"bangga", baseWordEn:"proud",
+   exBM:"Pencapaian pelajar itu sangat membanggakan sekolah.",
+   exEN:"The student's achievement makes the school very proud."},
+
+  {id:"upsr-030",
+   bm:"bersungguh-sungguh",
+   en:"wholeheartedly / with full effort",
+   category:"upsr", level:"primary", difficulty:3, emoji:"💪",
+   exBM:"Belajar bersungguh-sungguh untuk capai kejayaan.",
+   exEN:"Study wholeheartedly to achieve success."}
+
+); // end UPSR WORDS.push
+
+// ════════════════════════════════════════════════════════════
+// Add "upsr" to primary CATEGORIES so it appears in the UI
+// ════════════════════════════════════════════════════════════
+CATEGORIES.primary.push(
+  {id:"upsr", label:"UPSR Vocab", labelBM:"Vocab UPSR", icon:"📝"}
+);
+
 // Export for use in HTML (no module system needed)
 // In React/Vite: export { WORDS, CATEGORIES };
