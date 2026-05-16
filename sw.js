@@ -13,7 +13,6 @@ const CACHE_VERSION = "bmvocab-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./bm-vocab-app.html",
   "./bm-words.js",
   "./manifest.json",
   // Google Fonts (pre-cached so the app looks right offline)
@@ -93,7 +92,7 @@ self.addEventListener("fetch", event => {
         // Network failed and nothing in cache —
         // return a simple offline page for navigation requests
         if (event.request.mode === "navigate") {
-          return caches.match("./bm-vocab-app.html");
+          return caches.match("./");
         }
       });
     })
