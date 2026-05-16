@@ -395,6 +395,36 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
 @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* Badges */
+.badge-icon{width:54px;height:54px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;border:2px solid var(--bdr);
+  background:var(--sur);cursor:default;transition:transform .15s;position:relative}
+.badge-icon.earned{border-color:var(--ylw);background:#FFFBEB;transform:scale(1.05)}
+.badge-icon.locked{opacity:.35;filter:grayscale(1)}
+.badge-icon .bi-em{font-size:1.5rem;line-height:1}
+.badge-icon .bi-lbl{font-size:.5rem;font-weight:800;color:var(--mut);margin-top:2px;text-align:center}
+.badge-icon.earned .bi-lbl{color:#92400e}
+.badge-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--txt);color:var(--sur);font-size:.72rem;font-weight:700;
+  padding:4px 9px;border-radius:8px;white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .2s;z-index:50}
+.badge-icon:hover .badge-tooltip{opacity:1}
+/* Fill-the-sentence */
+.fts-card{background:var(--sur);border:2px solid var(--bdr);border-radius:20px;
+  padding:1.5rem;margin-bottom:1.1rem;animation:pop .3s ease forwards}
+.fts-bm{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;
+  line-height:1.7;text-align:center;margin-bottom:.5rem}
+.fts-blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--pri);
+  text-align:center;color:var(--pri);margin:0 4px;padding:0 6px}
+.fts-en{font-size:.82rem;color:var(--mut);text-align:center;font-style:italic;margin-top:.25rem}
+.fts-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fts-opt{padding:14px;border-radius:13px;border:2px solid var(--bdr);
+  background:var(--sur);font-family:'Nunito',sans-serif;
+  font-size:.94rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+.fts-opt:disabled{cursor:default}
+.fts-opt.ok,.fts-opt.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.fts-opt.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
+
 .anim-shake{animation:shake .35s ease}
 </style>
 </head>
@@ -552,7 +582,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
   <div id="scr-fc" class="screen"></div>
   <div id="scr-qz" class="screen"></div>
   <div id="scr-sp" class="screen"></div>
-  <div id="scr-mp" class="screen"></div>
+  <div id="scr-mp"  class="screen"></div>
+  <div id="scr-fts" class="screen"></div>
 
   <nav class="bnav">
     <button class="nb" id="nb-home"  onclick="goTab('home')">
@@ -617,11 +648,36 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
       </div>
     </div>
 
+    <div class="srow" id="badge-row" style="display:block;padding:14px 0">
+      <div class="slbl" id="t-sbadge">My badges</div>
+      <div id="badge-shelf" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+    </div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:1.25rem">
+      <button class="btn btn-s" onclick="openShareCard()" id="t-share"
+        style="padding:12px;font-size:.88rem">📸 Share my progress card</button>
       <button class="btn btn-o" id="t-reset" onclick="resetProg()"
         style="padding:12px;font-size:.88rem">🗑️ Reset all progress</button>
       <button class="btn btn-red" id="signout-btn" onclick="doSignOut()"
         style="padding:12px;font-size:.88rem">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE CARD MODAL -->
+<div id="share-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:400;display:none;align-items:center;justify-content:center;padding:1.5rem"
+  onclick="closeShareModal(event)">
+  <div style="background:var(--sur);border-radius:20px;padding:1.5rem;width:100%;
+    max-width:360px;text-align:center">
+    <div style="font-weight:800;font-size:1rem;margin-bottom:1rem" id="share-title">My Progress Card</div>
+    <canvas id="share-canvas" width="640" height="360"
+      style="width:100%;border-radius:12px;border:1px solid var(--bdr)"></canvas>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <button class="btn btn-p" onclick="downloadCard()" style="padding:12px;font-size:.88rem">
+        ⬇️ Download
+      </button>
+      <button class="btn btn-o" onclick="document.getElementById('share-modal').style.display='none'"
+        style="padding:12px;font-size:.88rem">Close</button>
     </div>
   </div>
 </div>
@@ -677,6 +733,7 @@ en:{
   timeUp:"Time's up!", wordsAttempted:n=>`${n} words attempted`,
   ptsScored:"points scored", perfect:"Perfect!", wellDone2:"Well done!", keepGoing:"Keep going!",
   matched:n=>`Matched all ${n} pairs`,
+  fts:"Fill the sentence", fts2:"Choose the missing BM word",
 },
 bm:{
   greet:n=>`Selamat datang, ${n}! 👋`,
@@ -720,6 +777,7 @@ bm:{
   timeUp:"Masa tamat!", wordsAttempted:n=>`${n} perkataan dicuba`,
   ptsScored:"mata markah", perfect:"Sempurna!", wellDone2:"Bagus sekali!", keepGoing:"Teruskan!",
   matched:n=>`Padanan ${n} pasangan selesai`,
+  fts:"Isi Tempat Kosong", fts2:"Pilih perkataan BM yang hilang",
 },
 };
 
@@ -931,6 +989,7 @@ function srsUpdate(id, correct) {
     nextReview:  now + SRS_IV[iv] * 86400000,
   };
   debouncedSync();
+  checkBadges();
 }
 
 function srsDueWords() {
@@ -1021,7 +1080,7 @@ function refreshStrings() {
     "t-greet2":t.greet2,"t-cat":t.cat,"t-mode":t.mode,
     "sl-mas":t.mas,"sl-seen":t.seen,"sl-new":t.nw,
     "t-fc":t.fc,"t-fc2":t.fc2,"t-qz":t.qz,"t-qz2":t.qz2,
-    "t-sp":t.sp,"t-sp2":t.sp2,"t-mp":t.mp,"t-mp2":t.mp2,
+    "t-sp":t.sp,"t-sp2":t.sp2,"t-mp":t.mp,"t-mp2":t.mp2,"t-fts":t.fts,"t-fts2":t.fts2,
     "t-prog":t.prog,"t-prog2":t.prog2,"t-prog3":t.prog3,
     "pl-mas":t.plmas,"pl-seen":t.plseen,"pl-new":t.plnew,"pl-acc":t.placc,
     "pl-srs-new":t.plsrsnew,"pl-srs-due":t.plsrsdue,"pl-srs-ok":t.plsrsok,
@@ -1029,7 +1088,7 @@ function refreshStrings() {
     "t-slv":t.slv,"t-slv2":t.slv2,
     "t-shard":t.shard,"t-shard2":t.shard2,
     "t-svoc":t.svoc,"t-svoc2":t.svoc2,
-    "t-reset":t.reset,
+    "t-reset":t.reset,"t-share":t.share||(S.lang==="en"?"📸 Share my progress card":"📸 Kad kemajuan saya"),
   };
   for (const [id,val] of Object.entries(map)) txt(id, val);
   const g = el("t-greet"); if (g && S.name) g.textContent = t.greet(S.name);
@@ -1188,7 +1247,7 @@ async function resetProg() {
 ═══════════════════════════════════════════ */
 function initMain() {
   updateStats(); renderChips("home-cats"); renderChips("words-cats");
-  refreshStrings(); updateSRSSection(); goTab("home");
+  refreshStrings(); updateSRSSection(); checkBadges(true); goTab("home");
 }
 
 /* ═══════════════════════════════════════════
@@ -1200,7 +1259,7 @@ function showGame(id) {
     const e = el(i); if(e) e.style.display = "none";
   });
   // Reset all game screens via CLASS only — never inline style (inline overrides CSS)
-  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
+  ["scr-fc","scr-qz","scr-sp","scr-mp","scr-fts"].forEach(i => {
     const e = el(i);
     if(e) { e.className = "screen"; e.style.removeProperty("display"); }
   });
@@ -1210,7 +1269,7 @@ function showGame(id) {
 }
 function exitGame() {
   if (window._speedTimer) { clearInterval(window._speedTimer); window._speedTimer = null; }
-  ["scr-fc","scr-qz","scr-sp","scr-mp"].forEach(i => {
+  ["scr-fc","scr-qz","scr-sp","scr-mp","scr-fts"].forEach(i => {
     const e = el(i);
     if(e) { e.className = "screen"; e.style.removeProperty("display"); }
   });
@@ -1421,6 +1480,8 @@ function startQuiz() {
     setTimeout(() => { qi++; renderQ(); }, 1100);
   };
   function scoreScreen() {
+    if(score===deck.length) PROG.__quiz_perfect=(PROG.__quiz_perfect||0)+1;
+    debouncedSync(); checkBadges();
     const pct = Math.round(score/deck.length*100);
     C.innerHTML = `<div class="scscrn">
       <div class="sce">${pct>=80?"🏆":pct>=50?"🌟":"📚"}</div>
@@ -1520,6 +1581,7 @@ function startSpeedRound() {
   }, 1000);
 
   function timeUp() {
+    PROG.__speed_done = (PROG.__speed_done||0)+1; debouncedSync(); checkBadges();
     const fs=sf();
     C.innerHTML = `<div class="scscrn">
       <div class="sce">⏱️</div>
@@ -1619,6 +1681,7 @@ function startMatchPair() {
   };
 
   function scoreScreen() {
+    PROG.__match_done = (PROG.__match_done||0)+1; debouncedSync(); checkBadges();
     const secs = Math.round((Date.now()-startTime)/1000);
     const star  = mistakes===0?"🌟":mistakes<=2?"😊":"💪";
     const fs=sf();
@@ -1639,6 +1702,321 @@ function startMatchPair() {
     updateStats();
   }
   render();
+}
+
+
+/* ═══════════════════════════════════════════
+   BADGE SYSTEM
+   Badges are defined here. To add one:
+   push a new object to BADGE_DEFS.
+═══════════════════════════════════════════ */
+const BADGE_DEFS = [
+  {id:"first_word",  emoji:"🌱", label:"First word",  en:"Learned your first word!",         bm:"Pelajari perkataan pertama!",       check:()=> seenC()  >= 1},
+  {id:"ten_words",   emoji:"🔟", label:"10 words",    en:"Seen 10 words",                     bm:"Dilihat 10 perkataan",              check:()=> seenC()  >= 10},
+  {id:"fifty_words", emoji:"🌟", label:"50 words",    en:"Seen 50 words",                     bm:"Dilihat 50 perkataan",              check:()=> seenC()  >= 50},
+  {id:"hundred_words",emoji:"💯",label:"100 words",   en:"Seen 100 words — incredible!",      bm:"Dilihat 100 perkataan — luar biasa!",check:()=> seenC() >= 100},
+  {id:"first_master",emoji:"⭐", label:"First star",  en:"Mastered your first word",          bm:"Kuasai perkataan pertama",          check:()=> masC()   >= 1},
+  {id:"ten_master",  emoji:"🏅", label:"10 mastered", en:"Mastered 10 words",                 bm:"Kuasai 10 perkataan",               check:()=> masC()   >= 10},
+  {id:"fifty_master",emoji:"🥇", label:"50 mastered", en:"Mastered 50 words",                 bm:"Kuasai 50 perkataan",               check:()=> masC()   >= 50},
+  {id:"streak3",     emoji:"🔥", label:"3-day streak",en:"3 days in a row!",                  bm:"3 hari berturut-turut!",            check:()=> S.streak >= 3},
+  {id:"streak7",     emoji:"🔥🔥",label:"7-day streak",en:"7-day streak — on fire!",           bm:"Streak 7 hari — hebat!",            check:()=> S.streak >= 7},
+  {id:"streak30",    emoji:"👑", label:"30-day streak",en:"30-day streak — legendary!",       bm:"Streak 30 hari — legenda!",         check:()=> S.streak >= 30},
+  {id:"speed_demon", emoji:"⚡", label:"Speed demon", en:"Completed a speed round",           bm:"Selesaikan perlumbaan laju",        check:()=> (PROG.__speed_done||0) >= 1},
+  {id:"match_master",emoji:"🔗", label:"Match master",en:"Completed a match & pair",          bm:"Selesaikan padankan",               check:()=> (PROG.__match_done||0) >= 1},
+  {id:"sentence_pro",emoji:"✏️", label:"Sentence pro",en:"Completed fill-the-sentence",       bm:"Selesaikan isi tempat kosong",      check:()=> (PROG.__fts_done||0) >= 1},
+  {id:"quiz_ace",    emoji:"🎯", label:"Quiz ace",    en:"Scored 100% on a quiz",             bm:"Dapat 100% dalam kuiz",             check:()=> (PROG.__quiz_perfect||0) >= 1},
+  {id:"all_primary", emoji:"🏫", label:"Primary hero",en:"Seen every primary word",           bm:"Lihat semua perkataan rendah",      check:()=> WORDS.filter(w=>w.level==="primary").every(w=>PROG[w.id]?.attempts>0)},
+];
+
+let EARNED_BADGES = new Set();
+
+function checkBadges(silent=false) {
+  let newlyEarned = [];
+  BADGE_DEFS.forEach(b => {
+    if (!EARNED_BADGES.has(b.id) && b.check()) {
+      EARNED_BADGES.add(b.id);
+      PROG["__badge_"+b.id] = 1;
+      newlyEarned.push(b);
+    }
+  });
+  // restore previously earned from PROG
+  BADGE_DEFS.forEach(b => {
+    if (PROG["__badge_"+b.id]) EARNED_BADGES.add(b.id);
+  });
+  if (!silent && newlyEarned.length) {
+    newlyEarned.forEach((b, i) => {
+      setTimeout(() => showBadgeToast(b), i * 800);
+    });
+    debouncedSync();
+  }
+  renderBadgeShelf();
+}
+
+function showBadgeToast(b) {
+  confetti();
+  const t = el("sync-toast");
+  t.textContent = `🏅 Badge unlocked: ${b.emoji} ${b.label}`;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+function renderBadgeShelf() {
+  const shelf = el("badge-shelf"); if (!shelf) return;
+  shelf.innerHTML = BADGE_DEFS.map(b => {
+    const earned = EARNED_BADGES.has(b.id);
+    const tip = S.lang === "en" ? b.en : b.bm;
+    return `<div class="badge-icon ${earned ? "earned" : "locked"}" title="${tip}">
+      <div class="bi-em">${b.emoji}</div>
+      <div class="bi-lbl">${b.label}</div>
+      <div class="badge-tooltip">${tip}</div>
+    </div>`;
+  }).join("");
+}
+
+/* ═══════════════════════════════════════════
+   FILL-THE-SENTENCE GAME
+═══════════════════════════════════════════ */
+function startFillSentence() {
+  // Build pool: words that have a real exBM sentence with the word actually in it
+  const pool = shuffle(
+    catWords().filter(w => w.exBM && w.exBM.toLowerCase().includes(w.bm.toLowerCase()))
+  ).slice(0, Math.min(10, catWords().filter(w => w.exBM && w.exBM.toLowerCase().includes(w.bm.toLowerCase())).length));
+
+  if (pool.length < 4) { toast(S.lang==="en"?"Not enough sentence words in this category — try All Words":"Tidak cukup perkataan — cuba Semua Perkataan"); return; }
+
+  const s=sf(), c=ac(), t=L();
+  let qi=0, score=0;
+  const allPool = WORDS.filter(w => w.level===S.level);
+
+  // Pre-build options: correct word + 3 wrong ones
+  const opts = pool.map(w => shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
+
+  const C = el("scr-fts");
+  showGame("scr-fts");
+
+  function renderQ() {
+    if (qi >= pool.length) { scoreScreen(); return; }
+    const w = pool[qi], os = opts[qi];
+
+    // Build the sentence with the word blanked out (case-insensitive replace, first occurrence)
+    const re = new RegExp(w.bm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i');
+    const blankedBM = w.exBM.replace(re, `<span class="fts-blank">?</span>`);
+    // English sentence: blank the translation
+    const blankedEN = w.exEN;
+
+    C.innerHTML = `<div class="ms">
+      <div class="mhdr">
+        <button class="bb" onclick="exitGame()">←</button>
+        <div><div class="mht">✏️ ${t.fts||"Fill the sentence"}</div>
+        <div class="mhs">${qi+1} / ${pool.length} · ${t.scoreLabel} ${score}</div></div>
+      </div>
+      <div class="pbar"><div class="pfill f${s}" style="width:${qi/pool.length*100}%"></div></div>
+      <div class="fts-card">
+        <div style="font-size:.78rem;color:var(--mut);font-weight:700;text-align:center;margin-bottom:.75rem">
+          ${S.lang==="en"?"Choose the missing word:":"Pilih perkataan yang hilang:"}
+        </div>
+        <div class="fts-bm">${blankedBM}</div>
+        <div class="fts-en">"${blankedEN}"</div>
+      </div>
+      <div class="fts-opts">
+        ${os.map(o => `<button class="fts-opt" id="fo${o.id}" onclick="ftsAns('${w.id}','${o.id}')">${o.bm}</button>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  window.ftsAns = (correctId, chosenId) => {
+    const ok = chosenId === correctId;
+    if (ok) { score++; confetti(); }
+    srsUpdate(correctId, ok);
+    document.querySelectorAll(".fts-opt").forEach(b => b.disabled = true);
+    const correct_btn = el("fo"+correctId);
+    if (correct_btn) correct_btn.classList.add("rv");
+    if (!ok) {
+      const chosen_btn = el("fo"+chosenId);
+      if (chosen_btn) { chosen_btn.classList.add("no"); chosen_btn.classList.add("anim-shake"); }
+    }
+    setTimeout(() => { qi++; renderQ(); }, 1100);
+  };
+
+  function scoreScreen() {
+    // mark badge trigger
+    PROG.__fts_done = (PROG.__fts_done||0) + 1;
+    if (score === pool.length) PROG.__quiz_perfect = (PROG.__quiz_perfect||0) + 1;
+    debouncedSync();
+    checkBadges();
+    const pct = Math.round(score/pool.length*100);
+    C.innerHTML = `<div class="scscrn">
+      <div class="sce">${pct>=80?"🎉":pct>=50?"👍":"💪"}</div>
+      <div class="sct">${pct>=80?t.exc:pct>=50?t.good:t.try}</div>
+      <div class="scsu">${t.qComplete(pool.length)}</div>
+      <div class="scbig" style="color:${pct>=80?"var(--grn)":c}">${score}/${pool.length}</div>
+      <div class="scd">${t.scoreLabel} ${pct}%</div>
+      <div class="scbtns">
+        <button class="btn btn-${s}" onclick="exitGame()">${t.backHome}</button>
+        <button class="btn btn-o"    onclick="startFillSentence()">${t.playAgain}</button>
+      </div>
+    </div>`;
+    updateStats();
+  }
+  renderQ();
+}
+
+
+/* ═══════════════════════════════════════════
+   SHAREABLE PROGRESS CARD  (HTML Canvas)
+═══════════════════════════════════════════ */
+function openShareCard() {
+  closeSettings();
+  const modal = document.getElementById("share-modal");
+  modal.style.display = "flex";
+  renderProgressCard();
+}
+function closeShareModal(e) {
+  if (e.target === document.getElementById("share-modal"))
+    document.getElementById("share-modal").style.display = "none";
+}
+function renderProgressCard() {
+  const canvas = document.getElementById("share-canvas");
+  const ctx    = canvas.getContext("2d");
+  const W=640, H=360;
+  const mw = myW();
+  const mas  = masC();
+  const seen = seenC();
+  const due  = srsDueWords().length;
+  const xp   = seen * 10;
+  const isPri = S.level === "primary";
+  const accent = isPri ? "#FF6B35" : "#6C63FF";
+  const accentL= isPri ? "#FFF0EB" : "#F0EEFF";
+
+  // Background
+  ctx.fillStyle = "#FAFAF8";
+  ctx.beginPath();
+  ctx.roundRect(0,0,W,H,20);
+  ctx.fill();
+
+  // Top colour band
+  ctx.fillStyle = accent;
+  ctx.beginPath();
+  ctx.roundRect(0,0,W,100,{upperLeft:20,upperRight:20,lowerLeft:0,lowerRight:0});
+  ctx.fill();
+
+  // Flag emoji area (left side of band)
+  ctx.font = "52px serif";
+  ctx.fillText("🇲🇾", 32, 78);
+
+  // App name
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 28px 'Nunito', sans-serif";
+  ctx.fillText("BMvocab", 108, 52);
+  ctx.font = "16px 'Nunito', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,.85)";
+  ctx.fillText("Learn Bahasa Malaysia", 108, 76);
+
+  // Student name
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 18px 'Nunito', sans-serif";
+  const nameLabel = S.lang==="en" ? `Student: ${S.name}` : `Pelajar: ${S.name}`;
+  ctx.fillText(nameLabel, W - ctx.measureText(nameLabel).width - 28, 62);
+
+  // Level badge
+  const lvlLabel = isPri
+    ? (S.lang==="en" ? "Primary" : "Rendah")
+    : (S.lang==="en" ? "Secondary" : "Menengah");
+  const lvlW = ctx.measureText(lvlLabel).width + 20;
+  ctx.fillStyle = "rgba(255,255,255,.25)";
+  roundRect(ctx, W-lvlW-28, 72, lvlW, 22, 11);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 12px 'Nunito', sans-serif";
+  ctx.fillText(lvlLabel, W-lvlW-18, 87);
+
+  // Stat boxes
+  const stats = [
+    {icon:"⭐", val:xp,         label: S.lang==="en"?"XP":"Mata"},
+    {icon:"🔥", val:S.streak,   label: S.lang==="en"?"Streak":"Berturut"},
+    {icon:"✅", val:mas,         label: S.lang==="en"?"Mastered":"Dikuasai"},
+    {icon:"📖", val:seen,        label: S.lang==="en"?"Words seen":"Dilihat"},
+    {icon:"⚡", val:due,         label: S.lang==="en"?"Due today":"Ulangkaji"},
+  ];
+  const boxW=108, boxH=110, gap=12;
+  const totalW = stats.length*boxW + (stats.length-1)*gap;
+  const startX = (W-totalW)/2;
+  const boxY   = 126;
+
+  stats.forEach((s,i) => {
+    const x = startX + i*(boxW+gap);
+    // Card shadow
+    ctx.fillStyle = "rgba(0,0,0,.06)";
+    roundRect(ctx, x+3, boxY+3, boxW, boxH, 12); ctx.fill();
+    // Card bg
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, x, boxY, boxW, boxH, 12); ctx.fill();
+    // Accent border top
+    ctx.fillStyle = accent;
+    roundRect(ctx, x, boxY, boxW, 4, {upperLeft:12,upperRight:12,lowerLeft:0,lowerRight:0}); ctx.fill();
+    // Emoji
+    ctx.font = "26px serif";
+    ctx.fillText(s.icon, x + boxW/2 - 14, boxY+40);
+    // Value
+    ctx.fillStyle = accent;
+    ctx.font = "bold 26px 'Nunito', sans-serif";
+    const vStr = String(s.val);
+    ctx.fillText(vStr, x + boxW/2 - ctx.measureText(vStr).width/2, boxY+72);
+    // Label
+    ctx.fillStyle = "#6B7280";
+    ctx.font = "11px 'Nunito', sans-serif";
+    ctx.fillText(s.label, x + boxW/2 - ctx.measureText(s.label).width/2, boxY+94);
+  });
+
+  // Badge row
+  const earnedBadges = BADGE_DEFS.filter(b => EARNED_BADGES.has(b.id)).slice(0,8);
+  if (earnedBadges.length) {
+    const badgeY = boxY + boxH + 20;
+    ctx.fillStyle = "#6B7280";
+    ctx.font = "12px 'Nunito', sans-serif";
+    const badgeLbl = S.lang==="en" ? "Badges earned:" : "Lencana:";
+    ctx.fillText(badgeLbl, 32, badgeY);
+    ctx.font = "22px serif";
+    earnedBadges.forEach((b,i) => {
+      ctx.fillText(b.emoji, 32 + i*34, badgeY+26);
+    });
+  }
+
+  // Footer
+  ctx.fillStyle = "#D1D5DB";
+  ctx.fillRect(0, H-38, W, 1);
+  ctx.fillStyle = "#9CA3AF";
+  ctx.font = "12px 'Nunito', sans-serif";
+  const footerTxt = "bmvocab · shukrimaslan.github.io/bahasa";
+  ctx.fillText(footerTxt, W/2 - ctx.measureText(footerTxt).width/2, H-14);
+
+  // Date
+  const d = new Date().toLocaleDateString("en-MY",{day:"numeric",month:"short",year:"numeric"});
+  ctx.fillStyle = "#9CA3AF";
+  ctx.fillText(d, W-ctx.measureText(d).width-20, H-14);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  if (typeof r === "number") r = {upperLeft:r,upperRight:r,lowerLeft:r,lowerRight:r};
+  ctx.beginPath();
+  ctx.moveTo(x + r.upperLeft, y);
+  ctx.lineTo(x + w - r.upperRight, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r.upperRight);
+  ctx.lineTo(x+w, y+h-r.lowerRight);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r.lowerRight, y+h);
+  ctx.lineTo(x+r.lowerLeft, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r.lowerLeft);
+  ctx.lineTo(x, y+r.upperLeft);
+  ctx.quadraticCurveTo(x, y, x+r.upperLeft, y);
+  ctx.closePath();
+}
+
+function downloadCard() {
+  const canvas = document.getElementById("share-canvas");
+  const a = document.createElement("a");
+  a.download = `bmvocab-${(S.name||"student").replace(/\s+/g,"-").toLowerCase()}.png`;
+  a.href = canvas.toDataURL("image/png");
+  a.click();
 }
 
 /* ═══════════════════════════════════════════
