@@ -2,7 +2,7 @@
   "name": "BMvocab — Learn Bahasa Malaysia",
   "short_name": "BMvocab",
   "description": "Learn Bahasa Malaysia vocabulary the fun way",
-  "start_url": "./",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#FAFAF8",
   "theme_color": "#FF6B35",

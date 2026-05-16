@@ -128,7 +128,7 @@ The new category chip appears in the UI automatically — no HTML changes needed
 | Progress card | HTML Canvas API |
 | Hosting | GitHub Pages |
 
-No npm. No bundler. No framework. Two files you edit: `bm-vocab-app.html` and `bm-words.js`.
+No npm. No bundler. No framework. Two files you edit: `index.html` and `bm-words.js`.
 
 ---
 
@@ -136,7 +136,7 @@ No npm. No bundler. No framework. Two files you edit: `bm-vocab-app.html` and `b
 
 ```
 bahasa/
-├── bm-vocab-app.html   ← full app (HTML + CSS + JS in one file)
+├── index.html   ← full app (HTML + CSS + JS in one file)
 ├── bm-words.js         ← all 496 words + categories (edit this to add content)
 ├── sw.js               ← service worker (offline caching)
 ├── manifest.json       ← PWA manifest
@@ -175,7 +175,7 @@ The app uses Firebase for auth and Firestore. If you fork this repo and want you
 1. Create a project at [console.firebase.google.com](https://console.firebase.google.com)
 2. Enable **Authentication → Google** sign-in provider
 3. Create a **Firestore** database (start in test mode)
-4. Replace the `firebaseConfig` object in `bm-vocab-app.html` with your own
+4. Replace the `firebaseConfig` object in `index.html` with your own
 5. Set Firestore security rules:
 
 ```js
@@ -203,10 +203,10 @@ No build step needed. Just open the file:
 ```bash
 git clone https://github.com/shukrimaslan/bahasa.git
 cd bahasa
-# open bm-vocab-app.html in your browser
+# open index.html in your browser
 # OR serve locally to test Firebase auth:
 npx serve .
-# then open http://localhost:3000/bm-vocab-app.html
+# then open http://localhost:3000/index.html
 ```
 
 > Firebase Google sign-in requires a proper domain (not `file://`). Use `npx serve` or VS Code Live Server for local testing.
@@ -237,4 +237,4 @@ If this helped your students, give it a ⭐ on GitHub!
 
 ---
 
-*BMvocab is not affiliated with the Malaysian Ministry of Education or any official examination body. Word selections are based on common primary and secondary school curriculum.*
+*BMvocab is not affiliated with the Malaysian Ministry of Education or any official examination body. Word selections are based on common primary and secondary school curricula.*
