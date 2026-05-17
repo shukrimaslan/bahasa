@@ -368,6 +368,16 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
   font-size:.94rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:left}
 .qo:disabled{cursor:default}
 .qo.ok,.qo.rv{border-color:var(--grn);background:#F0FDF4;color:#166534}
+.hint-btn{width:100%;margin-top:10px;padding:10px;border-radius:10px;
+  border:1.5px dashed var(--ylw);background:#FFFBEB;
+  font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;
+  color:#92400e;cursor:pointer;transition:all .15s}
+.hint-btn:hover{background:#FEF3C7}
+.hint-btn:disabled{opacity:.4;cursor:default}
+.hint-reveal{margin-top:8px;padding:10px 14px;border-radius:10px;
+  background:#FEF3C7;border:1.5px solid var(--ylw);
+  font-size:.85rem;font-weight:700;color:#78350f;text-align:center;
+  animation:pop .25s ease forwards}
 .qo.no{border-color:var(--red);background:#FEF2F2;color:#991B1B}
 
 /* Speed round */
@@ -611,6 +621,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);
         <div class="mcd" id="t-mp2">Tap BM then English pair</div>
         <div class="mbadge mb-new">NEW</div>
       </div>
+      <div class="mc new-mode" onclick="startFillSentence()" style="grid-column:1/-1">
+        <div class="mci">✏️</div>
+        <div class="mct" id="t-fts">Fill the sentence</div>
+        <div class="mcd" id="t-fts2">Choose the missing word in a real BM sentence</div>
+        <div class="mbadge mb-new">NEW</div>
+      </div>
     </div>
   </div>
 
@@ -779,7 +795,7 @@ en:{
   stillLrn:"❌ Still learning", gotIt:"✅ Got it!", skip:"Skip →",
   recapBanner:"⚡ Quick Recap — last 10 words!",
   recapScore:(g,t)=>`${g} / ${t} correct!`, recapCont:"Continue flashcards →",
-  hardTag:"🔥 HARD — no emoji!", whatMeans:"What does this mean in English?",
+  hardTag:"🔥 HARD MODE", hintBtn:"💡 Hint (-5 pts)", hintUsed:"Hint used — no bonus points", whatMeans:"What does this mean in English?",
   backHome:"← Back to home", playAgain:"Play again",
   reviewed:n=>`Reviewed ${n} cards`, qComplete:n=>`${n} questions done`,
   scoreLabel:"Score:", gotLbl:"✅", missLbl:"❌",
@@ -823,7 +839,7 @@ bm:{
   stillLrn:"❌ Masih belajar", gotIt:"✅ Tahu!", skip:"Langkau →",
   recapBanner:"⚡ Ulangkaji Pantas — 10 perkataan tadi!",
   recapScore:(g,t)=>`${g} / ${t} betul!`, recapCont:"Teruskan kad imbas →",
-  hardTag:"🔥 SUSAH — tiada emoji!", whatMeans:"Apakah maksudnya dalam Bahasa Inggeris?",
+  hardTag:"🔥 MOD SUSAH", hintBtn:"💡 Petunjuk (-5 mata)", hintUsed:"Petunjuk digunakan — tiada mata bonus", whatMeans:"Apakah maksudnya dalam Bahasa Inggeris?",
   backHome:"← Kembali ke utama", playAgain:"Main semula",
   reviewed:n=>`Ulangkaji ${n} kad`, qComplete:n=>`${n} soalan selesai`,
   scoreLabel:"Markah:", gotLbl:"✅", missLbl:"❌",
@@ -1507,12 +1523,20 @@ function startQuiz() {
   const opts    = deck.map(w => shuffle([w, ...shuffle(allPool.filter(x=>x.id!==w.id)).slice(0,3)]));
   const C = el("scr-qz"); showGame("scr-qz");
 
+  let hintUsed = false;  // reset per question
+
   function renderQ() {
     if (qi >= deck.length) { scoreScreen(); return; }
     const w=deck[qi], os=opts[qi];
+    hintUsed = false;
     const qHead = S.hard
       ? `<div class="hard-tag">${t.hardTag}</div>`
       : `<div class="qemoji">${w.emoji}</div>`;
+    // Hint button only in hard mode
+    const hintHTML = S.hard
+      ? `<button class="hint-btn" id="hint-btn" onclick="useHint('${w.id}')">${t.hintBtn}</button>
+         <div class="hint-reveal" id="hint-reveal" style="display:none"></div>`
+      : "";
     C.innerHTML = `<div class="ms">
       <div class="mhdr">
         <button class="bb" onclick="exitGame()">←</button>
@@ -1530,11 +1554,36 @@ function startQuiz() {
           return `<button class="qo" id="qo${o.id}" onclick="qAns('${w.id}','${o.id}')">${lbl}</button>`;
         }).join("")}
       </div>
+      ${hintHTML}
     </div>`;
   }
+
+  // Hint reveals emoji + base word — costs 5 pts (score doesn't go up for this question)
+  window.useHint = (wordId) => {
+    if (hintUsed) return;
+    hintUsed = true;
+    score = Math.max(0, score - 5);   // deduct 5 pts from running score
+    const w = WORDS.find(x => x.id === wordId);
+    const baseInfo = w?.baseWord ? ` · Base: ${w.baseWord} (${w.baseWordEn})` : "";
+    const reveal = el("hint-reveal");
+    const hintBtnEl = el("hint-btn");
+    if (reveal) {
+      reveal.style.display = "block";
+      reveal.textContent = `${w?.emoji || "💡"} ${w?.category || ""}${baseInfo}`;
+    }
+    if (hintBtnEl) {
+      hintBtnEl.disabled = true;
+      hintBtnEl.textContent = t.hintUsed;
+    }
+    // update score display
+    const mhs = C.querySelector(".mhs");
+    if (mhs) mhs.textContent = `${qi+1} / ${deck.length} · ${t.scoreLabel} ${score}`;
+  };
+
   window.qAns = (correctId, chosenId) => {
     const ok = chosenId===correctId;
-    if (ok) { score++; confetti(); }
+    if (ok && !hintUsed) { score++; confetti(); }
+    else if (ok && hintUsed) { confetti(); } // right answer but no score bonus
     srsUpdate(correctId, ok);
     document.querySelectorAll(".qo").forEach(b=>b.disabled=true);
     el("qo"+correctId).classList.add("rv");
@@ -1772,29 +1821,44 @@ function startMatchPair() {
    Badges are defined here. To add one:
    push a new object to BADGE_DEFS.
 ═══════════════════════════════════════════ */
+// Badge level field: "all" = shown to both levels; "primary" / "secondary" = level-specific.
+// Students only see badges for their level — no discouragement from seeing unreachable ones.
 const BADGE_DEFS = [
-  {id:"first_word",  emoji:"🌱", label:"First word",  en:"Learned your first word!",         bm:"Pelajari perkataan pertama!",       check:()=> seenC()  >= 1},
-  {id:"ten_words",   emoji:"🔟", label:"10 words",    en:"Seen 10 words",                     bm:"Dilihat 10 perkataan",              check:()=> seenC()  >= 10},
-  {id:"fifty_words", emoji:"🌟", label:"50 words",    en:"Seen 50 words",                     bm:"Dilihat 50 perkataan",              check:()=> seenC()  >= 50},
-  {id:"hundred_words",emoji:"💯",label:"100 words",   en:"Seen 100 words — incredible!",      bm:"Dilihat 100 perkataan — luar biasa!",check:()=> seenC() >= 100},
-  {id:"first_master",emoji:"⭐", label:"First star",  en:"Mastered your first word",          bm:"Kuasai perkataan pertama",          check:()=> masC()   >= 1},
-  {id:"ten_master",  emoji:"🏅", label:"10 mastered", en:"Mastered 10 words",                 bm:"Kuasai 10 perkataan",               check:()=> masC()   >= 10},
-  {id:"fifty_master",emoji:"🥇", label:"50 mastered", en:"Mastered 50 words",                 bm:"Kuasai 50 perkataan",               check:()=> masC()   >= 50},
-  {id:"streak3",     emoji:"🔥", label:"3-day streak",en:"3 days in a row!",                  bm:"3 hari berturut-turut!",            check:()=> S.streak >= 3},
-  {id:"streak7",     emoji:"🔥🔥",label:"7-day streak",en:"7-day streak — on fire!",           bm:"Streak 7 hari — hebat!",            check:()=> S.streak >= 7},
-  {id:"streak30",    emoji:"👑", label:"30-day streak",en:"30-day streak — legendary!",       bm:"Streak 30 hari — legenda!",         check:()=> S.streak >= 30},
-  {id:"speed_demon", emoji:"⚡", label:"Speed demon", en:"Completed a speed round",           bm:"Selesaikan perlumbaan laju",        check:()=> (PROG.__speed_done||0) >= 1},
-  {id:"match_master",emoji:"🔗", label:"Match master",en:"Completed a match & pair",          bm:"Selesaikan padankan",               check:()=> (PROG.__match_done||0) >= 1},
-  {id:"sentence_pro",emoji:"✏️", label:"Sentence pro",en:"Completed fill-the-sentence",       bm:"Selesaikan isi tempat kosong",      check:()=> (PROG.__fts_done||0) >= 1},
-  {id:"quiz_ace",    emoji:"🎯", label:"Quiz ace",    en:"Scored 100% on a quiz",             bm:"Dapat 100% dalam kuiz",             check:()=> (PROG.__quiz_perfect||0) >= 1},
-  {id:"all_primary", emoji:"🏫", label:"Primary hero",en:"Seen every primary word",           bm:"Lihat semua perkataan rendah",      check:()=> WORDS.filter(w=>w.level==="primary").every(w=>PROG[w.id]?.attempts>0)},
+  // ── Shared milestones (both levels) ──
+  {id:"first_word",   lv:"all",       emoji:"🌱", label:"First word",    en:"Learned your first word!",        bm:"Pelajari perkataan pertama!",        check:()=> seenC()  >= 1},
+  {id:"ten_words",    lv:"all",       emoji:"🔟", label:"10 words",      en:"Seen 10 words",                   bm:"Dilihat 10 perkataan",               check:()=> seenC()  >= 10},
+  {id:"fifty_words",  lv:"all",       emoji:"🌟", label:"50 words",      en:"Seen 50 words",                   bm:"Dilihat 50 perkataan",               check:()=> seenC()  >= 50},
+  {id:"hundred_words",lv:"all",       emoji:"💯", label:"100 words",     en:"Seen 100 words — incredible!",    bm:"Dilihat 100 perkataan — luar biasa!",check:()=> seenC()  >= 100},
+  {id:"first_master", lv:"all",       emoji:"⭐", label:"First star",    en:"Mastered your first word",        bm:"Kuasai perkataan pertama",           check:()=> masC()   >= 1},
+  {id:"ten_master",   lv:"all",       emoji:"🏅", label:"10 mastered",   en:"Mastered 10 words",               bm:"Kuasai 10 perkataan",                check:()=> masC()   >= 10},
+  {id:"fifty_master", lv:"all",       emoji:"🥇", label:"50 mastered",   en:"Mastered 50 words",               bm:"Kuasai 50 perkataan",                check:()=> masC()   >= 50},
+  // ── Streak badges (both levels) ──
+  {id:"streak3",      lv:"all",       emoji:"🔥", label:"3-day streak",  en:"3 days in a row!",                bm:"3 hari berturut-turut!",             check:()=> S.streak >= 3},
+  {id:"streak7",      lv:"all",       emoji:"🔥🔥",label:"7-day streak", en:"7-day streak — keep it up!",      bm:"Streak 7 hari — teruskan!",          check:()=> S.streak >= 7},
+  {id:"streak30",     lv:"all",       emoji:"👑", label:"30-day streak", en:"30-day streak — legendary!",      bm:"Streak 30 hari — legenda!",          check:()=> S.streak >= 30},
+  // ── Game mode badges (both levels) ──
+  {id:"speedster",    lv:"all",       emoji:"⚡", label:"Speedster",     en:"Completed a speed round",         bm:"Selesaikan perlumbaan laju",         check:()=> (PROG.__speed_done||0) >= 1},
+  {id:"match_master", lv:"all",       emoji:"🔗", label:"Match master",  en:"Completed a match & pair",        bm:"Selesaikan padankan",                check:()=> (PROG.__match_done||0) >= 1},
+  {id:"sentence_pro", lv:"all",       emoji:"✏️", label:"Sentence pro",  en:"Completed fill-the-sentence",     bm:"Selesaikan isi tempat kosong",       check:()=> (PROG.__fts_done||0) >= 1},
+  {id:"quiz_ace",     lv:"all",       emoji:"🎯", label:"Quiz ace",      en:"Scored 100% on a quiz",           bm:"Dapat 100% dalam kuiz",              check:()=> (PROG.__quiz_perfect||0) >= 1},
+  // ── Primary-only badges ──
+  {id:"pri_hero",     lv:"primary",   emoji:"🏫", label:"Primary hero",  en:"Seen every primary word",         bm:"Lihat semua perkataan rendah",       check:()=> WORDS.filter(w=>w.level==="primary").every(w=>PROG[w.id]?.attempts>0)},
+  {id:"upsr_star",    lv:"primary",   emoji:"📝", label:"UPSR star",     en:"Mastered all UPSR vocab",         bm:"Kuasai semua vocab UPSR",            check:()=> WORDS.filter(w=>w.category==="upsr").every(w=>PROG[w.id]?.mastered)},
+  {id:"peribahasa_pro",lv:"primary",  emoji:"📜", label:"Peribahasa pro",en:"Seen all peribahasa",             bm:"Lihat semua peribahasa",             check:()=> WORDS.filter(w=>w.category==="peribahasa").every(w=>PROG[w.id]?.attempts>0)},
+  // ── Secondary-only badges ──
+  {id:"sec_scholar",  lv:"secondary", emoji:"📘", label:"Scholar",       en:"Seen every secondary word",       bm:"Lihat semua perkataan menengah",     check:()=> WORDS.filter(w=>w.level==="secondary").every(w=>PROG[w.id]?.attempts>0)},
+  {id:"pt3_ready",    lv:"secondary", emoji:"🎓", label:"PT3 ready",     en:"Mastered all PT3 vocab",          bm:"Kuasai semua vocab PT3",             check:()=> WORDS.filter(w=>w.category==="pt3").every(w=>PROG[w.id]?.mastered)},
+  {id:"grammar_guru", lv:"secondary", emoji:"📖", label:"Grammar guru",  en:"Mastered all grammar terms",      bm:"Kuasai semua tatabahasa",            check:()=> WORDS.filter(w=>w.category==="tatabahasa").every(w=>PROG[w.id]?.mastered)},
 ];
+
+// Filter badges by current student level for display and checking
+const activeBadges = () => BADGE_DEFS.filter(b => b.lv === "all" || b.lv === S.level);
 
 let EARNED_BADGES = new Set();
 
 function checkBadges(silent=false) {
   let newlyEarned = [];
-  BADGE_DEFS.forEach(b => {
+  activeBadges().forEach(b => {
     if (!EARNED_BADGES.has(b.id) && b.check()) {
       EARNED_BADGES.add(b.id);
       PROG["__badge_"+b.id] = 1;
@@ -1824,7 +1888,15 @@ function showBadgeToast(b) {
 
 function renderBadgeShelf() {
   const shelf = el("badge-shelf"); if (!shelf) return;
-  shelf.innerHTML = BADGE_DEFS.map(b => {
+  const ab = activeBadges();
+  // Header: earned count
+  const earnedCount = ab.filter(b => EARNED_BADGES.has(b.id)).length;
+  const headerLbl = S.lang==="en"
+    ? `${earnedCount} / ${ab.length} badges earned`
+    : `${earnedCount} / ${ab.length} lencana diperoleh`;
+  shelf.innerHTML = `<div style="width:100%;font-size:.75rem;color:var(--mut);font-weight:700;
+    margin-bottom:8px">${headerLbl}</div>` +
+  ab.map(b => {
     const earned = EARNED_BADGES.has(b.id);
     const tip = S.lang === "en" ? b.en : b.bm;
     return `<div class="badge-icon ${earned ? "earned" : "locked"}" title="${tip}">

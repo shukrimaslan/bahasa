@@ -1021,5 +1021,372 @@ CATEGORIES.primary.push(
   {id:"upsr", label:"UPSR Vocab", labelBM:"Vocab UPSR", icon:"📝"}
 );
 
+// ════════════════════════════════════════════════════════════
+// NUMBERS 6–100 + ORDINALS + DAYS + MONTHS  — 52 words
+// Category: "nombor"  Level: "primary"
+// ════════════════════════════════════════════════════════════
+
+WORDS.push(
+
+  // ── Cardinal numbers 6–20 ─────────────────────────────────
+  {id:"num-006",bm:"enam",      en:"six",        category:"nombor",level:"primary",difficulty:1,emoji:"6️⃣",exBM:"Saya ada enam buku.",      exEN:"I have six books."},
+  {id:"num-007",bm:"tujuh",     en:"seven",      category:"nombor",level:"primary",difficulty:1,emoji:"7️⃣",exBM:"Seminggu ada tujuh hari.", exEN:"A week has seven days."},
+  {id:"num-008",bm:"lapan",     en:"eight",      category:"nombor",level:"primary",difficulty:1,emoji:"8️⃣",exBM:"Lapan orang murid hadir.",  exEN:"Eight students are present."},
+  {id:"num-009",bm:"sembilan",  en:"nine",       category:"nombor",level:"primary",difficulty:1,emoji:"9️⃣",exBM:"Sembilan hari lagi.",       exEN:"Nine more days."},
+  {id:"num-010",bm:"sepuluh",   en:"ten",        category:"nombor",level:"primary",difficulty:1,emoji:"🔟",exBM:"Sepuluh minit lagi.",       exEN:"Ten more minutes."},
+  {id:"num-011",bm:"sebelas",   en:"eleven",     category:"nombor",level:"primary",difficulty:1,emoji:"1️⃣1️⃣",exBM:"Sebelas orang peserta.",  exEN:"Eleven participants."},
+  {id:"num-012",bm:"dua belas", en:"twelve",     category:"nombor",level:"primary",difficulty:1,emoji:"1️⃣2️⃣",exBM:"Setahun ada dua belas bulan.",exEN:"A year has twelve months."},
+  {id:"num-013",bm:"tiga belas",en:"thirteen",   category:"nombor",level:"primary",difficulty:1,emoji:"🔢",exBM:"Tiga belas tahun umurnya.", exEN:"She is thirteen years old."},
+  {id:"num-014",bm:"empat belas",en:"fourteen",  category:"nombor",level:"primary",difficulty:1,emoji:"🔢",exBM:"Empat belas orang hadir.",  exEN:"Fourteen people attended."},
+  {id:"num-015",bm:"lima belas",en:"fifteen",    category:"nombor",level:"primary",difficulty:1,emoji:"🔢",exBM:"Lima belas minit perjalanan.",exEN:"Fifteen minutes journey."},
+  {id:"num-016",bm:"enam belas",en:"sixteen",    category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Enam belas soalan dalam ujian.",exEN:"Sixteen questions in the test."},
+  {id:"num-017",bm:"tujuh belas",en:"seventeen", category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Dia berumur tujuh belas tahun.",exEN:"She is seventeen years old."},
+  {id:"num-018",bm:"lapan belas",en:"eighteen",  category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Lapan belas pelajar dalam kelas.",exEN:"Eighteen students in the class."},
+  {id:"num-019",bm:"sembilan belas",en:"nineteen",category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Sembilan belas tahun yang lalu.",exEN:"Nineteen years ago."},
+  {id:"num-020",bm:"dua puluh", en:"twenty",     category:"nombor",level:"primary",difficulty:1,emoji:"2️⃣0️⃣",exBM:"Dua puluh orang murid.",   exEN:"Twenty students."},
+
+  // ── Tens 30–100 ───────────────────────────────────────────
+  {id:"num-030",bm:"tiga puluh",  en:"thirty",   category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Tiga puluh hari dalam sebulan.",exEN:"Thirty days in a month."},
+  {id:"num-040",bm:"empat puluh", en:"forty",    category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Empat puluh minit berlalu.",  exEN:"Forty minutes passed."},
+  {id:"num-050",bm:"lima puluh",  en:"fifty",    category:"nombor",level:"primary",difficulty:2,emoji:"5️⃣0️⃣",exBM:"Lima puluh orang hadir.",   exEN:"Fifty people attended."},
+  {id:"num-060",bm:"enam puluh",  en:"sixty",    category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Enam puluh saat sama dengan satu minit.",exEN:"Sixty seconds equals one minute."},
+  {id:"num-070",bm:"tujuh puluh", en:"seventy",  category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Datuk saya berumur tujuh puluh tahun.",exEN:"My grandfather is seventy years old."},
+  {id:"num-080",bm:"lapan puluh", en:"eighty",   category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Lapan puluh peratus lulus.",  exEN:"Eighty percent passed."},
+  {id:"num-090",bm:"sembilan puluh",en:"ninety", category:"nombor",level:"primary",difficulty:2,emoji:"🔢",exBM:"Sembilan puluh sen bakinya.", exEN:"Ninety cents change."},
+  {id:"num-100",bm:"seratus",     en:"one hundred",category:"nombor",level:"primary",difficulty:1,emoji:"💯",exBM:"Saya dapat seratus markah!", exEN:"I got one hundred marks!"},
+
+  // ── Ordinals ──────────────────────────────────────────────
+  {id:"num-ord-1",bm:"pertama",   en:"first",    category:"nombor",level:"primary",difficulty:1,emoji:"🥇",exBM:"Dia mendapat tempat pertama.", exEN:"She got first place."},
+  {id:"num-ord-2",bm:"kedua",     en:"second",   category:"nombor",level:"primary",difficulty:1,emoji:"🥈",exBM:"Saya duduk di baris kedua.",    exEN:"I sit in the second row."},
+  {id:"num-ord-3",bm:"ketiga",    en:"third",    category:"nombor",level:"primary",difficulty:1,emoji:"🥉",exBM:"Dia menang hadiah ketiga.",      exEN:"He won the third prize."},
+  {id:"num-ord-4",bm:"keempat",   en:"fourth",   category:"nombor",level:"primary",difficulty:2,emoji:"4️⃣",exBM:"Ini percubaan keempat saya.",   exEN:"This is my fourth attempt."},
+  {id:"num-ord-5",bm:"kelima",    en:"fifth",    category:"nombor",level:"primary",difficulty:2,emoji:"5️⃣",exBM:"Tingkat kelima hospital itu.",   exEN:"The fifth floor of that hospital."},
+
+  // ── Days of the week ──────────────────────────────────────
+  {id:"hari-1",bm:"Isnin",       en:"Monday",    category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Sekolah bermula pada hari Isnin.",  exEN:"School starts on Monday."},
+  {id:"hari-2",bm:"Selasa",      en:"Tuesday",   category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Ujian BM pada hari Selasa.",         exEN:"BM test on Tuesday."},
+  {id:"hari-3",bm:"Rabu",        en:"Wednesday", category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Kelas seni pada hari Rabu.",          exEN:"Art class on Wednesday."},
+  {id:"hari-4",bm:"Khamis",      en:"Thursday",  category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Latihan bola pada hari Khamis.",      exEN:"Football practice on Thursday."},
+  {id:"hari-5",bm:"Jumaat",      en:"Friday",    category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Sekolah tamat awal pada hari Jumaat.",exEN:"School ends early on Friday."},
+  {id:"hari-6",bm:"Sabtu",       en:"Saturday",  category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Saya rehat pada hari Sabtu.",         exEN:"I rest on Saturday."},
+  {id:"hari-7",bm:"Ahad",        en:"Sunday",    category:"nombor",level:"primary",difficulty:1,emoji:"📅",exBM:"Keluarga saya keluar pada hari Ahad.",exEN:"My family goes out on Sunday."},
+
+  // ── Months of the year ────────────────────────────────────
+  {id:"bln-01",bm:"Januari",     en:"January",   category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Tahun baru bermula pada Januari.",   exEN:"The new year starts in January."},
+  {id:"bln-02",bm:"Februari",    en:"February",  category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Hari Valentine pada 14 Februari.",   exEN:"Valentine's Day is on 14 February."},
+  {id:"bln-03",bm:"Mac",         en:"March",     category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Cuti sekolah pada bulan Mac.",        exEN:"School holiday in March."},
+  {id:"bln-04",bm:"April",       en:"April",     category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Peperiksaan pada bulan April.",       exEN:"Examinations in April."},
+  {id:"bln-05",bm:"Mei",         en:"May",       category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Hari Ibu disambut pada bulan Mei.",   exEN:"Mother's Day is celebrated in May."},
+  {id:"bln-06",bm:"Jun",         en:"June",      category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Cuti panjang bermula Jun.",           exEN:"Long holidays start in June."},
+  {id:"bln-07",bm:"Julai",       en:"July",      category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Malaysia merdeka pada bulan Ogos.",   exEN:"Malaysia's independence is in August."},
+  {id:"bln-08",bm:"Ogos",        en:"August",    category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Sambutan Merdeka pada 31 Ogos.",      exEN:"Independence Day is on 31 August."},
+  {id:"bln-09",bm:"September",   en:"September", category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Sekolah bermula semula September.",   exEN:"School resumes in September."},
+  {id:"bln-10",bm:"Oktober",     en:"October",   category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Peperiksaan UPSR pada Oktober.",      exEN:"UPSR examinations in October."},
+  {id:"bln-11",bm:"November",    en:"November",  category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Keputusan peperiksaan pada November.", exEN:"Examination results in November."},
+  {id:"bln-12",bm:"Disember",    en:"December",  category:"nombor",level:"primary",difficulty:1,emoji:"📆",exBM:"Cuti akhir tahun pada Disember.",     exEN:"Year-end holidays in December."},
+
+); // end Numbers WORDS.push
+
+
+// ════════════════════════════════════════════════════════════
+// TATABAHASA — 30 BM grammar terms
+// Category: "tatabahasa"  Level: "secondary"
+// ════════════════════════════════════════════════════════════
+
+WORDS.push(
+
+  // ── Parts of speech (Kata) ────────────────────────────────
+  {id:"tata-001",bm:"kata nama",       en:"noun",               category:"tatabahasa",level:"secondary",difficulty:1,emoji:"📌",
+   exBM:"'Kucing' ialah kata nama.",           exEN:"'Kucing' (cat) is a noun."},
+  {id:"tata-002",bm:"kata kerja",       en:"verb",               category:"tatabahasa",level:"secondary",difficulty:1,emoji:"⚡",
+   exBM:"'Berlari' ialah kata kerja.",          exEN:"'Berlari' (run) is a verb."},
+  {id:"tata-003",bm:"kata adjektif",    en:"adjective",          category:"tatabahasa",level:"secondary",difficulty:1,emoji:"✨",
+   exBM:"'Cantik' ialah kata adjektif.",        exEN:"'Cantik' (beautiful) is an adjective."},
+  {id:"tata-004",bm:"kata adverba",     en:"adverb",             category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🔄",
+   exBM:"'Dengan cepat' ialah kata adverba.",   exEN:"'With speed' is an adverb."},
+  {id:"tata-005",bm:"kata ganti nama",  en:"pronoun",            category:"tatabahasa",level:"secondary",difficulty:2,emoji:"👤",
+   exBM:"'Saya', 'dia', 'mereka' ialah kata ganti nama.",exEN:"'Saya', 'dia', 'mereka' are pronouns."},
+  {id:"tata-006",bm:"kata hubung",      en:"conjunction / connective",category:"tatabahasa",level:"secondary",difficulty:1,emoji:"🔗",
+   exBM:"'Dan', 'tetapi', 'kerana' ialah kata hubung.",exEN:"'And', 'but', 'because' are conjunctions."},
+  {id:"tata-007",bm:"kata sendi nama",  en:"preposition",        category:"tatabahasa",level:"secondary",difficulty:2,emoji:"📍",
+   exBM:"'Di', 'ke', 'dari' ialah kata sendi nama.",exEN:"'Di', 'ke', 'dari' are prepositions."},
+  {id:"tata-008",bm:"kata tanya",       en:"question word / interrogative",category:"tatabahasa",level:"secondary",difficulty:1,emoji:"❓",
+   exBM:"'Apa', 'siapa', 'bila' ialah kata tanya.",exEN:"'What', 'who', 'when' are question words."},
+  {id:"tata-009",bm:"kata seru",        en:"exclamation / interjection",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"❗",
+   exBM:"'Aduh!', 'Wah!' ialah kata seru.",    exEN:"'Ouch!', 'Wow!' are exclamations."},
+  {id:"tata-010",bm:"kata perintah",    en:"imperative / command word",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🗣️",
+   exBM:"'Tolong tutup pintu' menggunakan kata perintah.",exEN:"'Please close the door' uses imperative."},
+
+  // ── Sentence structure (Ayat) ─────────────────────────────
+  {id:"tata-011",bm:"ayat",             en:"sentence",           category:"tatabahasa",level:"secondary",difficulty:1,emoji:"📝",
+   exBM:"Ayat mestilah lengkap dengan subjek dan predikat.",exEN:"A sentence must have a subject and predicate."},
+  {id:"tata-012",bm:"ayat penyata",     en:"statement / declarative sentence",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"📄",
+   exBM:"'Saya pergi ke sekolah' ialah ayat penyata.",exEN:"'I go to school' is a declarative sentence."},
+  {id:"tata-013",bm:"ayat tanya",       en:"question / interrogative sentence",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"❓",
+   exBM:"'Kamu pergi ke mana?' ialah ayat tanya.",exEN:"'Where are you going?' is a question sentence."},
+  {id:"tata-014",bm:"ayat perintah",    en:"imperative sentence", category:"tatabahasa",level:"secondary",difficulty:2,emoji:"📢",
+   exBM:"'Duduk!' ialah ayat perintah.",        exEN:"'Sit down!' is an imperative sentence."},
+  {id:"tata-015",bm:"ayat seruan",      en:"exclamatory sentence",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"❗",
+   exBM:"'Alangkah cantiknya bunga itu!' ialah ayat seruan.",exEN:"'How beautiful that flower is!' is an exclamatory sentence."},
+  {id:"tata-016",bm:"ayat tunggal",     en:"simple sentence",    category:"tatabahasa",level:"secondary",difficulty:2,emoji:"➡️",
+   baseWord:"tunggal",baseWordEn:"single / simple",
+   exBM:"'Ali berlari' ialah ayat tunggal.",    exEN:"'Ali runs' is a simple sentence."},
+  {id:"tata-017",bm:"ayat majmuk",      en:"compound / complex sentence",category:"tatabahasa",level:"secondary",difficulty:3,emoji:"🔀",
+   baseWord:"majmuk",baseWordEn:"compound / multiple",
+   exBM:"Ayat majmuk mengandungi dua ayat yang dicantumkan.",exEN:"A compound sentence contains two joined clauses."},
+  {id:"tata-018",bm:"subjek",           en:"subject",            category:"tatabahasa",level:"secondary",difficulty:1,emoji:"👤",
+   exBM:"'Ali' ialah subjek dalam ayat 'Ali bermain bola'.",exEN:"'Ali' is the subject in 'Ali plays football'."},
+  {id:"tata-019",bm:"predikat",         en:"predicate",          category:"tatabahasa",level:"secondary",difficulty:2,emoji:"📝",
+   exBM:"'Bermain bola' ialah predikat ayat itu.",exEN:"'Plays football' is the predicate of that sentence."},
+  {id:"tata-020",bm:"objek",            en:"object",             category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🎯",
+   exBM:"'Bola' ialah objek dalam 'Ali menendang bola'.",exEN:"'Ball' is the object in 'Ali kicks the ball'."},
+
+  // ── Word formation (Pembentukan kata) ────────────────────
+  {id:"tata-021",bm:"kata dasar",       en:"root word / base word",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🌱",
+   baseWord:"dasar",baseWordEn:"base / foundation",
+   exBM:"'Jalan' ialah kata dasar bagi 'berjalan'.",exEN:"'Jalan' is the root word for 'berjalan' (walk)."},
+  {id:"tata-022",bm:"imbuhan",          en:"affix (prefix or suffix)",category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🔧",
+   exBM:"'me-', 'ber-', '-an' ialah imbuhan Bahasa Malaysia.",exEN:"'me-', 'ber-', '-an' are BM affixes."},
+  {id:"tata-023",bm:"awalan",           en:"prefix",             category:"tatabahasa",level:"secondary",difficulty:2,emoji:"⬅️",
+   baseWord:"awal",baseWordEn:"early / beginning",
+   exBM:"'me-' dalam 'menulis' ialah awalan.",   exEN:"'me-' in 'menulis' (write) is a prefix."},
+  {id:"tata-024",bm:"akhiran",          en:"suffix",             category:"tatabahasa",level:"secondary",difficulty:2,emoji:"➡️",
+   baseWord:"akhir",baseWordEn:"end / final",
+   exBM:"'-an' dalam 'makanan' ialah akhiran.",  exEN:"'-an' in 'makanan' (food) is a suffix."},
+  {id:"tata-025",bm:"kata ganda",       en:"reduplication / reduplicated word",category:"tatabahasa",level:"secondary",difficulty:3,emoji:"🔁",
+   baseWord:"ganda",baseWordEn:"double / multiply",
+   exBM:"'Kanak-kanak', 'buku-buku' ialah kata ganda.",exEN:"'Kanak-kanak' (children), 'buku-buku' (books) are reduplicated words."},
+
+  // ── Punctuation & writing (Tanda baca) ───────────────────
+  {id:"tata-026",bm:"tanda baca",       en:"punctuation mark",   category:"tatabahasa",level:"secondary",difficulty:1,emoji:"✒️",
+   exBM:"Gunakan tanda baca yang betul dalam penulisan.",exEN:"Use correct punctuation marks in writing."},
+  {id:"tata-027",bm:"tanda noktah",     en:"full stop / period", category:"tatabahasa",level:"secondary",difficulty:1,emoji:"⏺️",
+   baseWord:"noktah",baseWordEn:"full stop",
+   exBM:"Setiap ayat tamat dengan tanda noktah.",exEN:"Every sentence ends with a full stop."},
+  {id:"tata-028",bm:"tanda koma",       en:"comma",              category:"tatabahasa",level:"secondary",difficulty:1,emoji:"，",
+   exBM:"Tanda koma digunakan untuk memisahkan senarai.",exEN:"A comma is used to separate items in a list."},
+  {id:"tata-029",bm:"kata majmuk",      en:"compound word",      category:"tatabahasa",level:"secondary",difficulty:3,emoji:"🔗",
+   baseWord:"majmuk",baseWordEn:"compound / multiple",
+   exBM:"'Meja makan', 'kapal terbang' ialah kata majmuk.",exEN:"'Dining table', 'airplane' are compound words."},
+  {id:"tata-030",bm:"sinonim",          en:"synonym",            category:"tatabahasa",level:"secondary",difficulty:2,emoji:"🔄",
+   exBM:"'Cantik' dan 'indah' ialah sinonim.",   exEN:"'Cantik' and 'indah' are synonyms (both mean beautiful)."},
+
+); // end Tatabahasa WORDS.push
+
+
+// ════════════════════════════════════════════════════════════
+// PT3 EXAM VOCABULARY — 40 words  (Form 1–3 level)
+// Category: "pt3"  Level: "secondary"
+// Covers: essay connectors, formal verbs, civic & moral topics
+// ════════════════════════════════════════════════════════════
+
+WORDS.push(
+
+  // ── High-value essay connectors ──────────────────────────
+  {id:"pt3-001",bm:"antaranya",       en:"among them / including",category:"pt3",level:"secondary",difficulty:2,emoji:"📋",
+   exBM:"Terdapat beberapa sebab, antaranya kecuaian manusia.",exEN:"There are several reasons, among them human negligence."},
+  {id:"pt3-002",bm:"sehubungan itu",  en:"in connection with that / therefore",category:"pt3",level:"secondary",difficulty:3,emoji:"🔗",
+   exBM:"Sehubungan itu, kita mesti bertindak segera.",exEN:"In connection with that, we must act immediately."},
+  {id:"pt3-003",bm:"lantaran itu",    en:"as a result / consequently",category:"pt3",level:"secondary",difficulty:3,emoji:"➡️",
+   exBM:"Lantaran itu, masalah ini semakin serius.",exEN:"As a result, this problem is becoming more serious."},
+  {id:"pt3-004",bm:"namun begitu",    en:"nevertheless / however",category:"pt3",level:"secondary",difficulty:2,emoji:"↩️",
+   exBM:"Namun begitu, kita tidak boleh berputus asa.",exEN:"Nevertheless, we must not give up."},
+  {id:"pt3-005",bm:"malahan",         en:"in fact / moreover / even",category:"pt3",level:"secondary",difficulty:2,emoji:"➕",
+   exBM:"Malahan, keadaan itu boleh menjadi lebih buruk.",exEN:"In fact, the situation could get even worse."},
+  {id:"pt3-006",bm:"sekiranya",       en:"if / should",           category:"pt3",level:"secondary",difficulty:2,emoji:"🤞",
+   exBM:"Sekiranya kita bersatu, masalah ini boleh diatasi.",exEN:"If we unite, this problem can be overcome."},
+  {id:"pt3-007",bm:"tegasnya",        en:"in short / to put it firmly",category:"pt3",level:"secondary",difficulty:3,emoji:"🎯",
+   exBM:"Tegasnya, disiplin diri adalah kunci kejayaan.",exEN:"In short, self-discipline is the key to success."},
+  {id:"pt3-008",bm:"rumusannya",      en:"in summary / to summarise",category:"pt3",level:"secondary",difficulty:2,emoji:"📝",
+   baseWord:"rumus",baseWordEn:"formula / summarise",
+   exBM:"Rumusannya, kita perlu bekerjasama.",   exEN:"In summary, we need to cooperate."},
+  {id:"pt3-009",bm:"jelaslah bahawa", en:"it is clear that",       category:"pt3",level:"secondary",difficulty:2,emoji:"💡",
+   exBM:"Jelaslah bahawa teknologi membawa manfaat.",exEN:"It is clear that technology brings benefits."},
+  {id:"pt3-010",bm:"tidak dapat dinafikan",en:"it cannot be denied / undeniably",category:"pt3",level:"secondary",difficulty:3,emoji:"✅",
+   exBM:"Tidak dapat dinafikan bahawa pendidikan penting.",exEN:"It cannot be denied that education is important."},
+
+  // ── Formal verbs for essays ──────────────────────────────
+  {id:"pt3-011",bm:"menangani",       en:"to handle / address / tackle",category:"pt3",level:"secondary",difficulty:2,emoji:"🔧",
+   baseWord:"tangan",baseWordEn:"hand",
+   exBM:"Kita mesti menangani masalah ini dengan bijak.",exEN:"We must handle this problem wisely."},
+  {id:"pt3-012",bm:"mengambil berat", en:"to care about / take concern",category:"pt3",level:"secondary",difficulty:2,emoji:"❤️",
+   exBM:"Ibu bapa perlu mengambil berat tentang pelajaran anak.",exEN:"Parents need to care about their children's education."},
+  {id:"pt3-013",bm:"memainkan peranan",en:"to play a role",        category:"pt3",level:"secondary",difficulty:2,emoji:"🎭",
+   exBM:"Guru memainkan peranan penting dalam pendidikan.",exEN:"Teachers play an important role in education."},
+  {id:"pt3-014",bm:"mengamalkan",     en:"to practise / apply",    category:"pt3",level:"secondary",difficulty:2,emoji:"🔄",
+   baseWord:"amal",baseWordEn:"practise / deed",
+   exBM:"Kita perlu mengamalkan hidup sihat setiap hari.",exEN:"We need to practise a healthy lifestyle every day."},
+  {id:"pt3-015",bm:"memupuk",         en:"to nurture / cultivate / foster",category:"pt3",level:"secondary",difficulty:3,emoji:"🌱",
+   baseWord:"pupuk",baseWordEn:"fertilise / nurture",
+   exBM:"Ibu bapa perlu memupuk minat membaca dalam diri anak.",exEN:"Parents need to nurture a love of reading in their children."},
+  {id:"pt3-016",bm:"menerapkan",      en:"to instil / inculcate",  category:"pt3",level:"secondary",difficulty:3,emoji:"💉",
+   baseWord:"terap",baseWordEn:"instil / apply",
+   exBM:"Guru menerapkan nilai murni dalam diri murid.",exEN:"Teachers instil noble values in students."},
+  {id:"pt3-017",bm:"mendedahkan",     en:"to expose / reveal",     category:"pt3",level:"secondary",difficulty:2,emoji:"👁️",
+   baseWord:"dedah",baseWordEn:"expose",
+   exBM:"Kita tidak harus mendedahkan maklumat peribadi.",exEN:"We should not expose personal information."},
+  {id:"pt3-018",bm:"menggalakkan",    en:"to encourage / promote", category:"pt3",level:"secondary",difficulty:2,emoji:"📣",
+   baseWord:"galak",baseWordEn:"encourage",
+   exBM:"Guru menggalakkan murid belajar bersungguh-sungguh.",exEN:"Teachers encourage students to study wholeheartedly."},
+  {id:"pt3-019",bm:"menyedari",       en:"to realise / be aware of",category:"pt3",level:"secondary",difficulty:2,emoji:"💡",
+   baseWord:"sedar",baseWordEn:"aware / conscious",
+   exBM:"Kita perlu menyedari kepentingan menjaga alam sekitar.",exEN:"We need to realise the importance of caring for the environment."},
+  {id:"pt3-020",bm:"mengharungi",     en:"to face / go through (challenges)",category:"pt3",level:"secondary",difficulty:3,emoji:"⛵",
+   exBM:"Beliau berjaya mengharungi pelbagai cabaran hidup.",exEN:"She successfully faced various life challenges."},
+
+  // ── PT3 civic & moral vocabulary ─────────────────────────
+  {id:"pt3-021",bm:"kesedaran sivik", en:"civic awareness",        category:"pt3",level:"secondary",difficulty:3,emoji:"🏛️",
+   baseWord:"sivik",baseWordEn:"civic",
+   exBM:"Kesedaran sivik perlu ditanam dalam diri setiap warganegara.",exEN:"Civic awareness must be instilled in every citizen."},
+  {id:"pt3-022",bm:"semangat kekitaan",en:"sense of belonging / togetherness",category:"pt3",level:"secondary",difficulty:3,emoji:"🤝",
+   exBM:"Semangat kekitaan mengeratkan hubungan masyarakat.",exEN:"A sense of togetherness strengthens community bonds."},
+  {id:"pt3-023",bm:"prihatin",        en:"concerned / caring",     category:"pt3",level:"secondary",difficulty:2,emoji:"💙",
+   exBM:"Jadilah warganegara yang prihatin terhadap masyarakat.",exEN:"Be a citizen who is concerned about the community."},
+  {id:"pt3-024",bm:"berdikari",       en:"independent / self-reliant",category:"pt3",level:"secondary",difficulty:2,emoji:"💪",
+   baseWord:"diri",baseWordEn:"self",
+   exBM:"Pelajar perlu berdikari dalam menyelesaikan masalah.",exEN:"Students need to be self-reliant in solving problems."},
+  {id:"pt3-025",bm:"berhemat",        en:"prudent / thrifty",      category:"pt3",level:"secondary",difficulty:2,emoji:"💰",
+   exBM:"Kita perlu berhemat dalam berbelanja.",   exEN:"We need to be prudent when spending."},
+  {id:"pt3-026",bm:"bermasyarakat",   en:"to live in society / social",category:"pt3",level:"secondary",difficulty:2,emoji:"👥",
+   baseWord:"masyarakat",baseWordEn:"society",
+   exBM:"Kita perlu hidup bermasyarakat dengan penuh harmoni.",exEN:"We must live socially in full harmony."},
+  {id:"pt3-027",bm:"kepedulian",      en:"concern / caring attitude",category:"pt3",level:"secondary",difficulty:3,emoji:"🤲",
+   baseWord:"peduli",baseWordEn:"care / concern",
+   exBM:"Kepedulian terhadap orang lain mencerminkan nilai murni.",exEN:"Concern for others reflects noble values."},
+  {id:"pt3-028",bm:"jati diri",       en:"identity / sense of self",category:"pt3",level:"secondary",difficulty:3,emoji:"🪞",
+   exBM:"Kita perlu mempertahankan jati diri bangsa.",exEN:"We must defend our national identity."},
+  {id:"pt3-029",bm:"warga emas",      en:"senior citizen / elderly",category:"pt3",level:"secondary",difficulty:2,emoji:"👴",
+   exBM:"Kita perlu menghormati dan menjaga warga emas.",exEN:"We must respect and care for senior citizens."},
+  {id:"pt3-030",bm:"kelestarian",     en:"sustainability / preservation",category:"pt3",level:"secondary",difficulty:3,emoji:"♻️",
+   baseWord:"lestari",baseWordEn:"sustainable / preserved",
+   exBM:"Kelestarian alam perlu dijaga untuk generasi akan datang.",exEN:"Environmental sustainability must be preserved for future generations."},
+
+  // ── PT3 descriptive & narrative vocabulary ───────────────
+  {id:"pt3-031",bm:"terpana",         en:"stunned / mesmerised / spellbound",category:"pt3",level:"secondary",difficulty:3,emoji:"😮",
+   exBM:"Dia terpana melihat keindahan alam semula jadi.",exEN:"She was mesmerised by the beauty of nature."},
+  {id:"pt3-032",bm:"terharu",         en:"touched / moved (emotionally)",category:"pt3",level:"secondary",difficulty:2,emoji:"🥺",
+   exBM:"Saya terharu mendengar cerita itu.",   exEN:"I was touched hearing that story."},
+  {id:"pt3-033",bm:"teruja",          en:"excited / thrilled",     category:"pt3",level:"secondary",difficulty:2,emoji:"🎉",
+   exBM:"Murid-murid teruja apabila dengar berita itu.",exEN:"The students were excited when they heard the news."},
+  {id:"pt3-034",bm:"tercengang",      en:"astonished / amazed",    category:"pt3",level:"secondary",difficulty:3,emoji:"😲",
+   exBM:"Kami tercengang melihat pertunjukan itu.",exEN:"We were astonished watching that performance."},
+  {id:"pt3-035",bm:"mengharukan",     en:"touching / moving (of an event)",category:"pt3",level:"secondary",difficulty:3,emoji:"💧",
+   baseWord:"haru",baseWordEn:"touched / moved",
+   exBM:"Peristiwa itu sangat mengharukan semua orang.",exEN:"That event was very touching for everyone."},
+  {id:"pt3-036",bm:"tidak tergambar", en:"indescribable / beyond words",category:"pt3",level:"secondary",difficulty:3,emoji:"🤯",
+   exBM:"Kegembiraan saya tidak tergambar dengan kata-kata.",exEN:"My joy was indescribable in words."},
+  {id:"pt3-037",bm:"terdorong",       en:"motivated / driven / compelled",category:"pt3",level:"secondary",difficulty:3,emoji:"🚀",
+   baseWord:"dorong",baseWordEn:"push / motivate",
+   exBM:"Saya terdorong untuk terus belajar bersungguh-sungguh.",exEN:"I am motivated to keep studying wholeheartedly."},
+  {id:"pt3-038",bm:"sebak",           en:"overcome with emotion / choked up",category:"pt3",level:"secondary",difficulty:3,emoji:"😢",
+   exBM:"Hati saya sebak mendengar berita itu.",  exEN:"My heart was overcome with emotion hearing that news."},
+  {id:"pt3-039",bm:"tersentuh hati",  en:"touched in the heart / moved",category:"pt3",level:"secondary",difficulty:2,emoji:"❤️",
+   exBM:"Saya tersentuh hati melihat pengorbanan ibu saya.",exEN:"My heart was touched seeing my mother's sacrifice."},
+  {id:"pt3-040",bm:"berbangga",       en:"to feel proud",          category:"pt3",level:"secondary",difficulty:2,emoji:"🏅",
+   baseWord:"bangga",baseWordEn:"proud",
+   exBM:"Saya berbangga menjadi rakyat Malaysia.",exEN:"I feel proud to be a Malaysian."},
+
+); // end PT3 WORDS.push
+
+
+// ════════════════════════════════════════════════════════════
+// SPM VOCABULARY — 30 words  (Form 4–5 level)
+// Category: "spm"  Level: "secondary"
+// Advanced essay connectors, literary terms, abstract concepts
+// ════════════════════════════════════════════════════════════
+
+WORDS.push(
+
+  // ── SPM high-value essay phrases ─────────────────────────
+  {id:"spm-001",bm:"menurut kajian",  en:"according to research / studies show",category:"spm",level:"secondary",difficulty:3,emoji:"🔬",
+   exBM:"Menurut kajian, tabiat membaca meningkatkan kecerdasan.",exEN:"According to research, reading habits increase intelligence."},
+  {id:"spm-002",bm:"dalam erti kata lain",en:"in other words",    category:"spm",level:"secondary",difficulty:3,emoji:"↩️",
+   exBM:"Dalam erti kata lain, kejayaan memerlukan pengorbanan.",exEN:"In other words, success requires sacrifice."},
+  {id:"spm-003",bm:"tidak keterlaluan jika dikatakan",en:"it is not an exaggeration to say",category:"spm",level:"secondary",difficulty:3,emoji:"💬",
+   exBM:"Tidak keterlaluan jika dikatakan pendidikan ialah segalanya.",exEN:"It is not an exaggeration to say education is everything."},
+  {id:"spm-004",bm:"seiring dengan itu",en:"in tandem with that / alongside",category:"spm",level:"secondary",difficulty:3,emoji:"🔄",
+   exBM:"Seiring dengan itu, teknologi terus berkembang pesat.",exEN:"In tandem with that, technology continues to advance rapidly."},
+  {id:"spm-005",bm:"tidak dapat lari daripada",en:"cannot escape from / inevitably",category:"spm",level:"secondary",difficulty:3,emoji:"🔒",
+   exBM:"Kita tidak dapat lari daripada cabaran globalisasi.",exEN:"We cannot escape from the challenges of globalisation."},
+  {id:"spm-006",bm:"yang tidak ternilai",en:"invaluable / priceless",category:"spm",level:"secondary",difficulty:3,emoji:"💎",
+   baseWord:"nilai",baseWordEn:"value",
+   exBM:"Pengalaman hidup adalah sesuatu yang tidak ternilai.",exEN:"Life experience is something invaluable."},
+  {id:"spm-007",bm:"memainkan fungsi",en:"to serve a function / to play a role",category:"spm",level:"secondary",difficulty:3,emoji:"⚙️",
+   baseWord:"fungsi",baseWordEn:"function",
+   exBM:"Media sosial memainkan fungsi penting dalam masyarakat.",exEN:"Social media plays an important function in society."},
+  {id:"spm-008",bm:"prasangka",       en:"prejudice / preconception",category:"spm",level:"secondary",difficulty:3,emoji:"⚖️",
+   exBM:"Kita perlu buang sikap prasangka terhadap orang lain.",exEN:"We must discard prejudice towards others."},
+  {id:"spm-009",bm:"akar umbi",       en:"grassroots / roots",     category:"spm",level:"secondary",difficulty:3,emoji:"🌿",
+   exBM:"Masalah ini perlu diselesaikan dari akar umbi.",exEN:"This problem needs to be solved from the grassroots."},
+  {id:"spm-010",bm:"kontemporari",    en:"contemporary / modern",  category:"spm",level:"secondary",difficulty:3,emoji:"🌐",
+   exBM:"Sastera kontemporari mencerminkan realiti masyarakat kini.",exEN:"Contemporary literature reflects today's social reality."},
+
+  // ── Literary & analytical terms ───────────────────────────
+  {id:"spm-011",bm:"plot",            en:"plot",                   category:"spm",level:"secondary",difficulty:1,emoji:"📊",
+   exBM:"Plot cerita itu sangat menarik dan penuh kejutan.",exEN:"The plot of the story is interesting and full of surprises."},
+  {id:"spm-012",bm:"watak protagonis",en:"protagonist / main character",category:"spm",level:"secondary",difficulty:3,emoji:"🦸",
+   exBM:"Watak protagonis mempunyai sifat berani dan jujur.",exEN:"The protagonist has the qualities of bravery and honesty."},
+  {id:"spm-013",bm:"watak antagonis", en:"antagonist / villain",   category:"spm",level:"secondary",difficulty:3,emoji:"🦹",
+   exBM:"Watak antagonis menjadi penghalang kepada protagonis.",exEN:"The antagonist becomes an obstacle to the protagonist."},
+  {id:"spm-014",bm:"perwatakan",      en:"characterisation",       category:"spm",level:"secondary",difficulty:3,emoji:"🎭",
+   baseWord:"watak",baseWordEn:"character",
+   exBM:"Perwatakan watak utama digambarkan dengan jelas.",exEN:"The characterisation of the main character is depicted clearly."},
+  {id:"spm-015",bm:"mesej",           en:"message / moral",        category:"spm",level:"secondary",difficulty:1,emoji:"📨",
+   exBM:"Apakah mesej yang ingin disampaikan dalam cerpen ini?",exEN:"What message does this short story want to convey?"},
+  {id:"spm-016",bm:"nilai kemanusiaan",en:"human values",          category:"spm",level:"secondary",difficulty:3,emoji:"❤️",
+   exBM:"Nilai kemanusiaan diterapkan dalam setiap karya sastera.",exEN:"Human values are instilled in every literary work."},
+  {id:"spm-017",bm:"gaya bahasa",     en:"language style / literary device",category:"spm",level:"secondary",difficulty:3,emoji:"✍️",
+   exBM:"Penulis menggunakan gaya bahasa yang indah.",exEN:"The writer uses beautiful language style."},
+  {id:"spm-018",bm:"simbolisme",      en:"symbolism",              category:"spm",level:"secondary",difficulty:3,emoji:"🌹",
+   exBM:"Simbolisme digunakan untuk menyampaikan mesej tersirat.",exEN:"Symbolism is used to convey implied messages."},
+  {id:"spm-019",bm:"ironi",           en:"irony",                  category:"spm",level:"secondary",difficulty:3,emoji:"😏",
+   exBM:"Pengarang menggunakan ironi untuk mengkritik masyarakat.",exEN:"The author uses irony to criticise society."},
+  {id:"spm-020",bm:"hiperbola",       en:"hyperbole / exaggeration",category:"spm",level:"secondary",difficulty:3,emoji:"📢",
+   exBM:"'Saya sudah menunggu seribu tahun' ialah hiperbola.",exEN:"'I have waited a thousand years' is hyperbole."},
+
+  // ── SPM abstract / socio-economic vocabulary ──────────────
+  {id:"spm-021",bm:"fenomena",        en:"phenomenon",             category:"spm",level:"secondary",difficulty:2,emoji:"🌪️",
+   exBM:"Urbanisasi adalah fenomena yang berlaku di seluruh dunia.",exEN:"Urbanisation is a phenomenon occurring worldwide."},
+  {id:"spm-022",bm:"paradigma",       en:"paradigm / mindset shift",category:"spm",level:"secondary",difficulty:3,emoji:"🧠",
+   exBM:"Kita perlu mengubah paradigma berfikir kita.",exEN:"We need to change our paradigm of thinking."},
+  {id:"spm-023",bm:"transformasi",    en:"transformation",         category:"spm",level:"secondary",difficulty:2,emoji:"🦋",
+   exBM:"Transformasi pendidikan diperlukan untuk masa hadapan.",exEN:"Educational transformation is needed for the future."},
+  {id:"spm-024",bm:"implikasi",       en:"implication / consequence",category:"spm",level:"secondary",difficulty:3,emoji:"💥",
+   exBM:"Apakah implikasi pencemaran terhadap kesihatan?",exEN:"What are the implications of pollution on health?"},
+  {id:"spm-025",bm:"mekanisme",       en:"mechanism / system",     category:"spm",level:"secondary",difficulty:3,emoji:"⚙️",
+   exBM:"Kita perlukan mekanisme yang lebih berkesan.",exEN:"We need a more effective mechanism."},
+  {id:"spm-026",bm:"urbanisasi",      en:"urbanisation",           category:"spm",level:"secondary",difficulty:3,emoji:"🏙️",
+   baseWord:"bandar",baseWordEn:"city / town",
+   exBM:"Urbanisasi menyebabkan peningkatan kos sara hidup.",exEN:"Urbanisation causes an increase in cost of living."},
+  {id:"spm-027",bm:"rasuah",          en:"corruption / bribery",   category:"spm",level:"secondary",difficulty:2,emoji:"💸",
+   exBM:"Rasuah menghalang kemajuan negara.",   exEN:"Corruption hinders the progress of the nation."},
+  {id:"spm-028",bm:"ketidaksamaan",   en:"inequality",             category:"spm",level:"secondary",difficulty:3,emoji:"⚖️",
+   baseWord:"sama",baseWordEn:"same / equal",
+   exBM:"Ketidaksamaan peluang perlu dihapuskan.",exEN:"Inequality of opportunity must be eliminated."},
+  {id:"spm-029",bm:"kemunduran",      en:"decline / regression",   category:"spm",level:"secondary",difficulty:3,emoji:"📉",
+   baseWord:"mundur",baseWordEn:"backwards / regress",
+   exBM:"Kemunduran moral menjadi ancaman kepada masyarakat.",exEN:"Moral decline is a threat to society."},
+  {id:"spm-030",bm:"pemangkin",       en:"catalyst / driving force",category:"spm",level:"secondary",difficulty:3,emoji:"🚀",
+   exBM:"Pendidikan ialah pemangkin kepada kemajuan negara.",exEN:"Education is the catalyst for national progress."},
+
+); // end SPM WORDS.push
+
+
+// ════════════════════════════════════════════════════════════
+// Register new categories in UI
+// ════════════════════════════════════════════════════════════
+CATEGORIES.primary.push(
+  {id:"nombor_ext", label:"Numbers & Calendar", labelBM:"Nombor & Kalendar", icon:"📅"}
+);
+// Update existing "nombor" category entries to also display under extended numbers
+// (The new num-006..num-100, hari-*, bln-* entries use category:"nombor"
+//  so they appear in the existing "nombor" chip automatically.)
+
+CATEGORIES.secondary.push(
+  {id:"tatabahasa", label:"Grammar (Tatabahasa)", labelBM:"Tatabahasa", icon:"📖"},
+  {id:"pt3",        label:"PT3 Vocab",             labelBM:"Vocab PT3",  icon:"🎓"},
+  {id:"spm",        label:"SPM Vocab",             labelBM:"Vocab SPM",  icon:"🏆"}
+);
+
 // Export for use in HTML (no module system needed)
 // In React/Vite: export { WORDS, CATEGORIES };
