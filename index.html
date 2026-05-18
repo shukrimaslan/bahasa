@@ -106,6 +106,7 @@ onAuthStateChanged(auth, user => {
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
 :root{
   --pri:#FF6B35;--pri-l:#FFF0EB;
   --sec:#6C63FF;--sec-l:#F0EEFF;
@@ -1332,6 +1333,7 @@ function initMain() {
    Game screen helpers
 ═══════════════════════════════════════════ */
 function showGame(id) {
+  window.scrollTo(0, 0); // always start at top on mobile
   // Hide tab divs (they use inline style, not .screen class)
   ["tab-home","tab-words","tab-progress"].forEach(i => {
     const e = el(i); if(e) e.style.display = "none";
@@ -1351,6 +1353,7 @@ function exitGame() {
     const e = el(i);
     if(e) { e.className = "screen"; e.style.removeProperty("display"); }
   });
+  window.scrollTo(0, 0);
   goTab("home");
 }
 
