@@ -1375,12 +1375,15 @@ WORDS.push(
 // ════════════════════════════════════════════════════════════
 // Register new categories in UI
 // ════════════════════════════════════════════════════════════
-CATEGORIES.primary.push(
-  {id:"nombor_ext", label:"Numbers & Calendar", labelBM:"Nombor & Kalendar", icon:"📅"}
-);
-// Update existing "nombor" category entries to also display under extended numbers
-// (The new num-006..num-100, hari-*, bln-* entries use category:"nombor"
-//  so they appear in the existing "nombor" chip automatically.)
+// Numbers, days, months all use category:"nombor" so they appear
+// under the existing "Nombor & Masa" chip automatically.
+// Update the existing nombor chip label to reflect expanded content:
+const _nomborCat = CATEGORIES.primary.find(c => c.id === "nombor");
+if (_nomborCat) {
+  _nomborCat.label   = "Numbers & Calendar";
+  _nomborCat.labelBM = "Nombor & Kalendar";
+  _nomborCat.icon    = "📅";
+}
 
 CATEGORIES.secondary.push(
   {id:"tatabahasa", label:"Grammar (Tatabahasa)", labelBM:"Tatabahasa", icon:"📖"},
