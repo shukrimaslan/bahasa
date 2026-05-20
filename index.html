@@ -1344,6 +1344,13 @@ function pickCat(cat, fromId) {
 ═══════════════════════════════════════════ */
 function goTab(tab) {
   curTab = tab; const s = sf();
+
+  // hide all games
+  ["scr-fc","scr-qz","scr-sp","scr-mp","scr-fts"].forEach(i => {
+    const e = el(i);
+    if(e) { e.className = "screen"; e.style.removeProperty("display"); }
+  });
+
   ["home","words","progress","rank"].forEach(tabId => {
     const e = el("tab-"+tabId);
     if(e) e.style.display = (tabId===tab ? "block" : "none");
@@ -1447,7 +1454,7 @@ function initMain() {
 function showGame(id) {
   window.scrollTo(0, 0); // always start at top on mobile
   // Hide tab divs (they use inline style, not .screen class)
-  ["tab-home","tab-words","tab-progress"].forEach(i => {
+  ["tab-home","tab-words","tab-progress","tab-rank"].forEach(i => {
     const e = el(i); if(e) e.style.display = "none";
   });
   // Reset all game screens via CLASS only — never inline style (inline overrides CSS)
@@ -2457,7 +2464,7 @@ async function setRankOptIn(val) {
   if (curTab === "rank") renderRankTab();
 }
 
-async async function pushLeaderboardEntry() {
+async function pushLeaderboardEntry() {
   if (!uid() || !S.rankOptIn) return;
   try {
     await fbReady();
