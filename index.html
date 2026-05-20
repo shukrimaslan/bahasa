@@ -1101,7 +1101,7 @@ function obPick(lv) {
 async function obDone() {
   if (!S.level) return;
   if (S.isGuest) {
-    const prefs = {name:"Guest",level:S.level,lang:"en",hard:false,voice:true,streak:1,isGuest:true};
+    const prefs = {name:"Guest",level:S.level,lang:"en",hard:false,voice:true,streak:1,isGuest:true,rankOptIn:false};
     localStorage.setItem("bmv3_guest_prefs", JSON.stringify(prefs));
     S = {...S, ...prefs};
     showMain(); return;
@@ -1226,9 +1226,14 @@ function shuffle(a) {
 function catWords() {
   return WORDS.filter(w => w.level === S.level && (activeCat === "all" || w.category === activeCat));
 }
-function toast(msg) {
+function toast(msg, duration=1800) {
   const t = el("sync-toast"); t.textContent = msg;
-  t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1800);
+  t.classList.remove("show");
+  // force reflow so re-triggering animation works
+  void t.offsetWidth;
+  t.classList.add("show");
+  clearTimeout(t._toastTimer);
+  t._toastTimer = setTimeout(() => t.classList.remove("show"), duration);
 }
 function confetti() {
   const W = el("cfw");
@@ -1408,6 +1413,9 @@ function syncToggles() {
   el("tb-hard").className  = "tb"+(S.hard               ? " on-r":"");
   el("tb-voc-on").className  = "tb"+(S.voice  ? " on-g":"");
   el("tb-voc-off").className = "tb"+(!S.voice ? " on-r":"");
+  const rOn=el("tb-rank-on"), rOff=el("tb-rank-off");
+  if(rOn)  rOn.className  = "tb"+(S.rankOptIn  ? " on-s":"");
+  if(rOff) rOff.className = "tb"+(!S.rankOptIn ? " on-g":"");
 }
 function toggleLang() { setLang(S.lang==="en" ? "bm" : "en"); }
 function setLang(l)   { S.lang=l;  syncPrefs(); refreshStrings(); }
@@ -1942,6 +1950,24 @@ function startMatchPair() {
 
 
 
+
+/* ═══════════════════════════════════════════
+   FIREBASE READY GUARD
+   ES module sets window._FB / _FB2 async.
+   fbReady() polls until available (max 3 s).
+═══════════════════════════════════════════ */
+function fbReady() {
+  return new Promise((resolve, reject) => {
+    if (window._FB2) { resolve(); return; }
+    let attempts = 0;
+    const iv = setInterval(() => {
+      attempts++;
+      if (window._FB2)           { clearInterval(iv); resolve(); }
+      else if (attempts >= 30)   { clearInterval(iv); reject(new Error("Firebase not ready")); }
+    }, 100);
+  });
+}
+
 /* ═══════════════════════════════════════════
    MOUSE DRAG SCROLL — category chips on desktop
 ═══════════════════════════════════════════ */
@@ -2411,35 +2437,55 @@ function showInfoSheet(title, body) {
 // State
 if (!S.rankOptIn) S.rankOptIn = false;
 
-function setRankOptIn(val) {
+async function setRankOptIn(val) {
   S.rankOptIn = val;
   savePrefs();
-  syncPrefs();
-  // Sync toggle buttons
-  el("tb-rank-on").className  = "tb" + (val  ? " on-s" : "");
-  el("tb-rank-off").className = "tb" + (!val ? " on-g" : "");
-  if (val) pushLeaderboardEntry();
-  else     removeLeaderboardEntry();
+  syncPrefs(); // fire and forget — don't block UI
+  // Sync toggle buttons immediately
+  const rOn  = el("tb-rank-on");
+  const rOff = el("tb-rank-off");
+  if(rOn)  rOn.className  = "tb" + (val  ? " on-s" : "");
+  if(rOff) rOff.className = "tb" + (!val ? " on-g" : "");
+  if (val) {
+    toast(S.lang==="en" ? "🏆 Joining ranking..." : "🏆 Menyertai kedudukan...", 2500);
+    await pushLeaderboardEntry();
+    toast(S.lang==="en" ? "🏆 You are on the leaderboard!" : "🏆 Kamu telah disenaraikan!", 3000);
+  } else {
+    await removeLeaderboardEntry();
+    toast(S.lang==="en" ? "👤 Removed from ranking" : "👤 Dikeluarkan dari kedudukan");
+  }
   if (curTab === "rank") renderRankTab();
 }
 
-async function pushLeaderboardEntry() {
+async async function pushLeaderboardEntry() {
   if (!uid() || !S.rankOptIn) return;
-  const entry = {
-    name:      S.name || "Student",
-    xp:        seenC() * 10,
-    streak:    S.streak || 0,
-    mastered:  masC(),
-    level:     S.level,
-    updatedAt: Date.now(),
-    optIn:     true,
-  };
-  try { await fsSet("leaderboard", uid(), entry); } catch(e) {}
+  try {
+    await fbReady();
+    const entry = {
+      name:      S.name || "Student",
+      xp:        seenC() * 10,
+      streak:    S.streak || 0,
+      mastered:  masC(),
+      level:     S.level,
+      updatedAt: Date.now(),
+      optIn:     true,
+    };
+    await fsSet("leaderboard", uid(), entry);
+  } catch(e) {
+    console.warn("Leaderboard push failed:", e);
+    toast(S.lang==="en" ? "⚠️ Ranking update failed — check Firestore rules" : "⚠️ Gagal kemas kini kedudukan");
+  }
 }
 
 async function removeLeaderboardEntry() {
   if (!uid()) return;
-  try { await fsSet("leaderboard", uid(), { optIn: false, name: "Private", xp: 0, streak: 0, mastered: 0, level: S.level, updatedAt: Date.now() }); } catch(e) {}
+  try {
+    await fbReady();
+    await fsSet("leaderboard", uid(), {
+      optIn: false, name: "Private", xp: 0,
+      streak: 0, mastered: 0, level: S.level, updatedAt: Date.now()
+    });
+  } catch(e) { console.warn("Remove leaderboard failed:", e); }
 }
 
 // Auto-push on every progress update (debounced via debouncedSync)
@@ -2478,14 +2524,15 @@ async function renderRankTab() {
   }
 
   try {
+    await fbReady();
     // Fetch leaderboard collection
     const { db, collection, getDocs, query, orderBy, limit } = window._FB2;
-    const q     = query(collection(db, "leaderboard"), orderBy("xp","desc"), limit(20));
-    const snap  = await getDocs(q);
-    const rows  = [];
-    snap.forEach(doc => {
-      const d = doc.data();
-      if (d.optIn && d.xp > 0) rows.push({uid: doc.id, ...d});
+    const q    = query(collection(db, "leaderboard"), orderBy("xp","desc"), limit(20));
+    const snap = await getDocs(q);
+    const rows = [];
+    snap.forEach(snap_doc => {
+      const d = snap_doc.data();
+      if (d.optIn && d.xp > 0) rows.push({ uid: snap_doc.id, ...d });
     });
 
     if (!rows.length) {
